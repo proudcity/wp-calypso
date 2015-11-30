@@ -38,7 +38,8 @@ module.exports = React.createClass( {
 		onKeyDown: React.PropTypes.func,
 		disableAutocorrect: React.PropTypes.bool,
 		onBlur: React.PropTypes.func,
-		searching: React.PropTypes.bool
+		searching: React.PropTypes.bool,
+		blurOnEnter: React.PropTypes.bool
 	},
 
 	getInitialState: function() {
@@ -58,7 +59,8 @@ module.exports = React.createClass( {
 			onSearchClose: noop,
 			onKeyDown: noop,
 			disableAutocorrect: false,
-			searching: false
+			searching: false,
+			blurOnEnter: false
 		};
 	},
 
@@ -202,6 +204,11 @@ module.exports = React.createClass( {
 
 		if ( event.key === 'Escape' ) {
 			this.closeSearch( event );
+		}
+
+		if ( this.props.blurOnEnter && event.which === 13 ) {
+			//dismiss soft keyboards
+			this.blur();
 		}
 	},
 
