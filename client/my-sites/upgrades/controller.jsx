@@ -114,8 +114,7 @@ module.exports = {
 
 	googleAppsWithRegistration: function( context ) {
 		var CartData = require( 'components/data/cart' ),
-			GoogleApps = require( 'components/upgrades/google-apps' ),
-			basePath = route.sectionify( context.path );
+			GoogleApps = require( 'components/upgrades/google-apps' );
 
 		titleActions.setTitle(
 			i18n.translate( 'Register %(domain)s', {
