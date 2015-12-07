@@ -2,7 +2,6 @@
  * External Dependencies
  */
 var React = require( 'react/addons' ),
-	throttle = require( 'lodash/function/throttle' ),
 	noop = require( 'lodash/utility/noop' ),
 	classnames = require( 'classnames' );
 
