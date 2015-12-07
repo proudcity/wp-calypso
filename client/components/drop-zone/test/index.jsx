@@ -83,9 +83,8 @@ describe( 'DropZone', function() {
 
 	it( 'should highlight the drop zone when dragging over the body', function() {
 		var tree = React.render( React.createElement( DropZone ), container ),
-			dragEnterEvent = new window.MouseEvent();
+			dragEnterEvent = new window.MouseEvent( 'dragenter' );
 
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
 		window.dispatchEvent( dragEnterEvent );
 
 		expect( tree.state.isDraggingOverDocument ).to.be.ok;
@@ -94,9 +93,8 @@ describe( 'DropZone', function() {
 
 	it( 'should start observing the body for mutations when dragging over', function( done ) {
 		var tree = React.render( React.createElement( DropZone ), container ),
-			dragEnterEvent = new window.MouseEvent();
+			dragEnterEvent = new window.MouseEvent( 'dragenter' );
 
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
 		window.dispatchEvent( dragEnterEvent );
 
 		process.nextTick( function() {
@@ -107,13 +105,10 @@ describe( 'DropZone', function() {
 
 	it( 'should stop observing the body for mutations upon drag ending', function( done ) {
 		var tree = React.render( React.createElement( DropZone ), container ),
-			dragEnterEvent = new window.MouseEvent(),
-			dragLeaveEvent = new window.MouseEvent();
+			dragEnterEvent = new window.MouseEvent( 'dragenter' ),
+			dragLeaveEvent = new window.MouseEvent( 'dragleave' );
 
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
 		window.dispatchEvent( dragEnterEvent );
-
-		dragLeaveEvent.initMouseEvent( 'dragleave', true, true );
 		window.dispatchEvent( dragLeaveEvent );
 
 		process.nextTick( function() {
@@ -123,7 +118,7 @@ describe( 'DropZone', function() {
 	} );
 
 	it( 'should not highlight if onVerifyValidTransfer returns false', function() {
-		var dragEnterEvent = new window.MouseEvent(),
+		var dragEnterEvent = new window.MouseEvent( 'dragenter' ),
 			tree;
 
 		tree = React.render( React.createElement( DropZone, {
@@ -132,7 +127,6 @@ describe( 'DropZone', function() {
 			}
 		} ), container );
 
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
 		window.dispatchEvent( dragEnterEvent );
 
 		expect( tree.state.isDraggingOverDocument ).to.not.be.ok;
@@ -146,8 +140,7 @@ describe( 'DropZone', function() {
 
 		tree = React.render( React.createElement( DropZone ), container );
 
-		dragEnterEvent = new window.MouseEvent();
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
+		dragEnterEvent = new window.MouseEvent( 'dragenter' );
 		window.dispatchEvent( dragEnterEvent );
 
 		expect( tree.state.isDraggingOverDocument ).to.be.ok;
@@ -159,8 +152,7 @@ describe( 'DropZone', function() {
 			fullScreen: true
 		} ), container ), dragEnterEvent;
 
-		dragEnterEvent = new window.MouseEvent();
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
+		dragEnterEvent = new window.MouseEvent( 'dragenter' );
 		window.dispatchEvent( dragEnterEvent );
 
 		expect( tree.state.isDraggingOverDocument ).to.be.ok;
@@ -177,8 +169,7 @@ describe( 'DropZone', function() {
 			onDrop: spyDrop
 		} ), container );
 
-		dropEvent = new window.MouseEvent();
-		dropEvent.initMouseEvent( 'drop', true, true );
+		dropEvent = new window.MouseEvent( 'drop' );
 		window.dispatchEvent( dropEvent );
 
 		expect( spyDrop.calledOnce ).to.be.ok;
@@ -194,8 +185,7 @@ describe( 'DropZone', function() {
 			onFilesDrop: spyDrop
 		} ), container );
 
-		dropEvent = new window.MouseEvent();
-		dropEvent.initMouseEvent( 'drop', true, true );
+		dropEvent = new window.MouseEvent( 'drop' );
 		dropEvent.dataTransfer = { files: [ 1, 2, 3 ] };
 		window.dispatchEvent( dropEvent );
 
@@ -205,7 +195,7 @@ describe( 'DropZone', function() {
 
 	it( 'should not call onFilesDrop if onVerifyValidTransfer returns false', function() {
 		var spyDrop = sandbox.spy(),
-			dropEvent = new window.MouseEvent();
+			dropEvent = new window.MouseEvent( 'drop' );
 
 		React.render( React.createElement( DropZone, {
 			onFilesDrop: spyDrop,
@@ -214,7 +204,6 @@ describe( 'DropZone', function() {
 			}
 		} ), container );
 
-		dropEvent.initMouseEvent( 'drop', true, true );
 		dropEvent.dataTransfer = { files: [ 1, 2, 3 ] };
 		window.dispatchEvent( dropEvent );
 
@@ -233,8 +222,7 @@ describe( 'DropZone', function() {
 
 		rendered = TestUtils.scryRenderedComponentsWithType( tree, DropZone );
 
-		dragEnterEvent = new window.MouseEvent();
-		dragEnterEvent.initMouseEvent( 'dragenter', true, true );
+		dragEnterEvent = new window.MouseEvent( 'dragenter' );
 		window.dispatchEvent( dragEnterEvent );
 
 		expect( rendered ).to.have.length.of( 2 );
