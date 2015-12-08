@@ -15,7 +15,8 @@ const ListManagementNavigation = React.createClass( {
 	render() {
 		const current = this.props.selected;
 		const sectionNames = {
-			following: this.translate( 'Sites & Tags' ),
+			feeds: this.translate( 'Feeds' ),
+			tags: this.translate( 'Tags' ),
 			'description-edit': this.translate( 'List Description' ),
 			followers: this.translate( 'List Followers' )
 		};
@@ -24,8 +25,9 @@ const ListManagementNavigation = React.createClass( {
 		return (
 			<SectionNav selectedText={ sectionNames[ current ] }>
 				<NavTabs>
-					<NavItem path={ `${baseListUrl}/edit` } selected={current === 'following'}>{ this.translate( 'Sites & Tags' )}</NavItem>
-					<NavItem path={ `${baseListUrl}/description/edit` } selected={current === 'description-edit'}>{ this.translate( 'Description' )}</NavItem>
+					<NavItem path={ `${baseListUrl}/feeds` } selected={current === 'feeds'}>{ this.translate( 'Feeds' )}</NavItem>
+					<NavItem path={ `${baseListUrl}/tags` } selected={current === 'tags'}>{ this.translate( 'Tags' )}</NavItem>
+					<NavItem path={ `${baseListUrl}/edit` } selected={current === 'description-edit'}>{ this.translate( 'Description' )}</NavItem>
 					<NavItem path={ `${baseListUrl}/followers` } selected={current === 'followers'}>{ this.translate( 'Followers' )}</NavItem>
 				</NavTabs>
 			</SectionNav>
