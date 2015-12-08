@@ -3,7 +3,6 @@
  */
 import filter from 'lodash/collection/filter';
 
-// TODO: DRY, reuse these selectors in ./stores
 export function isJetpack( state ) {
 	return state.themes.themesLastQuery.get( 'isJetpack' );
 }
