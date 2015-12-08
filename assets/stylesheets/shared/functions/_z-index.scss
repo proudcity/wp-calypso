@@ -1,0 +1,219 @@
+// ==========================================================================
+// A nested map of all of our z-index values.
+//
+// Please add new values relative to their parent stacking context. For
+// example the values of 'root' are elements with a stacking context that have no
+// parents with a stacking context, other than the default html root.
+//
+// A Stacking Context is created when:
+// 1. It's the root element (HTML)
+// 2. Has a position other than static, with a z-index value
+// 3. position:fixed
+// 4. Has one of the following css properties: (transform, opacity<1, mix-blend-mode, filter)
+// 5. isolation:isolate
+// 6: -webkit-overflow-scrolling: touch
+//
+// So before adding a new z-index:
+// 1. You'll want to make sure the element actually creates a stacking context
+// 2. Lookup what it's parent stacking context is
+// You can run this handy gist: https://gist.github.com/gwwar/2f661deec7b99a1a418b) in the console to find both.
+//
+// For readability please sort values from lowest to highest.
+//
+// Usage:
+// .environment-badge {
+//     z-index: z-index( 'root' 'environment-badge' );
+// }
+//
+// For a refresher on stacking contexts see:
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
+// ==========================================================================
+
+$z-layers: (
+	'root': (
+		'translator-invitation__before': -1,
+		'nux-welcome__before': -1,
+		'infinite-scroll-end__before': -1,
+		'site-icon__is-blank__noticon': 0,
+		'chart__bar-section__is-spacer': 0,
+		'gear-dropdown': 0,
+		'reader__featured-post-title': 1,
+		'reader-list-gap__button': 1,
+		'post-trends__title': 1,
+		'plugin-item__label': 1,
+		'tinymce__wp-editor-tools': 1,
+		'plan__gridicons-checkmark-circle': 1,
+		'plan-discount-message': 1,
+		'editor__switch-mode': 1,
+		'auth__form__input': 1,
+		'chart__empty': 1,
+		'chart__bar-marker': 1,
+		'chart__bar-section__is-ghost__after': 1,
+		'billing-history__filter-popover-content': 1,
+		'stats__module-content-table__after': 1,
+		'stats-popular__empty': 1,
+		'menus__menu-item__is-lander': 1,
+		'people-list-item__label': 1,
+		'theme__active-focus__is-actionable': 1,
+		'current-theme__button__accessible-focus': 1,
+		'signup-processing-screen__processing-step__is-processing__before': 1,
+		'theme__more-button__accessible-focus': 1,
+		'reader-update-notice': 2,
+		'people-list-item__card__link-indicator': 2,
+		'updated-confirmation': 2,
+		'auth__form__input__focus': 2,
+		'toolbar-bulk': 2,
+		'menus__menu-item': 2,
+		'menus__menu-item-open__before': 2,
+		'chart__bar-section': 2,
+		'stats__module-content-table__first-th': 2,
+		'stats__module-header-action-link': 2,
+		'stats-module__is-loading-after': 2,
+		'stats-list__module-content-list-item-action-submenu__breakpoint': 2,
+		'stats-list__module-content-list-item-actions__breakpoint': 2,
+		'site-indicator__button': 3,
+		'stats-list__module-content-list-item-actions__collapsed': 3,
+		'auth__input-wrapper__gridicon': 3,
+		'auth__form__form-password-input__toggle-visibility': 4,
+		'site-selector': 10,
+		'editor-featured-image__after': 10,
+		'range__label': 10,
+		'sticky-panel': 20,
+		'editor-featured-image__drawer-well-remove': 20,
+		'main': 20, //TODO: this doesn't always have a stacking context
+		//'tinymce-toolbar': 20, client/components/tinymce/index.jsx
+		'search': 22,
+		'translator-launcher': 99,
+		'author-selector__popover': 100,
+		'search__is-pinned': 170,
+		'select-dropdown__container__is-open': 170,
+		'select-dropdown__container__accessible-focus': 170,
+		'editor-visibility__popover': 179,
+		'notices-list__is-pinned': 180,
+		'editor-ground-control__sticky-panel-content': 180,
+		'masterbar': 180,
+		'detail-page__backdrop': 190,
+		'layout__loader': 200,
+		'reader-post-images__full-list': 200,
+		'environment-badge': 999,
+		'customizer-loading-panel__muse-status': 999,
+		'customizer-loading-panel__placeholder-change-theme': 999,
+		'nux__module-overlay': 1000,
+		'drop-zone': 1000,
+		'popover': 1000,
+		'sharing-buttons-preview-buttons__more': 1000,
+		'sortable-list__item__draggable-active': 1000,
+		'chart-tooltip': 1000,
+		'drop-zone__content': 1010,
+		'wp-overlay': 9999,
+		'dropdown-menu': 9999,
+		'main-customize__is-iframe': 9999,
+		'dss-screenshot__is-loading': 10000,
+		'distraction-free-overlay': 100005,
+		'tinymce-buttons': 100020,
+		'wp-fullscreen': 100010,
+		'wp-fullscreen-wrap': 100015,
+		'wp-fullscreen-statusbar': 100020,
+		'fullscreen-topbar': 100020,
+		'wp-fullscreen-active__tb-overlay': 100050,
+		'wp-fullscreen-active__tb-window': 100051,
+		'tinymce-toolbar-group': 100100,
+		'dialog-backdrop': 100200,
+		'wplink-dialog-card': 100200,
+		'web-preview': 100200,
+		'popover-category-selector__add-category-info': 100201,
+		'popover__is-dialog-visible': 100300,
+		'translator-webui-popover': 100300,
+		'distraction-free-fader': 200000,
+		'olark': 99999999
+	),
+	'environment-badge': (
+		'environment_badge__before': -1,
+		'environment-badge__bug-report': 1000
+	),
+	'masterbar': (
+		'notification-bubble': 99999
+	),
+	'detail-page__backdrop': (
+		'detail-page__action-buttons': 200
+	),
+	'toolbar-bulk': (
+		'toolbar-bulk__check-all': 1,
+		'toolbar-bulk__selection-options': 1,
+		'toolbar-bulk__more-actions': 1,
+		'toolbar-bulk__toggle-plugins': 21,
+		'toolbar-bulk__toggle': 30
+	),
+	'popover': (
+		'input-chrono__gridicons-calendar': 0,
+		'input-chrono__input': 1,
+		'popover__tip-arrow': 1,
+		'post-schedule__header': 1
+	),
+	'search': (
+		'search__input': 10,
+		'search__spinner': 20,
+		'search__noticon-search': 20,
+		'search__noticon-close-alt': 20
+	),
+	'profile-gravatar__edit-label-wrap': (
+		'profile-gravatar__edit-label-wrap__after': 0,
+		'profile-gravatar__edit-label': 1000
+	),
+	'media-library__list': (
+		'media-library__list-item__is-selected__after': 10,
+		'media-library__list-item__transient__after': 10,
+		'media-library__list-item-selected-icon__gridicon': 20,
+		'media-library__list-item-spinner': 20,
+		'media-library__list-item-edit': 20
+	),
+	'dialog-backdrop': (
+		'editor-media-modal__section-nav': 10,
+		'editor-media-modal__notice': 10,
+		'editor-media-modal-gallery__preview-toggle': 100
+	),
+	'following-edit': ( //aka 'main'
+		'following-edit-sort-controls': 30,
+		'following-edit__is-search-result': 35,
+		'following-edit__subscribe-form__gridicons-add-outline': 40
+	),
+
+	// The following may be inserted into different areas.
+	// The parent stacking context may be root, or something else depending on where it is inserted.
+	'icon-parent': (
+		'sidebar-menu__icon__external': 1
+	),
+	'screen-reader-text-parent': (
+		'screen-reader-text__focus': 100000
+	),
+	'button-group-parent': (
+		'button-group__focus': 1
+	),
+	'progress-indicator-parent': (
+		'progress-indicatior__x-icon': 1,
+		'progress-indicatior__complete': 2
+	),
+	'section-nav-tabs-dropdown-parent': (
+		'section-nav-tabs__dropdown': 3,
+		'section-nav-tabs__dropdown__open': 4
+	),
+	'reader__card__follow-button-parent': (
+		'reader__card__follow-button': 1
+	)
+);
+
+// allows us to do a nested fetch
+@function map-deep-get( $map, $keys... ) {
+	@each $key in $keys {
+		@if not map-has-key( $map, $key) {
+			@warn "No layer found for `#{$key}` of `[#{ $keys }]` in $z-layers map. Property omitted.";
+			@return map-get( $map, $key );
+		}
+		$map: map-get( $map, $key );
+	}
+	@return $map;
+}
+
+@function z-index( $keys... ) {
+	@return map-deep-get( $z-layers, $keys... );
+}
