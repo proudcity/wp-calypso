@@ -26,8 +26,8 @@ export default React.createClass( {
 	},
 
 	render: function() {
-		const { toggleSection, startExport } = this.props;
-		const { advancedSettings, shouldShowProgress } = this.props;
+		const { toggleSection, startExport, setAdvancedSetting } = this.props;
+		const { advancedSettings, shouldShowProgress, options } = this.props;
 
 		return (
 			<div className="exporter">
@@ -57,6 +57,8 @@ export default React.createClass( {
 						shouldShowProgress={ shouldShowProgress }
 						onToggleFieldset={ toggleSection }
 						onClickExport={ startExport }
+						onChangeSetting={ setAdvancedSetting }
+						options={ options }
 					/>
 				</FoldableCard>
 			</div>
