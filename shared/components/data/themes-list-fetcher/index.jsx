@@ -2,7 +2,6 @@
  * External dependencies
  */
 import React from 'react';
-import pick from 'lodash/object/pick';
 import omit from 'lodash/object/omit';
 import once from 'lodash/function/once';
 import { bindActionCreators } from 'redux';
@@ -12,7 +11,7 @@ import { connect } from 'react-redux';
  * Internal dependencies
  */
 import Constants from 'lib/themes/constants';
-import * as allActions from 'lib/themes/actions';
+import { query, fetchNextPage } from 'lib/themes/actions';
 import {
 	getFilteredThemes,
 	hasSiteChanged,
@@ -20,11 +19,6 @@ import {
 	isLastPage,
 	isFetchingNextPage
 } from 'lib/themes/selectors';
-
-const actions = pick( allActions, [
-	'query',
-	'fetchNextPage',
-] );
 
 function getThemesState( state, { search } ) {
 	return {
@@ -87,21 +81,18 @@ const ThemesListFetcher = React.createClass( {
 			site,
 			search,
 			tier,
-
-			query,
-			fetchNextPage
 		} = props;
 
 		this.onLastPage = onLastPage ? once( onLastPage ) : null;
 
-		query( {
+		this.props.query( {
 			search,
 			tier,
 			page: 0,
 			perPage: Constants.PER_PAGE,
 		} );
 
-		fetchNextPage( site );
+		this.props.fetchNextPage( site );
 	},
 
 	fetchNextPage: function( options ) {
@@ -115,14 +106,13 @@ const ThemesListFetcher = React.createClass( {
 		const {
 			site = false,
 			onRealScroll = () => null,
-			fetchNextPage,
 		} = this.props;
 
 		if ( options.triggeredByScroll ) {
 			onRealScroll();
 		}
 
-		fetchNextPage( site );
+		this.props.fetchNextPage( site );
 	},
 
 	render: function() {
@@ -139,5 +129,5 @@ export default connect(
 		props,
 		getThemesState( state, props )
 	),
-	bindActionCreators.bind( null, actions )
+	bindActionCreators.bind( null, { query, fetchNextPage } )
 )( ThemesListFetcher );
