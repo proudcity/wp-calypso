@@ -6,7 +6,7 @@ import store from '../store';
 
 
 describe( 'Reader Lists Tags Store', function() {
-	it( 'picks up tags from a successful response', function() {
+	it.skip( 'picks up tags from a successful response', function() {
 		const listId = 1;
 		const foundTag = {
 			ID: 130330,
