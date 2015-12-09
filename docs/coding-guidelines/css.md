@@ -68,7 +68,7 @@ Apart from the above structure, please adhere to these guidelines:
 - Don't use the `!important` declaration. If you think you need to do it, consider fixing the root cause.
 - Avoid using universal selectors (`*`).
 - Use hyphens, not underscores or camelCase, when naming things like IDs, classes, variable names, mixins, placeholders. Good: `.site-title`, Bad: `.siteTitle` or `.site_title`.
-- The only excpetion is the `__` syntax to signal the relationship within a component.
+- The only exception is the `__` syntax to signal the relationship within a component.
 - Avoid using over-qualified selectors like `div.my-class`.
 
 ## Classes
@@ -162,7 +162,7 @@ If you are adding a new Sass file to `assets/stylesheets` you will need to refer
 
 ### Nesting
 
-* DON'T nest selectors in general. Exceptions are `:hover`/`:focus`/`::before`/`.is-modifyer`, and alike.
+* DON'T nest selectors in general. Exceptions are `:hover`/`:focus`/`::before`/`.is-modifier`, and alike.
 * DO attempt to keep nesting to 2 levels deep at most.
 * DO list items inside a selector in the following order (not all will necessarily be present):
     1. `@extend`(s).

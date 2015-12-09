@@ -37,9 +37,12 @@ var config = require( 'config' ),
 	touchDetect = require( 'lib/touch-detect' ),
 	accessibleFocus = require( 'lib/accessible-focus' ),
 	TitleStore = require( 'lib/screen-title/store' ),
+	createReduxStore = require( 'lib/create-redux-store' ),
 	// The following mixins require i18n content, so must be required after i18n is initialized
 	Layout,
 	LoggedOutLayout;
+
+import { displayInviteAccepted } from 'lib/invites/actions';
 
 function init() {
 	var i18nLocaleStringsObject = null;
@@ -78,12 +81,15 @@ function init() {
 }
 
 function setUpContext( layout ) {
+	var reduxStore = createReduxStore();
+
 	// Pass the layout so that it is available to all page handlers
 	// and add query and hash objects onto context object
 	page( '*', function( context, next ) {
 		var parsed = url.parse( location.href, true );
 
 		context.layout = layout;
+		context.reduxStore = reduxStore;
 
 		// Break routing and do full page load for logout link in /me
 		if ( context.pathname === '/wp-login.php' ) {
@@ -165,6 +171,8 @@ function boot() {
 			translatorInvitation: translatorInvitation
 		} ), document.getElementById( 'wpcom' ) );
 	} else {
+		analytics.setSuperProps( superProps );
+
 		if ( config.isEnabled( 'oauth' ) ) {
 			LoggedOutLayout = require( 'layout/logged-out-oauth' );
 		} else {
@@ -223,6 +231,11 @@ function boot() {
 			nuxWelcome.setWelcome( viewport.isDesktop() );
 		} else {
 			nuxWelcome.clearTempWelcome();
+		}
+
+		if ( context.query.invite_accepted ) {
+			displayInviteAccepted( parseInt( context.query.invite_accepted ) );
+			page( context.pathname );
 		}
 
 		// Bump general stat tracking overall Newdash usage

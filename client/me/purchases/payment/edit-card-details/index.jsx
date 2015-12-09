@@ -1,8 +1,9 @@
 /**
  * External Dependencies
  */
-import React from 'react';
+import extend from 'lodash/object/assign';
 import page from 'page';
+import React from 'react';
 
 /**
  * Internal Dependencies
@@ -11,6 +12,7 @@ import analytics from 'analytics';
 import camelCase from 'lodash/string/camelCase';
 import Card from 'components/card';
 import CompactCard from 'components/card/compact';
+import { createPaygateToken } from 'lib/store-transactions';
 import CreditCardForm from 'components/upgrades/credit-card-form';
 import FormButton from 'components/forms/form-button';
 import formState from 'lib/form-state';
@@ -20,17 +22,18 @@ import kebabCase from 'lodash/string/kebabCase';
 import Main from 'components/main';
 import mapKeys from 'lodash/object/mapKeys';
 import notices from 'notices';
+import paths from 'me/purchases/paths';
+import titles from 'me/purchases/titles';
 import { validateCardDetails } from 'lib/credit-card-details';
 import ValidationErrorList from 'notices/validation-error-list';
-import { createPaygateToken } from 'lib/store-transactions';
 import wpcomFactory from 'lib/wp';
-import paths from 'me/purchases/paths';
-import { getPurchase, goToManagePurchase, isDataLoading } from 'me/purchases/utils';
+import { getPurchase, goToManagePurchase, isDataLoading, recordPageView } from 'me/purchases/utils';
 
 const wpcom = wpcomFactory.undocumented();
 
 const EditCardDetails = React.createClass( {
 	propTypes: {
+		card: React.PropTypes.object.isRequired,
 		countriesList: React.PropTypes.object.isRequired,
 		selectedPurchase: React.PropTypes.object.isRequired,
 		selectedSite: React.PropTypes.object.isRequired
@@ -44,7 +47,6 @@ const EditCardDetails = React.createClass( {
 	},
 
 	fieldNames: [
-		'id',
 		'name',
 		'number',
 		'cvv',
@@ -53,11 +55,28 @@ const EditCardDetails = React.createClass( {
 		'postalCode'
 	],
 
+	/**
+	 * Merges the specified card object returned by the StoredCards store into a new object with only properties that
+	 * should be used to prefill the credit card form, and with keys matching the corresponding field names.
+	 *
+	 * @param card
+	 * @param fields
+	 */
+	mergeCard( card, fields: {} ) {
+		return extend( {}, fields, {
+			name: card.name
+		} );
+	},
+
 	componentWillMount() {
+		recordPageView( 'edit_card_details', this.props );
+
+		const fields = this.mergeCard( this.props.card, formState.createNullFieldValues( this.fieldNames ) );
+
 		this.formStateController = formState.Controller( {
-			fieldNames: this.fieldNames,
-			validatorFunction: this.validate,
-			onNewState: this.setFormState
+			initialFields: fields,
+			onNewState: this.setFormState,
+			validatorFunction: this.validate
 		} );
 
 		this.setState( { form: this.formStateController.getInitialState() } );
@@ -75,7 +94,7 @@ const EditCardDetails = React.createClass( {
 		const messages = formState.getErrorMessages( form );
 
 		if ( messages.length > 0 ) {
-			const notice = notices.error( <ValidationErrorList messages={ messages }/> );
+			const notice = notices.error( <ValidationErrorList messages={ messages } /> );
 
 			this.setState( {
 				form,
@@ -143,10 +162,9 @@ const EditCardDetails = React.createClass( {
 					persistent: true
 				} );
 
-				page( paths.managePurchase(
-					this.props.selectedSite.domain,
-					this.props.selectedPurchase.data.id
-				) );
+				const { id } = getPurchase( this.props );
+
+				page( paths.managePurchase( this.props.selectedSite.slug, id ) );
 			} );
 		} );
 	},
@@ -197,7 +215,7 @@ const EditCardDetails = React.createClass( {
 		return (
 			<Main className="edit-card-details">
 				<HeaderCake onClick={ goToManagePurchase.bind( null, this.props ) }>
-					{ this.translate( 'Edit Card Details', { context: 'Header text', comment: 'Credit card' } ) }
+					{ titles.editCardDetails }
 				</HeaderCake>
 
 				<form onSubmit={ this.onSubmit }>
