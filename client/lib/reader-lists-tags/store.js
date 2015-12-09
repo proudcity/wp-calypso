@@ -1,6 +1,5 @@
 import Dispatcher from 'dispatcher';
 import { OrderedSet, fromJS } from 'immutable';
-import pick from 'lodash/object/pick';
 import debugModule from 'debug';
 
 import Emitter from 'lib/mixins/emitter';
@@ -16,7 +15,9 @@ var tags = OrderedSet(),
 
 const store = {
 	get( listId ) {
-		return tags.toJS();
+		return tags.filter( function( tag ) {
+			return tag.get( 'list_ID' ) === listId;
+		} ).toJS();
 	},
 	getPage() {
 		return page;
@@ -24,20 +25,20 @@ const store = {
 };
 
 function receiveTags( data ) {
-	debug( data );
-	// // consume the recommendations
-	// const previousRecs = recommendations;
-	// if ( data && data.blogs ) {
-	// 	const pruned = data.blogs.map( function( blog ) {
-	// 		return pick( blog, [ 'blog_id', 'follow_reco_id', 'reason' ] );
-	// 	} );
+	const previousTags = tags;
+	if ( data && data.tags ) {
+		// Add list_ID to each tag
+		const newTags = data.tags.map( function( tag ) {
+			tag.list_ID = data.list_ID;
+			return tag;
+		} );
 
-	// 	recommendations = recommendations.union( fromJS( pruned ) );
-	// 	if ( recommendations !== previousRecs ) {
-	// 		page++;
-	// 		store.emit( 'change' );
-	// 	}
-	// }
+		tags = tags.union( fromJS( newTags ) );
+		if ( tags !== previousTags ) {
+			page++;
+			store.emit( 'change' );
+		}
+	}
 }
 
 function receiveError( /*error*/ ) {
