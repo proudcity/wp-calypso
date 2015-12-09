@@ -15,9 +15,7 @@ export const initialState = fromJS( {
 	lastParams: null,
 } );
 
-export const reducer = ( state = initialState, payload ) => {
-	const { action = payload } = payload;
-
+export const reducer = ( state = initialState, action ) => {
 	switch ( action.type ) {
 		case ThemeConstants.QUERY_THEMES:
 			return state.set( 'lastParams', action.params );

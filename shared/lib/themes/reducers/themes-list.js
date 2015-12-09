@@ -55,10 +55,7 @@ function isActionForLastPage( list, action ) {
 		action.themes.length === 0;
 }
 
-export const reducer = ( state = initialState, payload ) => {
-	// TODO: remove this hack once we've moved all of /themes to Redux:
-	const { action = payload } = payload;
-
+export const reducer = ( state = initialState, action ) => {
 	switch ( action.type ) {
 		case ThemeConstants.QUERY_THEMES:
 			return query( state, action.params );
