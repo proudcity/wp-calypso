@@ -9,32 +9,47 @@ import React from 'react';
  * Internal Dependencies
  */
 import Gridicon from 'components/gridicon';
-import layout from './layout';
+import ContactFormDialog from './dialog';
 
 const contactForm = editor => {
-	const $ = editor.$;
+	let node;
+
+	editor.on( 'init', () => {
+		node = editor.getContainer().appendChild(
+			document.createElement( 'div' )
+		);
+	} );
+
+	editor.on( 'remove', () => {
+		React.unmountComponentAtNode( node );
+		node.parentNode.removeChild( node );
+		node = null;
+	} );
+
+	editor.addCommand( 'WP_ContactForm', () => {
+		React.render(
+			React.createElement( ContactFormDialog, {
+				visible: true,
+				editor: editor,
+				onInsertMedia( markup ) {
+					editor.execCommand( 'mceInsertContent', false, markup );
+				}
+			} ),
+			node
+		);
+	} );
 
 	editor.addButton( 'wpcom_add_contact_form', {
-		classes: 'btn wpcom-button media',
-
+		classes: 'btn wpcom-button contact-form',
 		title: i18n.translate( 'Add Contact Form' ),
-
+		cmd: 'WP_ContactForm',
 		onPostRender() {
 			this.innerHtml( React.renderToStaticMarkup(
 				<button type="button" role="presentation">
 					<Gridicon icon="grid" size={ 20 } />
 				</button>
 			) );
-		},
-
-		onclick() {
-			editor.insertContent('<div class="wpcom-contact-form"></div>');
-			React.render( React.createElement( layout ), $('.wpcom-contact-form')[0] );
 		}
-	} );
-
-	editor.on( 'BeforeSetContent', event => {
-		console.log('BeforeSetContent', event);
 	} );
 };
 

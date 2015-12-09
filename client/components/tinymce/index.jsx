@@ -45,7 +45,8 @@ const formatting = require( 'lib/formatting' ),
 	user = require( 'lib/user' )(),
 	i18n = require( './i18n' ),
 	hasTouch = require( 'lib/touch-detect' ).hasTouch,
-	viewport = require( 'lib/viewport' );
+	viewport = require( 'lib/viewport' ),
+	config = require( 'config' );
 
 /**
  * Internal Variables
@@ -180,6 +181,12 @@ module.exports = React.createClass( {
 
 		this.localize();
 
+		let toolbar1 = 'wpcom_add_media,';
+		if ( config.isEnabled( 'post-editor/contact-from' ) ) {
+			toolbar1 += 'wpcom_add_contact_form,';
+		}
+		toolbar1 += 'formatselect,bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,spellchecker,wp_more,wpcom_advanced';
+
 		tinymce.init( {
 			selector: '#' + this._id,
 			skin_url: '//s1.wp.com/wp-includes/js/tinymce/skins/lightgray',
@@ -241,7 +248,7 @@ module.exports = React.createClass( {
 			indent: false,
 
 			autoresize_min_height: document.documentElement.clientHeight,
-			toolbar1: 'wpcom_add_media,wpcom_add_contact_form,formatselect,bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,spellchecker,wp_more,wpcom_advanced',
+			toolbar1: toolbar1,
 			toolbar2: 'strikethrough,underline,hr,alignjustify,forecolor,pastetext,removeformat,wp_charmap,outdent,indent,undo,redo,wp_help',
 			toolbar3: '',
 			toolbar4: '',
