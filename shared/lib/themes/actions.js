@@ -11,8 +11,12 @@ const debug = debugFactory( 'calypso:themes:actions' ); //eslint-disable-line no
  */
 import ThemeConstants from 'lib/themes/constants';
 import ThemeHelpers from './helpers';
-import { getThemeById } from './reducers/themes';
-import { getCurrentTheme, getQueryParams, isJetpack } from './selectors';
+import {
+	getThemeById,
+	getCurrentTheme,
+	getQueryParams,
+	isJetpack
+} from './selectors';
 import wpcom from 'lib/wp';
 
 export function fetchThemes( site ) {
