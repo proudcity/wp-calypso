@@ -30,7 +30,6 @@ const contactForm = editor => {
 		React.render(
 			React.createElement( ContactFormDialog, {
 				visible: true,
-				editor: editor,
 				onInsertMedia( markup ) {
 					editor.execCommand( 'mceInsertContent', false, markup );
 				}
