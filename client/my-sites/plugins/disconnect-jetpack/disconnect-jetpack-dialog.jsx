@@ -74,7 +74,7 @@ module.exports = React.createClass( {
 
 		if ( this.props.site && this.props.site.name || this.props.site && this.props.site.title ) {
 			moreInfo = this.translate(
-				'Disconnecting Jetpack will remove access to WordPress.com features for %(siteName)s.', {
+				'Disconnecting Jetpack will remove access to WordPress.com features for %(siteName)s. This action cannot be undone. You will need to reconnect manually from your WP-Admin dashboard.', {
 					args: { siteName: this.props.site.name || this.props.site.title },
 					context: 'Jetpack: Warning message displayed prior to disconnecting a Jetpack Site.'
 				} );
