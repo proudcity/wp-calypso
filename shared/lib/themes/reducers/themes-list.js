@@ -8,7 +8,6 @@ import unique from 'lodash/array/unique';
 /**
  * Internal dependencies
  */
-import { isJetpack } from '../selectors';
 import ThemeConstants from '../constants';
 
 const defaultQuery = fromJS( {
@@ -63,7 +62,7 @@ export const reducer = ( state = initialState, action ) => {
 		case ThemeConstants.RECEIVE_THEMES:
 			if (
 				( action.queryParams.id === state.getIn( [ 'query', 'id' ] ) ) ||
-				isJetpack( state )
+				action.wasJetpack
 			) {
 				const newState = state
 						.setIn( [ 'queryState', 'isFetchingNextPage' ], false )

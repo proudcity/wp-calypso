@@ -13,7 +13,7 @@ import ThemeConstants from 'lib/themes/constants';
 import ThemeHelpers from './helpers';
 import { getCurrentTheme } from './reducers/current-theme';
 import { getThemeById } from './reducers/themes';
-import { getQueryParams } from './selectors';
+import { getQueryParams, isJetpack } from './selectors';
 import wpcom from 'lib/wp';
 
 export function fetchThemes( site ) {
@@ -81,32 +81,35 @@ export function receiveServerError( error ) {
 }
 
 export function receiveThemes( data, site, queryParams, responseTime ) {
-	let meta = {};
+	return ( dispatch, getState ) => {
+		let meta = {};
 
-	if ( queryParams.search && queryParams.page === 1 ) {
-		meta = {
-			analytics: {
-				type: 'calypso_themeshowcase_search',
-				payload: {
-					search_term: queryParams.search || null,
-					tier: queryParams.tier,
-					response_time_in_ms: responseTime,
-					result_count: data.found,
-					results_first_page: data.themes.map( theme => theme.id )
+		if ( queryParams.search && queryParams.page === 1 ) {
+			meta = {
+				analytics: {
+					type: 'calypso_themeshowcase_search',
+					payload: {
+						search_term: queryParams.search || null,
+						tier: queryParams.tier,
+						response_time_in_ms: responseTime,
+						result_count: data.found,
+						results_first_page: data.themes.map( theme => theme.id )
+					}
 				}
 			}
 		}
-	}
 
-	return {
-		type: ThemeConstants.RECEIVE_THEMES,
-		siteId: site.ID,
-		isJetpack: !! site.jetpack,
-		themes: data.themes,
-		found: data.found,
-		queryParams: queryParams,
-		meta
-	};
+		dispatch( {
+			type: ThemeConstants.RECEIVE_THEMES,
+			siteId: site.ID,
+			isJetpack: !! site.jetpack,
+			wasJetpack: isJetpack( getState() ),
+			themes: data.themes,
+			found: data.found,
+			queryParams: queryParams,
+			meta
+		} );
+	}
 }
 
 export function activate( theme, site, source = 'unknown' ) {
