@@ -8,7 +8,7 @@ var React = require( 'react/addons' ),
  * Internal dependencies
  */
 var Dialog = require( 'components/dialog' ),
-	SelectSite = require( 'me/select-site' ),
+	SitesDropdown = require( 'components/sites-dropdown' ),
 	sitesList = require( 'lib/sites-list' )();
 
 /**
@@ -79,11 +79,7 @@ var SiteSelectorModal = React.createClass( {
 				<div className="site-selector-modal__content">
 					{ this.props.children }
 				</div>
-				<SelectSite className="site-selector-modal__dropdown"
-					sites={ sitesList }
-					value={ this.state.site && this.state.site.ID }
-					onChange={ this.setSite }
-					filter={ this.props.filter } />
+				<SitesDropdown />
 
 			</Dialog>
 		);
