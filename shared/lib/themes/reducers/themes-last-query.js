@@ -29,11 +29,3 @@ export const reducer = ( state = initialState, action ) => {
 
 	return state;
 };
-
-export function hasSiteChanged( state ) {
-	return state.get( 'previousSiteId' ) !== state.get( 'currentSiteId' );
-};
-
-export function hasParams( state ) {
-	return !! state.get( 'lastParams' );
-}
