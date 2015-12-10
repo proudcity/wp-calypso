@@ -35,7 +35,7 @@ export default React.createClass( {
 	},
 	render() {
 		return (
-			<div ref="view" className="wpview-content wpview-type-contact-form">
+			<div className="wpview-content wpview-type-contact-form">
 				<p>This is a placeholder for the form preview.</p>
 			</div>
 		);
