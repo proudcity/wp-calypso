@@ -11,9 +11,8 @@ const debug = debugFactory( 'calypso:themes:actions' ); //eslint-disable-line no
  */
 import ThemeConstants from 'lib/themes/constants';
 import ThemeHelpers from './helpers';
-import { getCurrentTheme } from './reducers/current-theme';
 import { getThemeById } from './reducers/themes';
-import { getQueryParams, isJetpack } from './selectors';
+import { getCurrentTheme, getQueryParams, isJetpack } from './selectors';
 import wpcom from 'lib/wp';
 
 export function fetchThemes( site ) {
@@ -134,7 +133,7 @@ export function activate( theme, site, source = 'unknown' ) {
 
 export function activated( theme, site, source = 'unknown', purchased = false ) {
 	return ( dispatch, getState ) => {
-		const previousTheme = getCurrentTheme( getState().themes.currentTheme, site.ID );
+		const previousTheme = getCurrentTheme( getState(), site.ID );
 		const queryParams = getState().themes.themesList.get( 'query' );
 
 		if ( typeof theme !== 'object' ) {
