@@ -181,11 +181,10 @@ module.exports = React.createClass( {
 
 		this.localize();
 
-		let toolbar1 = 'wpcom_add_media,';
+		let toolbar1 = [ 'wpcom_add_media', 'formatselect', 'bold', 'italic', 'bullist', 'numlist', 'link', 'blockquote', 'alignleft', 'aligncenter', 'alignright', 'spellchecker', 'wp_more', 'wpcom_advanced' ];
 		if ( config.isEnabled( 'post-editor/contact-form' ) ) {
-			toolbar1 += 'wpcom_add_contact_form,';
+			toolbar1.splice( 1, 0, 'wpcom_add_contact_form' );
 		}
-		toolbar1 += 'formatselect,bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,spellchecker,wp_more,wpcom_advanced';
 
 		tinymce.init( {
 			selector: '#' + this._id,
@@ -241,14 +240,14 @@ module.exports = React.createClass( {
 			// Limit the preview styles in the menu/toolbar
 			preview_styles: 'font-family font-size font-weight font-style text-decoration text-transform',
 			end_container_on_empty_block: true,
-			plugins: PLUGINS.join( ',' ),
+			plugins: PLUGINS.join(),
 			statusbar: false,
 			resize: false,
 			menubar: false,
 			indent: false,
 
 			autoresize_min_height: document.documentElement.clientHeight,
-			toolbar1: toolbar1,
+			toolbar1: toolbar1.join(),
 			toolbar2: 'strikethrough,underline,hr,alignjustify,forecolor,pastetext,removeformat,wp_charmap,outdent,indent,undo,redo,wp_help',
 			toolbar3: '',
 			toolbar4: '',
