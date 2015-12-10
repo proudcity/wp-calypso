@@ -54,8 +54,8 @@ module.exports = React.createClass( {
 					<HelpResults
 						header="Dummy documentation header"
 						helpLinks={ [ {
-							title: 'Dummy titile',
-							description: 'Dummy very long description that displays an excerpt of support documentation content',
+							title: '',
+							description: '',
 							link: '#',
 							disabled: true
 						} ] }
