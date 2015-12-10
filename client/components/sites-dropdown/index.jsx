@@ -69,7 +69,7 @@ export default React.createClass( {
 						<Site
 							site={ this.getSelectedSite() }
 						/>
-						<Gridicon icon={ this.state.open ? 'chevron-up' : 'chevron-down' } />
+						<Gridicon icon="chevron-down" />
 					</div>
 					{ this.state.open &&
 						<SiteSelector
