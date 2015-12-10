@@ -141,7 +141,7 @@ export function activated( theme, site, source = 'unknown', purchased = false ) 
 		const queryParams = getState().themes.themesList.get( 'query' );
 
 		if ( typeof theme !== 'object' ) {
-			theme = getThemeById( getState().themes.themes, theme );
+			theme = getThemeById( getState(), theme );
 		}
 
 		defer( () => dispatch( {
