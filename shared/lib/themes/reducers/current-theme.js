@@ -33,7 +33,3 @@ export const reducer = ( state = initialState, action ) => {
 	}
 	return state;
 };
-
-export function getCurrentTheme( state, siteId ) {
-	return state.get( 'currentThemes' ).get( siteId );
-}
