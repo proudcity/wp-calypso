@@ -8,13 +8,13 @@ import { fromJS } from 'immutable';
  */
 import ThemeConstants from 'lib/themes/constants';
 
-export const initialState = fromJS( {
+const initialState = fromJS( {
 	isActivating: false,
 	hasActivated: false,
 	currentThemes: {}
 } );
 
-export const reducer = ( state = initialState, action ) => {
+export default ( state = initialState, action ) => {
 	switch ( action.type ) {
 		case ThemeConstants.RECEIVE_CURRENT_THEME:
 			return state.setIn( [ 'currentThemes', action.site.ID ], {

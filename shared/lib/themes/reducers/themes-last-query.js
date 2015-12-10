@@ -8,14 +8,14 @@ import { fromJS } from 'immutable';
  */
 import ThemeConstants from '../constants';
 
-export const initialState = fromJS( {
+const initialState = fromJS( {
 	previousSiteId: 0,
 	currentSiteId: null,
 	isJetpack: null,
 	lastParams: null,
 } );
 
-export const reducer = ( state = initialState, action ) => {
+export default ( state = initialState, action ) => {
 	switch ( action.type ) {
 		case ThemeConstants.QUERY_THEMES:
 			return state.set( 'lastParams', action.params );
