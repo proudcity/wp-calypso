@@ -68,6 +68,7 @@ export default React.createClass( {
 					>
 						<Site
 							site={ this.getSelectedSite() }
+							indicator={ false }
 						/>
 						<Gridicon icon="chevron-down" />
 					</div>
