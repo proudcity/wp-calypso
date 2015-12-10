@@ -12,7 +12,7 @@ import Icon from 'reader/list-item/icon';
 import Title from 'reader/list-item/title';
 import Description from 'reader/list-item/description';
 import Actions from 'reader/list-item/actions';
-import SiteIcon from 'components/site-icon';
+import Gridicon from 'components/gridicon';
 import FollowButton from 'components/follow-button';
 import ReaderListsStore from 'lib/reader-lists/subscriptions';
 import ReaderListsTagsStore from 'lib/reader-lists-tags/store';
@@ -94,9 +94,9 @@ const ListManagementTags = React.createClass( {
 		times( number, ( i ) => {
 			placeholders.push(
 				<ListItem className="is-placeholder" key={'list-placeholder-' + i}>
-					<Icon><SiteIcon size={48} /></Icon>
+					<Icon><Gridicon icon="tag" size={ 48 } /></Icon>
 					<Title>Loading</Title>
-					<Description>Loading the results...</Description>
+					<Description></Description>
 				</ListItem>
 			);
 		} );
@@ -108,9 +108,9 @@ const ListManagementTags = React.createClass( {
 		return 'list-tag-' + item.ID;
 	},
 
-	trackSiteClick() {
-		stats.recordAction( 'click_site_on_list_following' );
-		stats.recordGaEvent( 'Clicked Site on List Following' );
+	trackTagClick() {
+		// stats.recordAction( 'click_site_on_list_following' );
+		// stats.recordGaEvent( 'Clicked Site on List Following' );
 	},
 
 	renderItem( tag ) {
@@ -118,11 +118,11 @@ const ListManagementTags = React.createClass( {
 
 		return (
 			<ListItem key={ itemKey } ref={ itemKey }>
-				<Icon>tag icon</Icon>
+				<Icon><Gridicon icon="tag" size={ 48 } /></Icon>
 				<Title>
-					<a href={'/tags/'} onclick={ this.trackSiteClick }>{ tag.slug }</a>
+					<a href={ '/tag/' + tag.slug } onclick={ this.trackTagClick }>{ tag.slug }</a>
 				</Title>
-				<Description>desc</Description>
+				<Description></Description>
 				<Actions>
 				</Actions>
 			</ListItem>
@@ -130,23 +130,28 @@ const ListManagementTags = React.createClass( {
 	},
 
 	render() {
-		if ( ! this.state.tags ) {
-			return ( <p>No tags yet!</p> );
-		}
-
-		return (
-			<Main className="list-management-tags">
-				<Navigation selected="tags" list={ this.props.list } />
+		let mainContent = null;
+		if ( ! this.state.tags && ! this.state.fetching ) {
+			mainContent = ( <p>No tags yet!</p> );
+		} else {
+			mainContent = (
 				<InfiniteList
 					items={ this.state.tags }
 					fetchingNextPage={ this.state.fetching }
-					lastPage={ true }
+					lastPage={ false }
 					guessedItemHeight={ 300 }
 					fetchNextPage={ this.loadMore }
 					getItemRef={ this.getItemRef }
 					renderItem={ this.renderItem }
 					renderLoadingPlaceholders={ this.renderPlaceholders }
 				/>
+			);
+		}
+
+		return (
+			<Main className="list-management-tags">
+				<Navigation selected="tags" list={ this.props.list } />
+				{ mainContent }
 			</Main>
 			);
 	}
