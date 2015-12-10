@@ -12,10 +12,6 @@ export function hasSiteChanged( state ) {
 		state.themes.themesLastQuery.get( 'currentSiteId' );
 };
 
-export function hasParams( state ) {
-	return !! state.themes.themesLastQuery.get( 'lastParams' );
-}
-
 export function isFetchingNextPage( state ) {
 	return state.themes.themesList.getIn( [ 'queryState', 'isFetchingNextPage' ] );
 }
