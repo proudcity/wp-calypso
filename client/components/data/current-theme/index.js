@@ -12,7 +12,7 @@ import omit from 'lodash/object/omit';
 import { fetchCurrentTheme } from 'lib/themes/actions';
 import { getCurrentTheme } from 'lib/themes/selectors';
 
-function getCurrentThemeState( state, { site } ) {
+function getState( state, { site } ) {
 	return {
 		currentTheme: getCurrentTheme( state, site.ID )
 	};
@@ -61,7 +61,7 @@ const CurrentThemeData = React.createClass( {
 export default connect(
 	( state, props ) => Object.assign( {},
 		props,
-		getCurrentThemeState( state, props )
+		getState( state, props )
 	),
 	bindActionCreators.bind( null, { fetchCurrentTheme } )
 )( CurrentThemeData );
