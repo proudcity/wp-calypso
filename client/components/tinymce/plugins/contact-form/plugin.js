@@ -27,15 +27,25 @@ const contactForm = editor => {
 	} );
 
 	editor.addCommand( 'WP_ContactForm', () => {
-		React.render(
-			React.createElement( ContactFormDialog, {
-				visible: true,
-				onInsertMedia( markup ) {
-					editor.execCommand( 'mceInsertContent', false, markup );
-				}
-			} ),
-			node
-		);
+		function onClose() {
+			editor.focus();
+			renderModal( 'hide' );
+		};
+
+		function renderModal( visibility = 'show' ) {
+			React.render(
+				React.createElement( ContactFormDialog, {
+					showDialog: visibility === 'show',
+					onClose,
+					onInsertMedia( markup ) {
+						editor.execCommand( 'mceInsertContent', false, markup );
+					}
+				} ),
+				node
+			);
+		};
+
+		renderModal();
 	} );
 
 	editor.addButton( 'wpcom_add_contact_form', {

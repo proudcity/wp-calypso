@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 /**
  * Internal dependencies
@@ -37,16 +37,10 @@ const defaultForm = [
 export default React.createClass( {
 	displayName: 'ContactFormDialog',
 
-	getInitialState() {
-		return {
-			isVisible: true
-		};
-	},
-
-	componentWillReceiveProps( nextProps ) {
-		if ( nextProps.visible && ! this.state.isVisible ) {
-			this.setState( { isVisible: true } );
-		}
+	propTypes: {
+		onClose: PropTypes.func.isRequired,
+		onInsertMedia: PropTypes.func.isRequired,
+		showDialog: PropTypes.bool.isRequired
 	},
 
 	render() {
@@ -84,7 +78,7 @@ export default React.createClass( {
 			<FormButton
 				key="cancel"
 				isPrimary={ false }
-				onClick={ () => this.setState( { isVisible: false } ) }
+				onClick={ this.props.onClose }
 			>
 				{ this.translate( 'Cancel' ) }
 			</FormButton>
@@ -92,8 +86,8 @@ export default React.createClass( {
 
 		return (
 			<Dialog
-				isVisible={ this.state.isVisible }
-				onClose={ () => this.setState( { isVisible: false } ) }
+				isVisible={ this.props.showDialog }
+				onClose={ this.props.onClose }
 				buttons={ buttons }
 				additionalClassNames="contact-form__dialog"
 			>
