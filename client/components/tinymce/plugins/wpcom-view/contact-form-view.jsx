@@ -7,7 +7,6 @@ import React from 'react';
  * Internal dependecies
  */
 import shortcodeUtils from 'lib/shortcode';
-// import GalleryShortcode from 'components/gallery-shortcode';
 
 export default React.createClass( {
 	statics: {
