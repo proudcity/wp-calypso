@@ -8,11 +8,13 @@ var React = require( 'react' ),
 /**
  * Internal dependencies
  */
-var eventRecorder = require( 'me/event-recorder' ),
-	CompactCard = require( 'components/card/compact' ),
-	ConnectedApplicationIcon = require( 'me/connected-application-icon' ),
-	safeProtocolUrl = require( 'lib/safe-protocol-url' ),
-	analytics = require( 'analytics' );
+import eventRecorder from 'me/event-recorder';
+import CompactCard from 'components/card/compact';
+import ConnectedApplicationIcon from 'me/connected-application-icon';
+import safeProtocolUrl from 'lib/safe-protocol-url';
+import analytics from 'analytics';
+import Button from 'components/button';
+import Gridicon from 'components/gridicon';
 
 module.exports = React.createClass( {
 
@@ -222,11 +224,12 @@ module.exports = React.createClass( {
 						{ connection.title }
 					</div>
 
-					<span className="connected-application-item__disconnect">
-						<a onClick={ this.disconnect } className="button">
-							{ this.translate( 'Disconnect' ) }
-						</a>
-					</span>
+					<div className="connected-application-item__disconnect">
+						<Button borderless scary onClick={ this.disconnect }>
+							<Gridicon icon="link-break" /> { this.translate( 'Disconnect' ) }
+						</Button>
+					</div>
+
 				</div>
 				{ this.renderDetail() }
 			</CompactCard>
