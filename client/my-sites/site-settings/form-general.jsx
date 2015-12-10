@@ -441,7 +441,7 @@ module.exports = React.createClass( {
 							</form>
 						</Card>
 						<Card href={ '../security/' + site.slug } className="is-compact">
-							{ this.translate( 'Manage Jetpack Monitor Settings' ) }
+							{ this.translate( 'View Jetpack Monitor Settings' ) }
 						</Card>
 						<Card href={ 'https://wordpress.com/manage/' + site.ID } className="is-compact">
 							{ this.translate( 'Migrate followers from another WordPress.com blog' ) }
