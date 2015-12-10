@@ -77,11 +77,17 @@ export default React.createClass( {
 					} );
 
 					this.props.onInsertMedia( shortcode );
-				} }>{ this.translate( 'Save' ) }</FormButton>,
+				} }
+			>
+				{ this.translate( 'Save' ) }
+			</FormButton>,
 			<FormButton
 				key="cancel"
 				isPrimary={ false }
-				onClick={ () => this.setState( { isVisible: false } ) }>{ this.translate( 'Cancel' ) }</FormButton>
+				onClick={ () => this.setState( { isVisible: false } ) }
+			>
+				{ this.translate( 'Cancel' ) }
+			</FormButton>
 		];
 
 		return (
