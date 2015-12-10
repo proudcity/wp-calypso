@@ -1,6 +1,8 @@
 /**
  * Module dependencies.
  */
+import _Me_ from 'wpcom-unpublished/dist/lib/me';
+import inherits from 'inherits';
 import debugFactory from 'debug';
 const debug = debugFactory( 'calypso:wpcom-undocumented:me' );
 
@@ -17,6 +19,11 @@ function UndocumentedMe( wpcom ) {
 	}
 	this.wpcom = wpcom;
 }
+
+/**
+ * Inherits from _Me_ class
+ */
+inherits( UndocumentedMe, _Me_ );
 
 UndocumentedMe.prototype.billingHistory = function( callback ) {
 	return this.wpcom.req.get( '/me/billing-history', callback );
