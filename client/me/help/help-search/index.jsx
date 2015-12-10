@@ -56,7 +56,8 @@ module.exports = React.createClass( {
 						helpLinks={ [ {
 							title: 'Dummy titile',
 							description: 'Dummy very long description that displays an excerpt of support documentation content',
-							link: '#'
+							link: '#',
+							disabled: true
 						} ] }
 						footer="Dummy documentation footer"
 						iconPathDescription=""

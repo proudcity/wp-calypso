@@ -13,9 +13,15 @@ module.exports = React.createClass( {
 
 	mixins: [ React.addons.PureRenderMixin ],
 
+	onClick: function( e ) {
+		if ( this.props.helpLink.disabled ) {
+			e.preventDefault();
+		}
+	},
+
 	render: function() {
 		return (
-			<a className="help-result" href={ this.props.helpLink.link } target="__blank">
+			<a className="help-result" href={ this.props.helpLink.link } target="__blank" onClick={ this.onClick }>
 				<CompactCard className="help-result__wrapper">
 					<svg className="help-result__icon" width="24" height="24" viewBox="0 0 24 24">
 						<defs>
