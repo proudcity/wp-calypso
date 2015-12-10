@@ -54,9 +54,8 @@ export default React.createClass( {
 			<FormButton
 				key="save"
 				onClick={ () => {
-					let fields = [];
-					for ( let field of defaultForm ) {
-						fields.push( Shortcode.stringify( {
+					const fields = defaultForm.map( field => {
+						return Shortcode.stringify( {
 							tag: 'contact-field',
 							type: 'self-closing',
 							attrs: {
@@ -64,13 +63,13 @@ export default React.createClass( {
 								type: field.type,
 								required: field.required ? 1 : 0
 							}
-						} ) );
-					}
+						} );
+					} ).join( '' );
 
 					const shortcode = Shortcode.stringify( {
 						tag: 'contact-form',
 						type: 'closed',
-						content: fields.join( '' ),
+						content: fields,
 						attrs: {
 							to: 'user@example.com',
 							subject: 'this is a contact form'
