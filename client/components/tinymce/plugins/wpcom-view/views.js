@@ -23,7 +23,7 @@ let views = {
 	embed: new EmbedViewManager()
 };
 
-if ( config.isEnabled( 'post-editor/contact-from' ) ) {
+if ( config.isEnabled( 'post-editor/contact-form' ) ) {
 	views.contact = ContactFormView;
 }
 

@@ -182,7 +182,7 @@ module.exports = React.createClass( {
 		this.localize();
 
 		let toolbar1 = 'wpcom_add_media,';
-		if ( config.isEnabled( 'post-editor/contact-from' ) ) {
+		if ( config.isEnabled( 'post-editor/contact-form' ) ) {
 			toolbar1 += 'wpcom_add_contact_form,';
 		}
 		toolbar1 += 'formatselect,bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,spellchecker,wp_more,wpcom_advanced';
