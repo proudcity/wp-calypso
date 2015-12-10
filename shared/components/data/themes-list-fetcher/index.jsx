@@ -20,7 +20,7 @@ import {
 	isFetchingNextPage
 } from 'lib/themes/selectors';
 
-function getThemesState( state, { search } ) {
+function getState( state, { search } ) {
 	return {
 		themes: getFilteredThemes( state, search ),
 		lastPage: isLastPage( state ),
@@ -127,7 +127,7 @@ const ThemesListFetcher = React.createClass( {
 export default connect(
 	( state, props ) => Object.assign( {},
 		props,
-		getThemesState( state, props )
+		getState( state, props )
 	),
 	bindActionCreators.bind( null, { query, fetchNextPage } )
 )( ThemesListFetcher );
