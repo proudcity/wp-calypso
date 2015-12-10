@@ -72,7 +72,7 @@ node_modules: package.json
 test: build
 	@$(BIN)/run-all-tests
 
-lint: node_modules/eslint node_modules/eslint-plugin-react node_modules/babel-eslint
+lint: node_modules/eslint node_modules/eslint-plugin-react node_modules/babel-eslint mixedindentlint
 	@$(NODE_BIN)/eslint --quiet $(JS_FILES)
 
 eslint: lint
@@ -84,6 +84,9 @@ eslint-branch: node_modules/eslint node_modules/eslint-plugin-react node_modules
 # ignore functionality
 i18n-lint:
 	@echo "$(JS_FILES)" | sed 's/\([^ ]*\/test\/[^ ]* *\)//g' | xargs -n1 $(I18NLINT)
+
+mixedindentlint: node_modules/mixedindentlint
+	@echo "$(JS_FILES)\n$(SASS_FILES)" | xargs mixedindentlint
 
 # keep track of the current CALYPSO_ENV so that it can be used as a
 # prerequisite for other rules
