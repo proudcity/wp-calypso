@@ -40,8 +40,3 @@ export const reducer = ( state = initialState, action ) => {
 	}
 	return state;
 };
-
-export function getThemeById( state, id ) {
-	const theme = state.getIn( [ 'themes', id ] );
-	return theme ? theme.toJS() : undefined;
-}
