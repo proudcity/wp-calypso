@@ -1,0 +1,20 @@
+localStorage.setItem( 'debug', 'calypso:*');
+
+localStorage.setItem( 'debug', 'calypso:dispatch');
+
+
+Files:
+client/lib/posts/post-list.store.js
+my-sites/posts/post-list.jsx
+
+Edit to switch to wordpress.com
+/home/jeff/labspace/wp-calypso/node_modules/wpcom-proxy-request/node_modules/wpcom-proxy-request/index.js
+/home/jeff/labspace/wp-calypso/node_modules/wpcom-xhr-request/index.js
+
+Oauth
+wp-calypso/server/api/
+wp-calypso/client/lib/oauth-token/
+
+
+Oauth WP
+http://ieg.wnet.org/blog/using-oauth-in-wordpress-plugins-part-2-persistence/

@@ -1,0 +1,82 @@
+Searching 2906 files for "public-api.wordpress.com" (case sensitive)
+
+/home/jeff/labspace/wp-calypso/client/lib/reader-site-store/test/reader-site-store-tests.js:
+  129  			meta: {
+  130  				links: {
+  131: 					self: 'https://public-api.wordpress.com/rest/v1.1/sites/77203074',
+  132: 					help: 'https://public-api.wordpress.com/rest/v1.1/sites/77203074/help',
+  133: 					posts: 'https://public-api.wordpress.com/rest/v1.1/sites/77203074/posts/',
+  134: 					comments: 'https://public-api.wordpress.com/rest/v1.1/sites/77203074/comments/',
+  135  					xmlrpc: 'https://testonesite2014.wordpress.com/xmlrpc.php'
+  136  				}
+
+/home/jeff/labspace/wp-calypso/client/lib/sites-list/test/data.js:
+   78  		'meta': {
+   79  			'links': {
+   80: 				'self': 'https://public-api.wordpress.com/rest/v1.1/sites/77203074',
+   81: 				'help': 'https://public-api.wordpress.com/rest/v1.1/sites/77203074/help',
+   82: 				'posts': 'https://public-api.wordpress.com/rest/v1.1/sites/77203074/posts/',
+   83: 				'comments': 'https://public-api.wordpress.com/rest/v1.1/sites/77203074/comments/',
+   84  				'xmlrpc': 'https://testonesite2014.wordpress.com/xmlrpc.php'
+   85  			}
+   ..
+  137  		'meta': {
+  138  			'links': {
+  139: 				'self': 'https://public-api.wordpress.com/rest/v1/sites/5601559',
+  140: 				'help': 'https://public-api.wordpress.com/rest/v1/sites/5601559/help',
+  141: 				'posts': 'https://public-api.wordpress.com/rest/v1/sites/5601559/posts/',
+  142: 				'comments': 'https://public-api.wordpress.com/rest/v1/sites/5601559/comments/',
+  143  				'xmlrpc': 'https://gcbu.wordpress.com/xmlrpc.php'
+  144  			}
+  ...
+  194  		'meta': {
+  195  			'links': {
+  196: 				'self': 'https://public-api.wordpress.com/rest/v1/sites/54117',
+  197: 				'help': 'https://public-api.wordpress.com/rest/v1/sites/54117/help',
+  198: 				'posts': 'https://public-api.wordpress.com/rest/v1/sites/54117/posts/',
+  199: 				'comments': 'https://public-api.wordpress.com/rest/v1/sites/54117/comments/',
+  200  				'xmlrpc': 'https://automattic.wordpress.com/xmlrpc.php'
+  201  			}
+  ...
+  247  		'meta': {
+  248  			'links': {
+  249: 				'self': 'https://public-api.wordpress.com/rest/v1/sites/3584907',
+  250: 				'help': 'https://public-api.wordpress.com/rest/v1/sites/3584907/help',
+  251: 				'posts': 'https://public-api.wordpress.com/rest/v1/sites/3584907/posts/',
+  252: 				'comments': 'https://public-api.wordpress.com/rest/v1/sites/3584907/comments/',
+  253  				'xmlrpc': 'https://en.blog.wordpress.com/xmlrpc.php'
+  254  			}
+  ...
+  306  	'meta': {
+  307  		'links': {
+  308: 			'self': 'https://public-api.wordpress.com/rest/v1/sites/43889156',
+  309: 			'help': 'https://public-api.wordpress.com/rest/v1/sites/43889156/help',
+  310: 			'posts': 'https://public-api.wordpress.com/rest/v1/sites/43889156/posts/',
+  311: 			'comments': 'https://public-api.wordpress.com/rest/v1/sites/43889156/comments/',
+  312  			'xmlrpc': 'https://demo.bitswapping.com/xmlrpc.php'
+  313  		}
+
+/home/jeff/labspace/wp-calypso/client/my-sites/media-library/test/fixtures.js:
+   31      "meta": {
+   32          "links": {
+   33:             "self": "https://public-api.wordpress.com/rest/v1.1/sites/2916284/media/132",
+   34:             "help": "https://public-api.wordpress.com/rest/v1.1/sites/2916284/media/132/help",
+   35:             "site": "https://public-api.wordpress.com/rest/v1.1/sites/2916284"
+   36          }
+   37      }
+
+/home/jeff/labspace/wp-calypso/server/user-bootstrap/index.js:
+   11  	* WordPress.com REST API /me endpoint.
+   12  	*/
+   13: 	url = 'https://public-api.wordpress.com/rest/v1/me?meta=flags';
+   14  
+   15  module.exports = function( userCookie, callback ) {
+
+/home/jeff/labspace/wp-calypso/shared/lib/sharing/publicize/test/actions.js:
+   30  
+   31  	before( () => {
+   32: 		nock( 'https://public-api.wordpress.com:443' )
+   33  			.persist()
+   34  			.get( '/rest/v1.1/sites/2916284/publicize-connections' )
+
+29 matches across 5 files
