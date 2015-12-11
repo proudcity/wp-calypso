@@ -13,12 +13,11 @@ import Title from 'reader/list-item/title';
 import Description from 'reader/list-item/description';
 import Actions from 'reader/list-item/actions';
 import Gridicon from 'components/gridicon';
-import FollowButton from 'components/follow-button';
 import ReaderListsStore from 'lib/reader-lists/subscriptions';
 import ReaderListsTagsStore from 'lib/reader-lists-tags/store';
 import { fetchMoreTags } from 'lib/reader-lists-tags/actions';
 
-const debug = debugModule( 'calypso:reader:list-management' );
+const debug = debugModule( 'calypso:reader:list-management' ); // eslint-disable-line
 
 const ListManagementTags = React.createClass( {
 	propTypes: {
@@ -29,6 +28,10 @@ const ListManagementTags = React.createClass( {
 	},
 
 	getInitialState() {
+		return this.getStateFromStores();
+	},
+
+	getStateFromStores() {
 		// Grab the list ID from the list store
 		//const list = ReaderListsStore.findByOwnerAndSlug( this.props.owner, this.props.slug );
 		const list = {
@@ -38,53 +41,39 @@ const ListManagementTags = React.createClass( {
 		if ( list && list.ID ) {
 			tags = this.getTags( list.ID );
 		}
-		let fetching = false;
-		if ( ! tags || tags.length === 0 ) {
-			fetchMoreTags( this.props.list.owner, this.props.list.slug );
-			fetching = true;
-		}
 		return {
 			list,
 			tags,
-			fetching,
-			page: 1
+			currentPage: ReaderListsTagsStore.getCurrentPage(),
+			isLastPage: ReaderListsTagsStore.isLastPage(),
+			isFetching: ReaderListsTagsStore.isFetching(),
+			lastError: ReaderListsTagsStore.getLastError(),
 		};
 	},
 
 	getTags( listId ) {
-		const tags = ReaderListsTagsStore.get( listId );
-		return tags;
+		return ReaderListsTagsStore.getTagsForList( listId );
 	},
 
 	update() {
-		this.setState( { tags: this.getTags() } );
+		this.setState( this.getStateFromStores() ); // @todo smartgetstate
 	},
 
 	componentDidMount() {
 		ReaderListsStore.on( 'change', this.update );
 		ReaderListsTagsStore.on( 'change', this.update );
-		ReaderListsTagsStore.on( 'change', this.stopFetching );
 	},
 
 	componentWillUnmount() {
 		ReaderListsStore.off( 'change', this.update );
 		ReaderListsTagsStore.off( 'change', this.update );
-		ReaderListsTagsStore.off( 'change', this.stopFetching );
 	},
 
 	loadMore( options ) {
-		//fetchMore(); // in store actions
-		this.setState( { fetching: true } );
-		// if ( options.triggeredByScroll ) {
-		// 	this.props.trackScrollPage( RecommendedSites.getPage() );
-		// }
-	},
-
-	stopFetching() {
-		this.setState( {
-			fetching: false,
-			page: this.state.page + 1
-		} );
+		fetchMoreTags( this.props.list.owner, this.props.list.slug, this.state.currentPage + 1 );
+		if ( options.triggeredByScroll ) {
+			this.props.trackScrollPage( this.state.currentPage );
+		}
 	},
 
 	renderPlaceholders() {
@@ -131,14 +120,14 @@ const ListManagementTags = React.createClass( {
 
 	render() {
 		let mainContent = null;
-		if ( ! this.state.tags && ! this.state.fetching ) {
+		if ( ! this.state.tags && ! this.state.isFetching ) {
 			mainContent = ( <p>No tags yet!</p> );
 		} else {
 			mainContent = (
 				<InfiniteList
 					items={ this.state.tags }
-					fetchingNextPage={ this.state.fetching }
-					lastPage={ false }
+					fetchingNextPage={ this.state.isFetching }
+					lastPage={ this.state.isLastPage }
 					guessedItemHeight={ 300 }
 					fetchNextPage={ this.loadMore }
 					getItemRef={ this.getItemRef }
