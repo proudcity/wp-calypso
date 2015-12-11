@@ -86,7 +86,7 @@ i18n-lint:
 	@echo "$(JS_FILES)" | sed 's/\([^ ]*\/test\/[^ ]* *\)//g' | xargs -n1 $(I18NLINT)
 
 mixedindentlint: node_modules/mixedindentlint
-	@echo "$(JS_FILES)\n$(SASS_FILES)" | xargs mixedindentlint
+	@echo "$(JS_FILES)\n$(SASS_FILES)" | sed 's/[^ ]*client\/config\/index\.js *//g' | sed 's/[^ ]*shared\/components\/gridicon\/index\.jsx *//g' | xargs mixedindentlint --ignore-comments
 
 # keep track of the current CALYPSO_ENV so that it can be used as a
 # prerequisite for other rules
