@@ -101,7 +101,7 @@ module.exports = React.createClass( {
 				isCompact={ true }
 				href={ config( 'signup_url' ) + '?ref=calypso-selector' }
 			>
-				{ this.translate( 'Add New WordPress' ) }
+				{ this.translate( 'Add New Package' ) }
 			</AddNewButton>
 		);
 	},

@@ -17,8 +17,7 @@ export default React.createClass( {
 				<ul className="sections-menu">
 					<li className="wpcom-title">
 						<a href="/" onClick={ this.handleClickTitle }>
-							<span className="noticon noticon-wordpress"></span>
-							<span className="section-label">WordPress<span className="tld">.com</span></span>
+							<img src="http://proudcity.com/images/logo-white.png" alt="ProudCity" style={{height: '45px', width: 'auto'}} />
 						</a>
 					</li>
 				</ul>

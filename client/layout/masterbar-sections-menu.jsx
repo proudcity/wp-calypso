@@ -109,7 +109,7 @@ module.exports = React.createClass( {
 				<ul className="sections-menu">
 					<li className={ this.itemLinkClass( 'sites', { 'my-sites': true } ) }>
 						<SiteStatsStickyLink onClick={ this.focusSidebar } title={ this.translate( 'View a list of your sites and access their dashboards', { textOnly: true } ) }>
-							{ this.wordpressIcon() }
+							<img src="http://proudcity.com/images/logo-icon-white.png" style={{height: '45px', width: 'auto', float: 'left'}} alt="ProudCity" />
 							<span className="section-label">
 								{
 									this.props.user.get().visible_site_count > 1
@@ -122,7 +122,12 @@ module.exports = React.createClass( {
 					<li className={ this.itemLinkClass( 'reader', { home: true, reader: true } ) }>
 						<a href={ readerUrl } onClick={ this.focusContent } title={ this.translate( 'Read the blogs and topics you follow', { textOnly: true } ) } rel="home">
 							<span className="noticon noticon-reader"></span>
-							<span className="section-label">{ this.translate( 'Reader', { comment: 'Toolbar, must be shorter than ~12 chars' } ) }</span>
+							<span className="section-label">{ this.translate( 'Now', { comment: 'Toolbar, must be shorter than ~12 chars' } ) }</span>
+						</a>
+					</li>
+					<li className={ this.itemLinkClass( 'reader', { home: true, reader: true } ) }>
+						<a href={ readerUrl } onClick={ this.focusContent } title={ this.translate( 'Read the blogs and topics you follow', { textOnly: true } ) } rel="home">
+							<span className="section-label">{ this.translate( 'Community', { comment: 'Toolbar, must be shorter than ~12 chars' } ) }</span>
 						</a>
 					</li>
 				</ul>

@@ -126,7 +126,8 @@ function receivePage( id, error, data ) {
 	var found = data && data.found,
 		posts,
 		postIds;
-
+console.log(data);
+alert('a');
 	if ( id !== _activeList.id ) {
 		return;
 	}

@@ -10,7 +10,7 @@ var config = require( 'config' ),
 	/**
 	* WordPress.com REST API /me endpoint.
 	*/
-	url = 'https://public-api.wordpress.com/rest/v1/me?meta=flags';
+	url = 'https://localhost:3031/rest/v1/me?meta=flags';
 
 module.exports = function( userCookie, callback ) {
 	// create HTTP Request object

@@ -199,6 +199,7 @@ var Posts = React.createClass( {
 	},
 
 	renderPost: function( post ) {
+		console.log(post);
 		var postImages = this.props.postImages[ post.global_ID ];
 
 		return (
