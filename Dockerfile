@@ -5,8 +5,8 @@ MAINTAINER Automattic
 WORKDIR /calypso
 
 RUN     mkdir -p /tmp
-COPY    ./env-config.sh /tmp/
-RUN     bash /tmp/env-config.sh
+#COPY    ./env-config.sh /tmp/
+#RUN     bash /tmp/env-config.sh
 RUN     apt-get -y update && apt-get -y install \
           wget \
           git \
