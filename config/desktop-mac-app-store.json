@@ -25,7 +25,6 @@
 		"post-editor/iframe-preview": true,
 		"post-editor/live-image-updates": true,
 		"post-editor/pages": true,
-		"editor-drafts": true,
 
 		"manage/ads": true,
 		"manage/stats": true,
@@ -73,10 +72,6 @@
 		"upgrades/domain-management/site-redirect": false,
 		"upgrades/domain-management/transfer": false,
 		"upgrades/domain-search": false,
-		"upgrades/purchases/cancel": false,
-		"upgrades/purchases/list": false,
-		"upgrades/purchases/manage": false,
-		"upgrades/purchases/payment": false,
 
 		"muse": true,
 		"muse_for_touch_devices": false,

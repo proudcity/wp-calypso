@@ -18,9 +18,9 @@ module.exports = {
 	test: config( 'env' ) === 'development' ? require( 'signup/steps/test-step' ) : undefined,
 	plans: PlansStepComponent,
 	domains: DomainsStepComponent,
-	'survey-blog': SurveyStepComponent,
-	'survey-site': SurveyStepComponent,
+	survey: SurveyStepComponent,
 	'survey-user': EmailSignupComponent,
 	'domains-with-theme': DomainsStepComponent,
 	'theme-dss': DSSStepComponent,
+	'jetpack-user': EmailSignupComponent
 };

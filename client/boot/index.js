@@ -37,12 +37,10 @@ var config = require( 'config' ),
 	touchDetect = require( 'lib/touch-detect' ),
 	accessibleFocus = require( 'lib/accessible-focus' ),
 	TitleStore = require( 'lib/screen-title/store' ),
-	createReduxStore = require( 'lib/create-redux-store' ),
+	createReduxStore = require( 'state' ).createReduxStore,
 	// The following mixins require i18n content, so must be required after i18n is initialized
 	Layout,
 	LoggedOutLayout;
-
-import { displayInviteAccepted } from 'lib/invites/actions';
 
 function init() {
 	var i18nLocaleStringsObject = null;
@@ -89,7 +87,7 @@ function setUpContext( layout ) {
 		var parsed = url.parse( location.href, true );
 
 		context.layout = layout;
-		context.reduxStore = reduxStore;
+		context.store = reduxStore;
 
 		// Break routing and do full page load for logout link in /me
 		if ( context.pathname === '/wp-login.php' ) {
@@ -231,11 +229,6 @@ function boot() {
 			nuxWelcome.setWelcome( viewport.isDesktop() );
 		} else {
 			nuxWelcome.clearTempWelcome();
-		}
-
-		if ( context.query.invite_accepted ) {
-			displayInviteAccepted( parseInt( context.query.invite_accepted ) );
-			page( context.pathname );
 		}
 
 		// Bump general stat tracking overall Newdash usage

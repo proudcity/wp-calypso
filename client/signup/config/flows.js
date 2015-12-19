@@ -2,7 +2,8 @@
  * External dependencies
  */
 var assign = require( 'lodash/object/assign' ),
-	reject = require( 'lodash/collection/reject' );
+	reject = require( 'lodash/collection/reject' ),
+	page = require( 'page' );
 
 /**
 * Internal dependencies
@@ -10,11 +11,17 @@ var assign = require( 'lodash/object/assign' ),
 var config = require( 'config' ),
 	stepConfig = require( './steps' ),
 	abtest = require( 'lib/abtest' ).abtest,
+	getABTestVariation = require( 'lib/abtest' ).getABTestVariation,
 	user = require( 'lib/user' )();
 
 function getCheckoutDestination( dependencies ) {
 	if ( dependencies.cartItem || dependencies.domainItem ) {
 		return '/checkout/' + dependencies.siteSlug;
+	}
+
+	/* NUX Trampoline A/B */
+	if ( 'trampoline' === getABTestVariation( 'nuxTrampoline' ) ) {
+		return 'https://' + dependencies.siteSlug;
 	}
 
 	return '/me/next?welcome';
@@ -65,18 +72,11 @@ const flows = {
 		lastModified: '2015-09-22'
 	},
 
-	'vert-blog': {
-		steps: abtest( 'verticalSurvey' ) === 'noSurvey' ? [ 'themes', 'domains', 'plans', 'user' ] : [ 'survey-blog', 'themes', 'domains', 'plans', 'survey-user' ],
+	verticals: {
+		steps: [ 'survey', 'themes', 'domains', 'plans', 'survey-user' ],
 		destination: getCheckoutDestination,
 		description: 'Categorizing blog signups for Verticals Survey',
-		lastModified: null
-	},
-
-	'vert-site': {
-		steps: abtest( 'verticalSurvey' ) === 'noSurvey' ? [ 'themes', 'domains', 'plans', 'user' ] : [ 'survey-site', 'themes', 'domains', 'plans', 'survey-user' ],
-		destination: getCheckoutDestination,
-		description: 'Categorizing site signups for Verticals Survey',
-		lastModified: null
+		lastModified: '2015-12-10'
 	},
 
 	headstart: {
@@ -140,8 +140,12 @@ const flows = {
 		destination: '/devdocs/welcome',
 		description: 'Signup flow for developers in developer environment',
 		lastModified: '2015-11-23'
-	}
+	},
 
+	'jetpack': {
+		steps: [ 'jetpack-user' ],
+		destination: '/'
+	}
 };
 
 function removeUserStepFromFlow( flow ) {
@@ -154,8 +158,22 @@ function removeUserStepFromFlow( flow ) {
 	} );
 }
 
+function getCurrentFlowNameFromTest( currentURL ) {
+	// Assign the user to the verticals survey test if appropriate.
+	if ( '/start/vert-blog' === currentURL || '/start/vert-site' === currentURL ) {
+		return ( 'noSurvey' === abtest( 'verticalSurvey' ) ) ? 'main' : 'verticals';
+	}
+
+	// Only consider users from the general /start path.
+	if ( '/start/en?ref=homepage' === currentURL && 'dss' === abtest( 'dss' ) ) {
+		return 'dss';
+	}
+
+	return 'main';
+}
+
 module.exports = {
-	currentFlowName: 'main',
+	currentFlowName: getCurrentFlowNameFromTest( page.current ),
 
 	defaultFlowName: 'main',
 

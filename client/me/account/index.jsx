@@ -45,7 +45,13 @@ module.exports = React.createClass( {
 
 	displayName: 'Account',
 
-	mixins: [ formBase, React.addons.LinkedStateMixin, protectForm.mixin, observe( 'userSettings', 'username' ), eventRecorder ],
+	mixins: [
+		formBase,
+		React.addons.LinkedStateMixin,
+		protectForm.mixin,
+		observe( 'userSettings', 'username' ),
+		eventRecorder
+	],
 
 	componentWillMount: function() {
 		// Clear any username changes that were previously made
@@ -70,13 +76,9 @@ module.exports = React.createClass( {
 
 			this.props.userSettings.updateSetting( 'language', value );
 			if ( value !== originalLanguage ) {
-				this.setState( {
-					redirect: '/me/account'
-				} );
+				this.setState( { redirect: '/me/account' } );
 			} else {
-				this.setState( {
-					redirect: false
-				} );
+				this.setState( { redirect: false } );
 			}
 		}.bind( this );
 
@@ -120,9 +122,7 @@ module.exports = React.createClass( {
 
 	getOptoutText: function( website ) {
 		return this.translate( '%(website)s opt-out', {
-			args: {
-				website: website
-			},
+			args: { website: website },
 			context: 'A website address, formatted to look like "Website.com"'
 		} );
 	},
@@ -180,13 +180,9 @@ module.exports = React.createClass( {
 		var username = this.props.userSettings.getSetting( 'user_login' ),
 			action = null === this.state.usernameAction ? 'none' : this.state.usernameAction;
 
-		this.setState( {
-			submittingForm: true
-		} );
+		this.setState( { submittingForm: true } );
 		this.props.username.change( username, action, function( error ) {
-			this.setState( {
-				submittingForm: false
-			} );
+			this.setState( { submittingForm: false } );
 			if ( error ) {
 				notices.error( this.props.username.getValidationFailureMessage() );
 			} else {
@@ -202,8 +198,16 @@ module.exports = React.createClass( {
 	renderHolidaySnow() {
 		// Note that years and months below are zero indexed
 		let today = this.moment(),
-			startDate = this.moment( { year: today.year(), month: 11, day: 1 } ),
-			endDate = this.moment( { year: today.year(), month: 0, day: 4 } );
+			startDate = this.moment( {
+				year: today.year(),
+				month: 11,
+				day: 1
+			} ),
+			endDate = this.moment( {
+				year: today.year(),
+				month: 0,
+				day: 4
+			} );
 
 		if ( today.isBefore( startDate, 'day' ) && today.isAfter( endDate, 'day' ) ) {
 			return;
@@ -242,8 +246,20 @@ module.exports = React.createClass( {
 		);
 	},
 
+	renderEmailValueLink: function() {
+		let valueLink = this.valueLink( 'user_email' );
+		if ( this.hasPendingEmailChange() ) {
+			valueLink.value = this.props.userSettings.getSetting( 'new_user_email' );
+		}
+		return valueLink;
+	},
+
+	hasPendingEmailChange: function() {
+		return this.props.userSettings.isPendingEmailChange();
+	},
+
 	renderPendingEmailChange: function() {
-		if ( ! this.props.userSettings.isPendingEmailChange() ) {
+		if ( ! this.hasPendingEmailChange() ) {
 			return null;
 		}
 
@@ -346,11 +362,11 @@ module.exports = React.createClass( {
 				<FormFieldset>
 					<FormLabel htmlFor="email">{ this.translate( 'Email Address' ) }</FormLabel>
 					<FormTextInput
-						disabled={ this.getDisabledState() }
+						disabled={ this.getDisabledState() || this.hasPendingEmailChange() }
 						id="email"
 						name="email"
 						onFocus={ this.recordFocusEvent( 'Email Address Field' ) }
-						valueLink={ this.valueLink( 'user_email' ) } />
+						valueLink={ this.renderEmailValueLink() } />
 					{ this.renderPendingEmailChange() }
 					<FormSettingExplanation>{ this.translate( 'Will not be publicly displayed' ) }</FormSettingExplanation>
 				</FormFieldset>
@@ -384,32 +400,6 @@ module.exports = React.createClass( {
 				</FormFieldset>
 
 				{ this.communityTranslator() }
-
-				<FormFieldset>
-					<FormLegend>{ this.translate( 'Fun' ) }</FormLegend>
-					<FormLabel>
-						<FormCheckbox
-							checkedLink={ this.valueLink( 'surprise_me' ) }
-							disabled={ this.getDisabledState() }
-							id="surprise_me"
-							name="surprise_me"
-							onClick={ this.recordCheckboxEvent( 'Fun Mode' ) } />
-						<span>{ this.translate( 'Surprise Me. (Fun mode.)' ) }</span>
-					</FormLabel>
-				</FormFieldset>
-
-				<FormFieldset>
-					<FormLegend>{ this.translate( 'Instant Post Feedback' ) }</FormLegend>
-					<FormLabel>
-						<FormCheckbox
-							checkedLink={ this.valueLink( 'post_post_flag' ) }
-							disabled={ this.getDisabledState() }
-							id="post_post_flag"
-							name="post_post_flag"
-							onClick={ this.recordCheckboxEvent( 'Instant Post Feedback' ) } />
-						<span>{ this.translate( 'Show the feedback and progress sidebar after posting.' ) }</span>
-					</FormLabel>
-				</FormFieldset>
 
 				{ this.renderHolidaySnow() }
 

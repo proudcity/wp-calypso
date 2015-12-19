@@ -19,12 +19,10 @@ var React = require( 'react/addons' ),
 var SectionNav = require( 'components/section-nav' ),
 	NavTabs = require( 'components/section-nav/tabs' ),
 	NavItem = require( 'components/section-nav/item' ),
-	config = require( 'config' ),
 	upgradesPaths = require( 'my-sites/upgrades/paths' ),
 	viewport = require( 'lib/viewport' ),
 	upgradesActionTypes = require( 'lib/upgrades/constants' ).action,
 	PopoverCart = require( 'my-sites/upgrades/cart/popover-cart' ),
-	purchasesPaths = require( 'me/purchases/paths' ),
 	i18n = require( 'lib/mixins/i18n' );
 
 // The first path acts as the primary path that the button will link to. The
@@ -56,12 +54,6 @@ var NAV_ITEMS = {
 		paths: [ '/domains/add' ],
 		label: i18n.translate( 'Add a Domain' ),
 		allSitesPath: false
-	},
-
-	'My Purchases': {
-		paths: [ purchasesPaths.list() ],
-		label: i18n.translate( 'Manage Purchases' ),
-		allSitesPath: true
 	}
 };
 
@@ -84,9 +76,9 @@ var UpgradesNavigation = React.createClass( {
 
 	componentWillMount: function() {
 		this.dispatchToken = Dispatcher.register( function( payload ) {
-			if ( payload.action.type === upgradesActionTypes.OPEN_CART_POPUP ) {
+			if ( payload.action.type === upgradesActionTypes.CART_POPUP_OPEN ) {
 				this.setState( { cartVisible: true, cartShowKeepSearching: payload.action.options.showKeepSearching } );
-			} else if ( payload.action.type === upgradesActionTypes.CLOSE_CART_POPUP ) {
+			} else if ( payload.action.type === upgradesActionTypes.CART_POPUP_CLOSE ) {
 				this.setState( { cartVisible: false } );
 			}
 		}.bind( this ) );
@@ -118,9 +110,9 @@ var UpgradesNavigation = React.createClass( {
 		var items;
 
 		if ( this.props.selectedSite.jetpack ) {
-			items = [ 'Plans', 'My Purchases' ];
+			items = [ 'Plans' ];
 		} else {
-			items = [ 'Plans', 'Domains', 'Email', 'My Purchases' ];
+			items = [ 'Plans', 'Domains', 'Email' ];
 		}
 
 		return items.map( propertyOf( NAV_ITEMS ) );

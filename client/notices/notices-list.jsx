@@ -86,7 +86,7 @@ export default React.createClass( {
 						status={ notice.status }
 						text={ notice.text }
 						isCompact={ notice.isCompact }
-						onClick={ this.removeNotice.bind( this, notice ) }
+						onDismissClick={ this.removeNotice.bind( this, notice ) }
 						showDismiss={ notice.showDismiss }
 					>
 						{ notice.button &&
@@ -100,6 +100,9 @@ export default React.createClass( {
 				);
 			}, this );
 
+		if ( ! noticesRaw.length ) {
+			return null;
+		}
 		return (
 			<div>
 				<div id={ this.props.id } className={ classNames( 'notices-list', { 'is-pinned': this.state.pinned } ) }>
