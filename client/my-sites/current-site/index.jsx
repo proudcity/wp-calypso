@@ -132,15 +132,15 @@ module.exports = React.createClass( {
 	},
 
 	addNewWordPressButton: function() {
-		return (
-			<AddNewButton
-				isCompact={ true }
-				href={ config( 'signup_url' ) + '?ref=calypso-selector' }
-				onClick={ this.focusContent }
-			>
-				{ this.translate( 'Add New Package' ) }
-			</AddNewButton>
-		);
+		//return (
+		//	<AddNewButton
+		//		isCompact={ true }
+		//		href={ config( 'signup_url' ) + '?ref=calypso-selector' }
+		//		onClick={ this.focusContent }
+		//	>
+		//		{ this.translate( 'Add New Package' ) }
+		//	</AddNewButton>
+		//);
 	},
 
 	render: function() {
