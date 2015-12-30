@@ -60,29 +60,29 @@ var PublishMenu = React.createClass( {
 		}
 
 		return [
-			{
-				name: 'post',
-				label: this.translate( 'Blog Posts' ),
-				className: 'posts',
-				capability: 'edit_posts',
-				config: 'manage/posts',
-				link: '/posts' + this.getMyParameter( site ),
-				paths: [ '/posts', '/posts/my' ],
-				buttonLink: newPostLink,
-				wpAdminLink: 'edit.php',
-				showOnAllMySites: true,
-			},
-			{
-				name: 'page',
-				label: this.translate( 'Pages' ),
-				className: 'pages',
-				capability: 'edit_pages',
-				config: 'manage/pages',
-				link: '/pages',
-				buttonLink: this.getNewPageLink( site ),
-				wpAdminLink: 'edit.php?post_type=page',
-				showOnAllMySites: true,
-			}
+			//{
+			//	name: 'post',
+			//	label: this.translate( 'Blog Posts' ),
+			//	className: 'posts',
+			//	capability: 'edit_posts',
+			//	config: 'manage/posts',
+			//	link: '/posts' + this.getMyParameter( site ),
+			//	paths: [ '/posts', '/posts/my' ],
+			//	buttonLink: newPostLink,
+			//	wpAdminLink: 'edit.php',
+			//	showOnAllMySites: true,
+			//},
+			//{
+			//	name: 'page',
+			//	label: this.translate( 'Pages' ),
+			//	className: 'pages',
+			//	capability: 'edit_pages',
+			//	config: 'manage/pages',
+			//	link: '/pages',
+			//	buttonLink: this.getNewPageLink( site ),
+			//	wpAdminLink: 'edit.php?post_type=page',
+			//	showOnAllMySites: true,
+			//}
 		];
 	},
 
