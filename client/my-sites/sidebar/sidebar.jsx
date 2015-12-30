@@ -166,11 +166,11 @@ module.exports = React.createClass( {
 
 		return (
 			<SidebarMenuItem
-				label={ this.translate( 'Themes' ) }
+				label={ this.translate( 'Appearance' ) }
 				className={ this.itemLinkClass( '/design', 'themes' ) }
-				link={ themesLink }
-				buttonLink={ getCustomizeUrl( null, site ) }
-				buttonLabel={ this.translate( 'Customize' ) }
+				link={ getCustomizeUrl( null, site ) }
+				//buttonLink={ getCustomizeUrl( null, site ) }
+				//buttonLabel={ this.translate( 'Customize' ) }
 				onNavigate={ this.onNavigate }
 				icon={ 'themes' }
 			/>
