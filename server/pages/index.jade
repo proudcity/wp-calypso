@@ -91,6 +91,8 @@ html(lang=lang, dir=isRTL ? 'rtl' : 'ltr', class=isFluidWidth ? 'is-fluid-width'
 				}
 			})();
 
+		//script(src='//cdn.auth0.com/w2/auth0-6.7.js')
+
 		if user
 			script(type='text/javascript')!='var currentUser = ' + sanitize.jsonStringifyForHtml( user )
 		if app
