@@ -23,8 +23,11 @@
 	"logout_url": "https://wordpress.com/wp-login.php?action=logout&redirect_to=https%3A%2F%2F|subdomain|wordpress.com",
 	"facebook_api_key": "249643311490",
 	"discover_blog_id": 53424024,
+	"desktop_oauth_client_id": "y4bZCQsSaTebQRwIhZOJsWN6worUUGn6",
+	"desktop_oauth_client_secret": "y4bZCQsSaTebQRwIhZOJsWN6worUUGn6",
+	"desktop_oauth_token_endpoint": "http://proudcity.auth0.com/oauth/ro",
 	"features": {
-		"oauth": false,
+		"oauth": true,
 		"desktop": false,
 		"fluid-width": true,
 		"always_use_logout_url": true,
@@ -72,7 +75,7 @@
 		"manage/import": true,
 		"manage/sharing": false,
 		"manage/people": true,
-		"manage/people/readers": true,
+		"manage/people/readers": false,
 		"manage/add-people": true,
 		"manage/edit-user": true,
 		"manage/jetpack": true,
@@ -85,8 +88,8 @@
 		"premium-themes": true,
 		"press-this": true,
 
-		"manage/plans": true,
-		"manage/jetpack-plans": true,
+		"manage/plans": false,
+		"manage/jetpack-plans": false,
 
 		"upgrades/checkout": true,
 		"upgrades/domain-management/contacts-privacy": true,
