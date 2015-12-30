@@ -57,15 +57,15 @@ module.exports = {
 			},
 
 			customize: {
-				title: i18n.translate( 'Customize Your Site' ),
-				body: i18n.translate( '{{p1}}You can use the Customizer to add header and background images, or tweak your theme.  {{/p1}}{{p2}}You can find the Customizer in My Sites.{{/p2}}', {
+				title: i18n.translate( 'Get started' ),
+				body: i18n.translate( '[An intro video will go here]', {
 					comment: 'p1 and p2 are paragraph tags.',
 					components: {
 						p1: <p />,
 						p2: <p />,
 					}
 				} ),
-				buttonText: i18n.translate( 'Customize Your Site' ),
+				buttonText: i18n.translate( 'Let\'s go' ),
 				buttonURL: buildCustomizeButtonURL( site )
 			},
 
