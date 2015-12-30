@@ -20,6 +20,10 @@ import Gridicon from 'components/gridicon';
 import WordPressLogo from 'components/wordpress-logo';
 import AuthCodeButton from './auth-code-button';
 
+//version = require('./package.json').version
+//var Auth0Lock = require('auth0-lock');
+//console.log('$$$$$$');
+
 const LostPassword = React.createClass( {
 	render: function() {
 		return (
@@ -56,6 +60,8 @@ module.exports = React.createClass( {
 	},
 
 	getInitialState: function() {
+		console.log('initialstate');
+		//console.log(Auth0Lock);
 		return Object.assign( {
 			login: '',
 			password: '',
