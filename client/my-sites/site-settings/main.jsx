@@ -56,8 +56,8 @@ module.exports = React.createClass( {
 	getStrings: function() {
 		return {
 			general: this.translate( 'General', { context: 'settings screen' } ),
-			writing: this.translate( 'Writing', { context: 'settings screen' } ),
-			discussion: this.translate( 'Discussion', { context: 'settings screen' } ),
+			writing: this.translate( 'Social media', { context: 'settings screen' } ),
+			discussion: this.translate( 'Map', { context: 'settings screen' } ),
 			analytics: this.translate( 'Analytics', { context: 'settings screen' } ),
 			security: this.translate( 'Security', { context: 'settings screen' } ),
 			'import': this.translate( 'Import', { context: 'settings screen' } ),
