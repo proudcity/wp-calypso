@@ -716,20 +716,20 @@ export default React.createClass( {
 			);
 		}
 
-		if ( selectedSite &&
-				selectedSite.modulesFetched &&
-				! selectedSite.canManage() ) {
-			return (
-				<Main>
-					<JetpackManageErrorPage
-						template="optInManage"
-						site={ this.props.site }
-						actionURL={ selectedSite.getRemoteManagementURL() + '&section=plugins' }
-						illustration= '/calypso/images/jetpack/jetpack-manage.svg'
-						featureExample={ this.getMockPluginItems() } />
-				</Main>
-			);
-		}
+		//if ( selectedSite &&
+		//		selectedSite.modulesFetched &&
+		//		! selectedSite.canManage() ) {
+		//	return (
+		//		<Main>
+		//			<JetpackManageErrorPage
+		//				template="optInManage"
+		//				site={ this.props.site }
+		//				actionURL={ selectedSite.getRemoteManagementURL() + '&section=plugins' }
+		//				illustration= '/calypso/images/jetpack/jetpack-manage.svg'
+		//				featureExample={ this.getMockPluginItems() } />
+		//		</Main>
+		//	);
+		//}
 
 		const plugins = this.state.plugins || [];
 		let pluginsContent, toolbarSelect, toolbarBulkAction, manageLink;

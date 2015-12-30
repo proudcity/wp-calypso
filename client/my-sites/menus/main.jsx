@@ -219,10 +219,10 @@ var Menus = React.createClass( {
 			data = this.props.siteMenus.get(),
 			site = this.props.site,
 			menu;
-
-		if ( site && site.jetpack && site.modulesFetched && ! site.canManage() ) {
-			return this.renderJetpackManageDisabledMessage( site );
-		}
+		
+		//if ( site && site.jetpack && site.modulesFetched && ! site.canManage() ) {
+		//	return this.renderJetpackManageDisabledMessage( site );
+		//}
 
 		if ( ! data.menus || ! data.locations || ! data.hasDefaultMenu ||
 					! this.props.itemTypes.fetched || this.state.isBusy ) {

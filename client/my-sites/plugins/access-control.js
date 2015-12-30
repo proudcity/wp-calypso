@@ -11,8 +11,8 @@ var sites = require( 'lib/sites-list' )(),
 
 function hasErrorCondition( site, type ) {
 	var errorConditions = {
-		noBusinessPlan: site && ! site.jetpack && ! isBusiness( site.plan ),
-		notMinimumJetpackVersion: site && ! site.hasMinimumJetpackVersion && site.jetpack,
+		//noBusinessPlan: site && ! site.jetpack && ! isBusiness( site.plan ),
+		//notMinimumJetpackVersion: site && ! site.hasMinimumJetpackVersion && site.jetpack,
 		notRightsToManagePlugins: sites.initialized && ! sites.canManageSelectedOrAll()
 	};
 	return errorConditions[ type ];
