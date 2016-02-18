@@ -2,6 +2,7 @@
  * External dependencies
  */
 var React = require( 'react' ),
+	LinkedStateMixin = require( 'react-addons-linked-state-mixin' ),
 	debug = require( 'debug' )( 'calypso:me:security:2fa-enable' ),
 	QRCode = require( 'qrcode.react' ),
 	classNames = require( 'classnames' );
@@ -17,13 +18,14 @@ var FormButton = require( 'components/forms/form-button' ),
 	Security2faProgress = require( 'me/security-2fa-progress' ),
 	twoStepAuthorization = require( 'lib/two-step-authorization' ),
 	analytics = require( 'analytics' ),
-	constants = require( 'me/constants' );
+	constants = require( 'me/constants' ),
+	FormButtonsBar = require( 'components/forms/form-buttons-bar' );
 
 module.exports = React.createClass( {
 
 	displayName: 'Security2faEnable',
 
-	mixins: [ React.addons.LinkedStateMixin ],
+	mixins: [ LinkedStateMixin ],
 
 	codeRequestTimer: false,
 
@@ -202,7 +204,7 @@ module.exports = React.createClass( {
 				<p className="security-2fa-enable__qr-instruction">
 					{
 						this.translate(
-							"Scan this QR code with your mobile app. {{toggleMethodLink}}Can't scan the barcode?{{/toggleMethodLink}}", {
+							"Scan this QR code with your mobile app. {{toggleMethodLink}}Can't scan the code?{{/toggleMethodLink}}", {
 								components: {
 									toggleMethodLink: this.getToggleLink()
 								}
@@ -225,7 +227,7 @@ module.exports = React.createClass( {
 				<p className="security-2fa-enable__time-instruction">
 					{
 						this.translate(
-							'Enter this time code into your mobile app. {{toggleMethodLink}}Prefer to scan the barcode?{{/toggleMethodLink}}', {
+							'Enter this time code into your mobile app. {{toggleMethodLink}}Prefer to scan the code?{{/toggleMethodLink}}', {
 								components: {
 									toggleMethodLink: this.getToggleLink()
 								}
@@ -321,7 +323,6 @@ module.exports = React.createClass( {
 
 		return (
 			<Notice
-				isCompact
 				status={ this.state.lastErrorType }
 				onDismissClick={ this.clearLastError }
 				text={ this.state.lastError }
@@ -366,7 +367,7 @@ module.exports = React.createClass( {
 
 	renderButtons: function() {
 		return (
-			<div className="security-2fa-enable__buttons-bar">
+			<FormButtonsBar className="security-2fa-enable__buttons-bar">
 				<FormButton
 					className="security-2fa-enable__verify"
 					disabled={ this.getFormDisabled() }
@@ -415,7 +416,7 @@ module.exports = React.createClass( {
 					)
 
 				}
-			</div>
+			</FormButtonsBar>
 		);
 	},
 

@@ -14,16 +14,12 @@ var SearchCard = require( 'components/search-card' ),
 	Notices = require( 'components/notice/docs/example' ),
 	Buttons = require( 'components/button/docs/example' ),
 	ButtonGroups = require( 'components/button-group/docs/example' ),
-	AddNewButtons = require( 'components/add-new-button/docs/example' ),
-	CommentButtons = require( 'components/comment-button/docs/example' ),
-	LikeButtons = require( 'components/like-button/docs/example' ),
-	FollowButtons = require( 'components/follow-button/docs/example' ),
 	Accordions = require( 'components/accordion/docs/example' ),
 	Gridicons = require( 'components/gridicon/docs/example' ),
+	SocialLogos = require( 'components/social-logo/docs/example' ),
 	SelectDropdown = require( 'components/select-dropdown/docs/example' ),
 	SegmentedControl = require( 'components/segmented-control/docs/example' ),
 	Cards = require( 'components/card/docs/example' ),
-	Sites = require( 'lib/sites-list/docs/example' ),
 	TokenFields = require( 'components/token-field/docs/example' ),
 	CountedTextareas = require( 'components/forms/counted-textarea/docs/example' ),
 	ProgressBar = require( 'components/progress-bar/docs/example' ),
@@ -37,16 +33,14 @@ var SearchCard = require( 'components/search-card' ),
 	Spinners = require( 'components/spinner/docs/example' ),
 	Rating = require( 'components/rating/docs/example' ),
 	DatePicker = require( 'components/date-picker/docs/example' ),
-	Theme = require( 'components/theme/docs/example' ),
-	PostSchedule = require( 'components/post-schedule/docs/example' ),
 	InputChrono = require( 'components/input-chrono/docs/example' ),
 	TimezoneDropdown = require( 'components/timezone-dropdown/docs/example' ),
 	ClipboardButtons = require( 'components/forms/clipboard-button/docs/example' ),
+	ClipboardButtonInput = require( 'components/clipboard-button-input/docs/example' ),
 	HeaderCake = require( 'components/header-cake' ),
 	InfoPopover = require( 'components/info-popover/docs/example' ),
 	FoldableCard = require( 'components/foldable-card/docs/example' ),
 	SectionHeader = require( 'components/section-header/docs/example' ),
-	Flag = require( 'components/flag/docs/example' ),
 	PaymentLogo = require( 'components/payment-logo/docs/example' ),
 	Count = require( 'components/count/docs/example' ),
 	Version = require( 'components/version/docs/example' ),
@@ -64,7 +58,7 @@ Hider = React.createClass( {
 		hide: React.PropTypes.bool,
 	},
 
-	shouldComponentUpdate: function( nextProps, nextState ) {
+	shouldComponentUpdate: function( nextProps ) {
 		return this.props.hide !== nextProps.hide;
 	},
 
@@ -110,11 +104,11 @@ Collection = React.createClass( {
 
 		examples = this.props.children.map( ( example ) => {
 			return (
-				<Hider hide={ this.shouldWeHide( example ) } key={ "example-" + example.type.displayName }>
+				<Hider hide={ this.shouldWeHide( example ) } key={ 'example-' + example.type.displayName }>
 					{ example }
 				</Hider>
 			);
-		});
+		} );
 
 		return (
 			<div className="collection">
@@ -122,7 +116,6 @@ Collection = React.createClass( {
 				{ examples }
 			</div>
 		);
-
 	}
 } );
 
@@ -180,16 +173,12 @@ module.exports = React.createClass( {
 					<Notices />
 					<Buttons />
 					<ButtonGroups />
-					<AddNewButtons />
-					<CommentButtons />
 					<Gridicons />
-					<LikeButtons />
-					<FollowButtons />
+					<SocialLogos />
 					<Accordions />
 					<SelectDropdown searchKeywords="menu" />
 					<SegmentedControl />
 					<Cards />
-					<Sites />
 					<TokenFields />
 					<CountedTextareas />
 					<ProgressBar />
@@ -199,26 +188,24 @@ module.exports = React.createClass( {
 					<Gauge />
 					<SearchDemo />
 					<Headers />
-					<DropZones />
+					<DropZones searchKeywords="drag" />
 					<FormFields searchKeywords="input textbox textarea radio"/>
 					<ClipboardButtons />
+					<ClipboardButtonInput />
 					<Rating />
 					<Count />
 					<Version />
 					<ExternalLink />
 					<FeatureGate />
 					<DatePicker />
-					<Spinners />
-					<Theme />
-					<PostSchedule />
+					<Spinners searchKeywords="loading" />
 					<InputChrono />
-					<TimezoneDropdown />
-					<FoldableCard />
-					<Flag />
 					<PaymentLogo />
 					<BulkSelect />
 					<SectionHeader />
 					<SectionNav />
+					<TimezoneDropdown />
+					<FoldableCard />
 				</Collection>
 			</div>
 		);

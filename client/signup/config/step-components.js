@@ -1,26 +1,30 @@
 /**
  * Internal dependencies
  */
-var EmailSignupComponent = require( 'signup/steps/email-signup-form' ),
-	SiteCreationComponent = require( 'signup/steps/site-creation' ),
+var UserSignupComponent = require( 'signup/steps/user' ),
+	SiteComponent = require( 'signup/steps/site' ),
 	ThemeSelectionComponent = require( 'signup/steps/theme-selection' ),
+	PaidPlansOnly = require( 'signup/steps/paid-plans-only' ),
+	PaidPlansWithSkip = require( 'signup/steps/paid-plans-with-skip' ),
 	PlansStepComponent = require( 'signup/steps/plans' ),
 	DomainsStepComponent = require( 'signup/steps/domains' ),
-	DSSStepComponent = require( 'signup/steps/dss' ),
+	DesignTypeComponent = require( 'signup/steps/design-type' ),
 	SurveyStepComponent = require( 'signup/steps/survey' ),
 	config = require( 'config' );
 
 module.exports = {
 	themes: ThemeSelectionComponent,
-	'theme-headstart': ThemeSelectionComponent,
-	site: SiteCreationComponent,
-	user: EmailSignupComponent,
+	site: SiteComponent,
+	user: UserSignupComponent,
 	test: config( 'env' ) === 'development' ? require( 'signup/steps/test-step' ) : undefined,
 	plans: PlansStepComponent,
+	'select-plan': PaidPlansOnly,
+	'select-plan-or-skip': PaidPlansWithSkip,
 	domains: DomainsStepComponent,
 	survey: SurveyStepComponent,
-	'survey-user': EmailSignupComponent,
+	'design-type': DesignTypeComponent,
+	'themes-headstart': ThemeSelectionComponent,
+	altthemes: ThemeSelectionComponent,
 	'domains-with-theme': DomainsStepComponent,
-	'theme-dss': DSSStepComponent,
-	'jetpack-user': EmailSignupComponent
+	'jetpack-user': UserSignupComponent
 };

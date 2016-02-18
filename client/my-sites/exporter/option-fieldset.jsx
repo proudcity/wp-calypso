@@ -2,15 +2,14 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-pure-render/mixin';
 
 /**
  * Internal dependencies
  */
-import Checkbox from 'components/forms/form-checkbox';
+import FormRadio from 'components/forms/form-radio';
 import Select from 'components/forms/form-select';
 import Label from 'components/forms/form-label';
-
-const PureRenderMixin = React.addons.PureRenderMixin;
 
 /**
  * Displays a list of select menus with a checkbox legend
@@ -25,10 +24,11 @@ module.exports = React.createClass( {
 	mixins: [ PureRenderMixin ],
 
 	propTypes: {
-		onToggleEnabled: PropTypes.func,
+		onSelect: PropTypes.func,
 
 		legend: PropTypes.string.isRequired,
-		isEnabled: PropTypes.bool.isRequired
+		isEnabled: PropTypes.bool.isRequired,
+		shouldShowPlaceholders: PropTypes.bool.isRequired,
 	},
 
 	getDefaultProps() {
@@ -38,13 +38,27 @@ module.exports = React.createClass( {
 	},
 
 	render() {
+		const placeholderMap = ( menu, menuIndex ) => (
+			<div key={ menuIndex } className="exporter__placeholder-text">
+				{ this.translate( 'Loading options…' ) }
+			</div>
+		)
+
+		const selectMap = ( menu, menuIndex ) => (
+			<Select key={ menuIndex } disabled={ ! this.props.isEnabled }>
+				{ menu.options.map( ( option, optionIndex ) => (
+					<option value={ optionIndex } key={ optionIndex }>{ option }</option>
+				) ) }
+			</Select>
+		)
+
 		return (
 			<div className="exporter__option-fieldset">
 
 				<Label className="exporter__option-fieldset-legend">
-					<Checkbox
+					<FormRadio
 						checked={ this.props.isEnabled }
-						onChange={ this.props.onToggleEnabled }/>
+						onChange={ this.props.onSelect }/>
 					<span className="exporter__option-fieldset-legend-text">{ this.props.legend }</span>
 				</Label>
 
@@ -55,13 +69,9 @@ module.exports = React.createClass( {
 				}
 
 				<div className="exporter__option-fieldset-fields">
-					{ this.props.menus.map( ( menu, menuIndex ) => (
-						<Select key={ menuIndex } disabled={ !this.props.isEnabled }>
-							{ menu.options.map( ( option, optionIndex ) => (
-								<option value={ optionIndex } key={ optionIndex }>{ option }</option>
-							) ) }
-						</Select>
-					) ) }
+					{ this.props.menus.map(
+						this.props.shouldShowPlaceholders ? placeholderMap : selectMap
+					) }
 				</div>
 
 			</div>

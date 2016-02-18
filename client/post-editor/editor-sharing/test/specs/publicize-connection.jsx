@@ -4,13 +4,14 @@ require( 'lib/react-test-env-setup' )();
 /**
  * External dependencies
  */
-var React = require( 'react/addons' ),
+var ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
 	expect = require( 'chai' ).expect;
 
 /**
  * Internal dependencies
  */
-var PublicizeConnection = require( '../../publicize-connection' );
+var PublicizeConnection = require( '../../publicize-connection' ).WrappedComponent;
 
 /**
  * Module variables
@@ -26,7 +27,7 @@ var CONNECTION = {
 
 describe( 'PublicizeConnection', function() {
 	beforeEach( function() {
-		React.unmountComponentAtNode( document.body );
+		ReactDom.unmountComponentAtNode( document.body );
 	} );
 
 	describe( '#isConnectionSkipped()', function() {
@@ -39,7 +40,7 @@ describe( 'PublicizeConnection', function() {
 				]
 			};
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<PublicizeConnection
 					post={ post }
 					connection={ CONNECTION } />,
@@ -59,7 +60,7 @@ describe( 'PublicizeConnection', function() {
 				]
 			};
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<PublicizeConnection
 					post={ post }
 					connection={ CONNECTION } />,
@@ -80,7 +81,7 @@ describe( 'PublicizeConnection', function() {
 				]
 			};
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<PublicizeConnection
 					post={ post }
 					connection={ CONNECTION } />,
@@ -100,7 +101,7 @@ describe( 'PublicizeConnection', function() {
 				]
 			};
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<PublicizeConnection
 					post={ post }
 					connection={ CONNECTION } />,

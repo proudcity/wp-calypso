@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-pure-render/mixin';
 import classNames from 'classnames';
 import noop from 'lodash/utility/noop';
 import includes from 'lodash/collection/includes';
@@ -14,11 +15,12 @@ import { appStates } from 'lib/importer/constants';
 import Button from 'components/forms/form-button';
 import DropZone from 'components/drop-zone';
 import ProgressBar from 'components/progress-bar';
+import Gridicon from 'components/gridicon';
 
 export default React.createClass( {
 	displayName: 'SiteSettingsUploadingPane',
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	propTypes: {
 		description: PropTypes.oneOfType( [ PropTypes.node, PropTypes.string ] ),
@@ -87,7 +89,7 @@ export default React.createClass( {
 	},
 
 	initiateFromForm: function( event ) {
-		let fileSelector = this.refs.fileSelector.getDOMNode();
+		let fileSelector = this.refs.fileSelector;
 
 		event.preventDefault();
 		event.stopPropagation();
@@ -103,7 +105,7 @@ export default React.createClass( {
 	},
 
 	openFileSelector: function() {
-		let fileSelector = this.refs.fileSelector.getDOMNode();
+		let fileSelector = this.refs.fileSelector;
 
 		fileSelector.click();
 	},
@@ -118,7 +120,7 @@ export default React.createClass( {
 				<p>{ this.props.description }</p>
 				<div className="importer__uploading-pane" onClick={ this.isReadyForImport() ? this.openFileSelector : null }>
 					<div className="importer__upload-content">
-						<span className="importer__upload-icon" />
+						<Gridicon className="importer__upload-icon" icon="cloud-upload" />
 						{ this.getMessage() }
 					</div>
 					{ this.isReadyForImport()

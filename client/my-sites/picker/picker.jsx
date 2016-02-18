@@ -1,7 +1,9 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
+var ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
+	wrapWithClickOutside = require( 'react-click-outside' ),
 	noop = require( 'lodash/utility/noop' );
 
 /**
@@ -10,7 +12,7 @@ var React = require( 'react' ),
 var SiteSelector = require( 'components/site-selector' ),
 	hasTouch = require( 'lib/touch-detect' ).hasTouch;
 
-module.exports = React.createClass( {
+const SitePicker = React.createClass( {
 	displayName: 'SitePicker',
 
 	propTypes: {
@@ -45,22 +47,7 @@ module.exports = React.createClass( {
 		}.bind( this ), 200 );
 	},
 
-	componentDidUpdate: function() {
-		// Register a document level event listener
-		// only when the picker is opened.
-		//
-		// This is used to detect clicks outside the picker
-		// in order to close it.
-		if ( this.props.layoutFocus && this.props.layoutFocus.getCurrent() === 'sites' ) {
-			document.addEventListener( 'click', this.closePickerOnOutsideClick );
-		} else {
-			document.removeEventListener( 'click', this.closePickerOnOutsideClick );
-		}
-	},
-
 	componentWillUnmount: function() {
-		document.removeEventListener( 'click', this.closePickerOnOutsideClick );
-
 		clearTimeout( this._autofocusTimeout );
 		this._autofocusTimeout = null;
 	},
@@ -76,11 +63,8 @@ module.exports = React.createClass( {
 		window.scrollTo( 0, 0 );
 	},
 
-	closePickerOnOutsideClick: function( event ) {
-		var pickerNode = React.findDOMNode( this.refs.siteSelector );
-
-		// If the user clicks outside the Picker, let's close it
-		if ( ! pickerNode.contains( event.target ) && event.target !== pickerNode ) {
+	handleClickOutside: function() {
+		if ( this.props.layoutFocus && this.props.layoutFocus.getCurrent() === 'sites' ) {
 			this.props.layoutFocus && this.props.layoutFocus.set( 'sidebar' );
 			this.scrollToTop();
 		}
@@ -99,7 +83,10 @@ module.exports = React.createClass( {
 				user={ this.props.user }
 				autoFocus={ this.state.isAutoFocused }
 				onClose={ this.onClose }
+				groups={ true }
 			/>
 		);
 	}
 } );
+
+module.exports = wrapWithClickOutside( SitePicker );

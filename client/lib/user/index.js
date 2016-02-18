@@ -20,14 +20,14 @@ module.exports = function() {
 User.dispatchToken = Dispatcher.register( function( payload ) {
 	var action = payload.action;
 	switch ( action.type ) {
-		case 'DELETE_SITE':
-			decrementSiteCount();
-			break;
 		case 'RECEIVE_DELETED_SITE':
+			decrementSiteCount();
 			_user.fetch();
 			break;
 		case InvitesActionTypes.INVITE_ACCEPTED:
-			incrementSiteCount();
+			if ( [ 'follower', 'viewer' ].indexOf( action.invite.role ) === -1 ) {
+				incrementSiteCount();
+			}
 			break;
 	}
 } );

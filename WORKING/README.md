@@ -8,6 +8,13 @@ ProudCity Calypso
 * `./client/auth/login.jsx`: Add auth0 SSO code to `getInitialState()`
 
 
+Other changes noted (from diff)
+* /home/jeff/labspace/wp-calypso/client/my-sites/plugins/access-control.js:  function hasErrorCondition
+* client/my-sites/menus/main.jsx
+* /home/jeff/labspace/wp-calypso/client/my-sites/plugins/main.jsx: render()
+* client/my-sites/sidebar/sidebar.jsx: themes defn
+
+
 https://proudcity.auth0.com/authorize/?response_type=code&client_id=y4bZCQsSaTebQRwIhZOJsWN6worUUGn6&redirect_uri=https://example.proudcity.com/index.php?auth0=1?states={redirect_to:}
 
 

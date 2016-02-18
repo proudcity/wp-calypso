@@ -2,6 +2,8 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-pure-render/mixin';
+import Page from 'page';
 
 /**
  * Internal dependencies
@@ -11,7 +13,7 @@ import Notice from 'components/notice';
 export default React.createClass( {
 	displayName: 'SiteSettingsImporterError',
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	propTypes: {
 		description: PropTypes.string.isRequired,
@@ -21,6 +23,7 @@ export default React.createClass( {
 	contactSupport: function( event ) {
 		event.preventDefault();
 		event.stopPropagation();
+		Page( '/help' );
 	},
 
 	getImportError: function() {

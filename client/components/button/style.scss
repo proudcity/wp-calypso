@@ -148,6 +148,8 @@ button {
 .button.is-borderless {
 	border: none;
 	color: darken( $gray, 10% );
+	padding-left: 0;
+	padding-right: 0;
 
 	&:hover {
 		color: $gray-dark;
@@ -187,6 +189,8 @@ button {
 	}
 
 	&.is-compact {
+		background: transparent;
+		border-radius: 0;
 		.gridicon {
 			width: 18px;
 			height: 18px;

@@ -4,19 +4,17 @@
 var req = require( 'superagent' ),
 	bodyParser = require( 'body-parser' );
 
- /**
-  * Internal dependencies
-  */
+/**
+ * Internal dependencies
+ */
 var config = require( 'config' );
 
 function oauth() {
 	return {
 		client_id: config( 'desktop_oauth_client_id' ),
-		//client_secret: config( 'desktop_oauth_client_secret' ),
-		//wpcom_supports_2fa: true,
-		connection: 'Username-Password-Authentication',
-		grant_type: 'password',
-		scope: 'openid'
+		client_secret: config( 'desktop_oauth_client_secret' ),
+		wpcom_supports_2fa: true,
+		grant_type: 'password'
 	}
 }
 
@@ -36,38 +34,13 @@ function proxyOAuth( request, response ) {
 		data.wpcom_otp = request.body.auth_code;
 	}
 
-	console.log(data);
-	var request = require("request");
-
-	var options = { method: 'POST',
-	  url: 'https://proudcity.auth0.com/oauth/ro',
-	  headers: 
-	   { 'content-type': 'application/x-www-form-urlencoded' },
-	  form: data
-	};
-
-	request(options, function (error, resp, body) {
-	  if (error) throw new Error(error);
-
-	  body = JSON.parse(body);
-	  body.access_token = body.id_token;
-	    console.log(body);
-
-	  response.json( body );
-	});
-	return;
-
-/*
 	req.post( config( 'desktop_oauth_token_endpoint' ) )
 		.type( 'form' )
 		.send( data )
 		.end( validateOauthResponse( response, function( error, res ) {
 			// Return the token as a response
-			console.log(res);
-			//response.json( res.body );
+			response.json( res.body );
 		} ) );
-*/
-
 }
 
 function checkConnection( serverResponse, fn ) {

@@ -5,6 +5,8 @@ var React = require( 'react' ),
 	url = require( 'url' ),
 	Qs = require( 'qs' ),
 	cloneDeep = require( 'lodash/lang/cloneDeep' ),
+	bindActionCreators = require( 'redux' ).bindActionCreators,
+	connect = require( 'react-redux' ).connect,
 	debug = require( 'debug' )( 'calypso:my-sites:customize' );
 
 /**
@@ -17,18 +19,20 @@ var notices = require( 'notices' ),
 	EmptyContent = require( 'components/empty-content' ),
 	SidebarNavigation = require( 'my-sites/sidebar-navigation' ),
 	museCustomizations = require( 'lib/customize/muse' ),
-	Actions = require( 'my-sites/customize/actions' );
+	Actions = require( 'my-sites/customize/actions' ),
+	themeActivated = require( 'state/themes/actions' ).activated;
 
 var mobileWidth = 400,
 	loadingTimer;
 
-module.exports = React.createClass( {
+var Customize = React.createClass( {
 	displayName: 'Customize',
 
 	propTypes: {
 		domain: React.PropTypes.string.isRequired,
 		sites: React.PropTypes.object.isRequired,
-		prevPath: React.PropTypes.string
+		prevPath: React.PropTypes.string,
+		themeActivated: React.PropTypes.func.isRequired
 	},
 
 	getDefaultProps: function() {
@@ -193,11 +197,15 @@ module.exports = React.createClass( {
 	buildCustomizerQuery: function() {
 		var protocol = window.location.protocol,
 			host = window.location.host,
-			query = cloneDeep( this.props.query );
+			query = cloneDeep( this.props.query ),
+			site = this.getSite();
 
 		query.return = protocol + '//' + host + this.getPreviousPath();
 		query.calypso = true;
 		query.calypsoOrigin = protocol + '//' + host;
+		if ( site.options && site.options.frame_nonce ) {
+			query['frame-nonce'] = site.options.frame_nonce;
+		}
 
 		return Qs.stringify( query );
 	},
@@ -258,7 +266,7 @@ module.exports = React.createClass( {
 					break;
 				case 'activated':
 					themeSlug = message.theme.stylesheet.split( '/' )[1];
-					Actions.activated( themeSlug, site );
+					Actions.activated( themeSlug, site, this.props.themeActivated );
 					break;
 				case 'purchased':
 					themeSlug = message.theme.stylesheet.split( '/' )[1];
@@ -369,3 +377,8 @@ module.exports = React.createClass( {
 		} );
 	}
 } );
+
+export default connect(
+	( state, props ) => props,
+	bindActionCreators.bind( null, { themeActivated } )
+)( Customize );

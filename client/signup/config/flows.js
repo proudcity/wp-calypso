@@ -2,8 +2,8 @@
  * External dependencies
  */
 var assign = require( 'lodash/object/assign' ),
-	reject = require( 'lodash/collection/reject' ),
-	page = require( 'page' );
+	includes = require( 'lodash/collection/includes' ),
+	reject = require( 'lodash/collection/reject' );
 
 /**
 * Internal dependencies
@@ -15,16 +15,15 @@ var config = require( 'config' ),
 	user = require( 'lib/user' )();
 
 function getCheckoutDestination( dependencies ) {
-	if ( dependencies.cartItem || dependencies.domainItem ) {
+	if ( dependencies.cartItem || dependencies.domainItem || dependencies.themeItem ) {
 		return '/checkout/' + dependencies.siteSlug;
 	}
 
-	/* NUX Trampoline A/B */
-	if ( 'trampoline' === getABTestVariation( 'nuxTrampoline' ) ) {
-		return 'https://' + dependencies.siteSlug;
-	}
+	return 'https://' + dependencies.siteSlug;
+}
 
-	return '/me/next?welcome';
+function getPostsDestination( dependencies ) {
+	return '/posts/' + dependencies.siteSlug;
 }
 
 const flows = {
@@ -38,21 +37,28 @@ const flows = {
 	},
 
 	business: {
-		steps: [ 'domains', 'user' ],
+		steps: [ 'themes', 'domains', 'user' ],
 		destination: function( dependencies ) {
 			return '/plans/select/business/' + dependencies.siteSlug;
 		},
 		description: 'Create an account and a blog and then add the business plan to the users cart.',
-		lastModified: null
+		lastModified: '2016-01-21'
 	},
 
 	premium: {
-		steps: [ 'domains', 'user' ],
+		steps: [ 'themes', 'domains', 'user' ],
 		destination: function( dependencies ) {
 			return '/plans/select/premium/' + dependencies.siteSlug;
 		},
 		description: 'Create an account and a blog and then add the business plan to the users cart.',
-		lastModified: null
+		lastModified: '2016-01-21'
+	},
+
+	'with-theme': {
+		steps: [ 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Preselect a theme to activate/buy from an external source',
+		lastModified: '2016-01-27'
 	},
 
 	main: {
@@ -60,6 +66,35 @@ const flows = {
 		destination: getCheckoutDestination,
 		description: 'The current best performing flow in AB tests',
 		lastModified: '2015-09-03'
+	},
+
+	plan: {
+		steps: [ 'themes', 'domains', 'select-plan', 'user' ],
+		destination: getCheckoutDestination,
+		description: '',
+		lastModified: '2016-02-02'
+	},
+
+	upgrade: {
+		steps: [ 'themes', 'domains', 'select-plan-or-skip', 'user' ],
+		destination: getCheckoutDestination,
+		description: '',
+		lastModified: '2016-02-02'
+	},
+
+	/* WP.com homepage flows */
+	website: {
+		steps: [ 'survey', 'themes', 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'This flow is used for the users who clicked "Create Website" on the two-button homepage.',
+		lastModified: '2016-01-28'
+	},
+
+	blog: {
+		steps: [ 'survey', 'themes', 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'This flow is used for the users who clicked "Create Blog" on the two-button homepage.',
+		lastModified: '2016-01-28'
 	},
 
 	/* On deck flows*/
@@ -70,20 +105,6 @@ const flows = {
 		destination: '/me/next/welcome',
 		description: 'This flow is used to test the site step.',
 		lastModified: '2015-09-22'
-	},
-
-	verticals: {
-		steps: [ 'survey', 'themes', 'domains', 'plans', 'survey-user' ],
-		destination: getCheckoutDestination,
-		description: 'Categorizing blog signups for Verticals Survey',
-		lastModified: '2015-12-10'
-	},
-
-	headstart: {
-		steps: [ 'theme-headstart', 'domains-with-theme', 'plans', 'user' ],
-		destination: getCheckoutDestination,
-		description: 'Show users their site after signup, with prepopulated content',
-		lastModified: '2015-10-01'
 	},
 
 	'delta-discover': {
@@ -121,18 +142,25 @@ const flows = {
 		lastModified: '2015-10-30'
 	},
 
+	headstart: {
+		steps: [ 'themes-headstart', 'domains-with-theme', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Regular flow but with Headstart enabled to pre-populate site content',
+		lastModified: '2015-02-01'
+	},
+
 	desktop: {
 		steps: [ 'themes', 'site', 'user' ],
-		destination: '/me/next?welcome',
+		destination: getPostsDestination,
 		description: 'Signup flow for desktop app',
 		lastModified: '2015-11-05'
 	},
 
-	dss: {
-		steps: [ 'theme-dss', 'domains-with-theme', 'plans', 'user' ],
+	layout: {
+		steps: [ 'design-type', 'themes', 'domains', 'plans', 'user' ],
 		destination: getCheckoutDestination,
-		description: 'Dynamic Screenshots and Headstart flow',
-		lastModified: '2015-11-13'
+		description: 'Theme trifurcation flow',
+		lastModified: '2015-12-14'
 	},
 
 	developer: {
@@ -142,10 +170,31 @@ const flows = {
 		lastModified: '2015-11-23'
 	},
 
-	'jetpack': {
+	jetpack: {
 		steps: [ 'jetpack-user' ],
 		destination: '/'
-	}
+	},
+
+	'free-trial': {
+		steps: [ 'themes', 'site', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Signup flow for free trials',
+		lastModified: '2015-12-18'
+	},
+
+	'website-altthemes': {
+		steps: [ 'survey', 'altthemes', 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Alternative theme selection for the users who clicked "Create Website" on the two-button homepage.',
+		lastModified: '2016-02-12'
+	},
+
+	'blog-altthemes': {
+		steps: [ 'survey', 'altthemes', 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Alternative theme selection for the users who clicked "Create blog" on the two-button homepage.',
+		lastModified: '2016-02-12'
+	},
 };
 
 function removeUserStepFromFlow( flow ) {
@@ -158,22 +207,23 @@ function removeUserStepFromFlow( flow ) {
 	} );
 }
 
-function getCurrentFlowNameFromTest( currentURL ) {
-	// Assign the user to the verticals survey test if appropriate.
-	if ( '/start/vert-blog' === currentURL || '/start/vert-site' === currentURL ) {
-		return ( 'noSurvey' === abtest( 'verticalSurvey' ) ) ? 'main' : 'verticals';
+function filterFlowName( flowName ) {
+	const headstartFlows = [ 'blog', 'website' ];
+	if ( includes( headstartFlows, flowName ) && 'headstart' === abtest( 'headstart' ) ) {
+		return 'headstart';
 	}
 
-	// Only consider users from the general /start path.
-	if ( '/start/en?ref=homepage' === currentURL && 'dss' === abtest( 'dss' ) ) {
-		return 'dss';
+	const altThemesFlows = [ 'blog', 'website' ];
+	if ( includes( altThemesFlows, flowName ) && 'notTested' === getABTestVariation( 'headstart' ) ) {
+		if ( 'altThemes' === abtest( 'altThemes' ) ) {
+			return ( 'blog' === flowName ) ? 'blog-altthemes' : 'website-altthemes';
+		}
 	}
-
-	return 'main';
+	return flowName;
 }
 
 module.exports = {
-	currentFlowName: getCurrentFlowNameFromTest( page.current ),
+	filterFlowName: filterFlowName,
 
 	defaultFlowName: 'main',
 

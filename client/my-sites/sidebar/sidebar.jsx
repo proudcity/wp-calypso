@@ -17,10 +17,14 @@ var config = require( 'config' ),
 	PublishMenu = require( './publish-menu' ),
 	SiteStatsStickyLink = require( 'components/site-stats-sticky-link' ),
 	productsValues = require( 'lib/products-values' ),
-	getCustomizeUrl = require( 'lib/themes/helpers' ).getCustomizeUrl,
-	SidebarMenuItem = require( './sidebar-menu-item' ),
+	getCustomizeUrl = require( '../themes/helpers' ).getCustomizeUrl,
 	AdsUtils = require( 'lib/ads/utils' ),
-	Gridicon = require( 'components/gridicon' );
+	Gridicon = require( 'components/gridicon' ),
+	Sidebar = require( 'layout/sidebar' ),
+	SidebarHeading = require( 'layout/sidebar/heading' ),
+	SidebarItem = require( 'layout/sidebar/item' ),
+	SidebarMenu = require( 'layout/sidebar/menu' ),
+	abtest = require( 'lib/abtest' ).abtest;
 
 module.exports = React.createClass( {
 	displayName: 'MySitesSidebar',
@@ -133,13 +137,12 @@ module.exports = React.createClass( {
 		}
 
 		return (
-			<SidebarMenuItem
+			<SidebarItem
 				label={ site.jetpack ? 'AdControl' : 'WordAds' }
 				className={ this.itemLinkClass( '/ads', 'ads' ) }
 				link={ adsLink }
 				onNavigate={ this.onNavigate }
-				icon={ 'speaker' }
-			/>
+				icon={ 'speaker' } />
 		);
 	},
 
@@ -227,6 +230,10 @@ module.exports = React.createClass( {
 			return null;
 		}
 
+		if ( ! this.props.sites.hasSiteWithPlugins() && ! this.isSingle() ) {
+			return null;
+		}
+
 		if ( ! config.isEnabled( 'manage/plugins' ) && site.options ) {
 			pluginsLink = site.options.admin_url + 'plugins.php';
 		}
@@ -251,9 +258,10 @@ module.exports = React.createClass( {
 
 	upgrades: function() {
 		var site = this.getSelectedSite(),
-			upgradesLink = '/plans' + this.siteSuffix(),
 			target = null,
-			upgradesLink = '/domains' + this.siteSuffix();
+			domainsLink = '/domains' + this.siteSuffix(),
+			addDomainLink = '/domains/add' + this.siteSuffix(),
+			addDomainButton = '';
 
 		if ( ! site ) {
 			return null;
@@ -279,12 +287,17 @@ module.exports = React.createClass( {
 			return null;
 		}
 
+		if ( config.isEnabled( 'upgrades/domain-search' ) ) {
+			addDomainButton = <a onClick={ this.onNavigate } href={ addDomainLink } className="add-new">{ this.translate( 'Add' ) }</a>;
+		}
+
 		return (
-			 <li className={ this.itemLinkClass( [ '/domains' ], 'domains' ) }>
-				<a onClick={ this.onNavigate } href={ upgradesLink } target={ target }>
-					<Gridicon icon="cart" size={ 24 } />
+			<li className={ this.itemLinkClass( [ '/domains' ], 'domains' ) }>
+				<a onClick={ this.onNavigate } href={ domainsLink } target={ target }>
+					<Gridicon icon="globe" size={ 24 } />
 					<span className="menu-link-text">{ this.translate( 'Domains' ) }</span>
 				</a>
+				{ addDomainButton }
 			</li>
 		);
 	},
@@ -308,12 +321,43 @@ module.exports = React.createClass( {
 			return null;
 		}
 
-		const planLink = '/plans' + this.siteSuffix(),
-			planName = ( this.isSingle() ) ? site.plan.product_name_short : '';
+		const planLink = '/plans' + this.siteSuffix();
 
 		let linkClass = 'upgrades-nudge';
+
 		if ( productsValues.isPlan( site.plan ) ) {
 			linkClass += ' is-paid-plan';
+		}
+
+		let planName = site.plan.product_name_short,
+			labelClass = 'plan-name';
+
+		const testVariation = abtest( 'plansUpgradeButton' );
+
+		if ( testVariation !== 'original' && productsValues.isFreePlan( site.plan ) ) {
+			labelClass = 'add-new';
+
+			if ( testVariation === 'free' ) {
+				planName = 'Free'; // TODO: translate this string if the test is removed
+			}
+
+			if ( testVariation === 'add' ) {
+				planName = 'Add'; // TODO: translate this string if the test is removed
+			}
+
+			if ( testVariation === 'info' ) {
+				planName = 'Info'; // TODO: translate this string if the test is removed
+			}
+
+			if ( testVariation === 'change' ) {
+				planName = 'Change'; // TODO: translate this string if the test is removed
+			}
+		}
+
+		if ( productsValues.isFreeTrial( site.plan ) ) {
+			planName = this.translate( 'Trial', {
+				context: 'Label in the sidebar indicating that the user is on the free trial for a plan.'
+			} );
 		}
 
 		return (
@@ -322,7 +366,7 @@ module.exports = React.createClass( {
 					<Gridicon icon="clipboard" size={ 24 } />
 					<span className="menu-link-text">{ this.translate( 'Plan', { context: 'noun' } ) }</span>
 				</a>
-				<a href={ planLink } className="plan-name" onClick={ this.trackUpgradeClick }>{ planName }</a>
+				<a href={ planLink } className={ labelClass } onClick={ this.trackUpgradeClick }>{ planName }</a>
 			</li>
 		);
 	},
@@ -370,7 +414,7 @@ module.exports = React.createClass( {
 	users: function() {
 		var site = this.getSelectedSite(),
 			usersLink = '/people/team' + this.siteSuffix(),
-			addPeopleLink = '/people' + this.siteSuffix() + '/new',
+			addPeopleLink = '/people/new' + this.siteSuffix(),
 			addPeopleTarget = '_self',
 			addPeopleButton;
 
@@ -390,10 +434,10 @@ module.exports = React.createClass( {
 			usersLink = site.options.admin_url + 'users.php';
 		}
 
-		if ( ! config.isEnabled( 'manage/add-people' ) && site.options ) {
-			addPeopleLink = ( site.jetpack ) ?
-				site.options.admin_url + 'user-new.php' :
-				site.options.admin_url + 'users.php?page=wpcom-invite-users';
+		if ( site.options && ( ! config.isEnabled( 'manage/add-people' ) || site.jetpack ) ) {
+			addPeopleLink = ( site.jetpack )
+				? site.options.admin_url + 'user-new.php'
+				: site.options.admin_url + 'users.php?page=wpcom-invite-users';
 			addPeopleTarget = '_blank';
 		}
 
@@ -439,27 +483,6 @@ module.exports = React.createClass( {
 		);
 	},
 
-	homepage: function() {
-		var site = this.getSelectedSite();
-
-		if ( ! this.isSingle() ) {
-			return null;
-		}
-
-		return (
-			<li className={ this.itemLinkClass( '/homepage', 'homepage' ) }>
-				<a onClick={ this.trackHomepageClick } href={ site.URL }>
-					<Gridicon icon="house" size={ 24 } />
-					<span className="menu-link-text">{ this.translate( 'View Site' ) }</span>
-				</a>
-			</li>
-		);
-	},
-
-	trackHomepageClick: function() {
-		analytics.ga.recordEvent( 'Sidebar', 'Clicked View Site' );
-	},
-
 	wpAdmin: function() {
 		var site = this.getSelectedSite(),
 			currentUser = this.props.user.get();
@@ -496,13 +519,14 @@ module.exports = React.createClass( {
 	},
 
 	vip: function() {
+		var site, viplink;
 
 		if ( ! config.isEnabled( 'vip' ) ) {
 			return null;
 		}
 
-		var site = this.getSelectedSite(),
-			viplink = '/vip/updates' + this.siteSuffix();
+		site = this.getSelectedSite();
+		viplink = '/vip/updates' + this.siteSuffix();
 
 		if ( ! site ) {
 			return null;
@@ -518,13 +542,14 @@ module.exports = React.createClass( {
 	},
 
 	vipDeploys: function() {
+		var site, viplink;
 
 		if ( ! config.isEnabled( 'vip/deploys' ) ) {
 			return null;
 		}
 
-		var site = this.getSelectedSite(),
-			viplink = '/vip/deploys' + this.siteSuffix();
+		site = this.getSelectedSite()
+		viplink = '/vip/deploys' + this.siteSuffix();
 
 		if ( ! site ) {
 			return null;
@@ -540,13 +565,14 @@ module.exports = React.createClass( {
 	},
 
 	vipBilling: function() {
+		var site, viplink;
 
 		if ( ! config.isEnabled( 'vip/billing' ) ) {
 			return null;
 		}
 
-		var site = this.getSelectedSite(),
-			viplink = '/vip/billing' + this.siteSuffix();
+		site = this.getSelectedSite();
+		viplink = '/vip/billing' + this.siteSuffix();
 
 		if ( ! site ) {
 			return null;
@@ -562,12 +588,13 @@ module.exports = React.createClass( {
 	},
 
 	vipSupport: function() {
+		var viplink;
 
 		if ( ! config.isEnabled( 'vip/support' ) ) {
 			return null;
 		}
 
-		var viplink = '/vip/support' + this.siteSuffix();
+		viplink = '/vip/support' + this.siteSuffix();
 
 		return (
 			<li className={ this.itemLinkClass( '/vip/support', 'sidebar__vip-support' ) }>
@@ -579,13 +606,14 @@ module.exports = React.createClass( {
 	},
 
 	vipBackups: function() {
+		var site, viplink;
 
 		if ( ! config.isEnabled( 'vip/backups' ) ) {
 			return null;
 		}
 
-		var site = this.getSelectedSite(),
-			viplink = '/vip/backups' + this.siteSuffix();
+		site = this.getSelectedSite();
+		viplink = '/vip/backups' + this.siteSuffix();
 
 		if ( ! site ) {
 			return null;
@@ -601,13 +629,14 @@ module.exports = React.createClass( {
 	},
 
 	vipLogs: function() {
+		var site, viplink;
 
 		if ( ! config.isEnabled( 'vip/logs' ) ) {
 			return null;
 		}
 
-		var site = this.getSelectedSite(),
-			viplink = '/vip/logs' + this.siteSuffix();
+		site = this.getSelectedSite();
+		viplink = '/vip/logs' + this.siteSuffix();
 
 		if ( ! site ) {
 			return null;
@@ -629,63 +658,68 @@ module.exports = React.createClass( {
 			vip = !! this.vip();
 
 		return (
-			<ul className="wpcom-sidebar sidebar">
-				<CurrentSite sites={ this.props.sites } siteCount={ this.props.user.get().visible_site_count } />
-
-				<li className="sidebar-menu">
+			<Sidebar>
+				<CurrentSite
+					sites={ this.props.sites }
+					siteCount={ this.props.user.get().visible_site_count }
+				/>
+				<SidebarMenu>
 					<ul>
-						{ this.homepage() }
 						{ this.stats() }
 						{ this.ads() }
 						{ this.plan() }
 					</ul>
-				</li>
+				</SidebarMenu>
 
-				{ vip ?
-				<li className="sidebar-menu wordpress-utilities">
-					<h2 className="sidebar-heading">VIP</h2>
-					<ul>
-						{ this.vip() }
-						{ this.vipDeploys() }
-						{ this.vipBilling() }
-						{ this.vipSupport() }
-						{ this.vipBackups() }
-						{ this.vipLogs() }
-					</ul>
-				</li>
-				: null }
-				{ publish ?
-				<li className="sidebar-menu wordpress-content">
-					<h2 className="sidebar-heading">{ this.translate( 'Publish' ) }</h2>
-					{ this.publish() }
-				</li>
-				: null }
+				{ vip
+					? <SidebarMenu>
+						<SidebarHeading>VIP</SidebarHeading>
+						<ul>
+							{ this.vip() }
+							{ this.vipDeploys() }
+							{ this.vipBilling() }
+							{ this.vipSupport() }
+							{ this.vipBackups() }
+							{ this.vipLogs() }
+						</ul>
+					</SidebarMenu>
+					: null
+				}
 
-				{ appearance ?
-				<li className="sidebar-menu wordpress-appearance">
-					<h2 className="sidebar-heading">{ this.translate( 'Personalize' ) }</h2>
-					<ul>
-						{ this.themes() }
-						{ this.menus() }
-					</ul>
-				</li>
-				: null }
+				{ publish
+					? <SidebarMenu>
+						<SidebarHeading>{ this.translate( 'Publish' ) }</SidebarHeading>
+						{ this.publish() }
+					</SidebarMenu>
+					: null
+				}
 
-				{ configuration ?
-				<li className="sidebar-menu wordpress-utilities">
-					<h2 className="sidebar-heading">{ this.translate( 'Configure' ) }</h2>
-					<ul>
-						{ this.sharing() }
-						{ this.users() }
-						{ this.plugins() }
-						{ this.upgrades() }
-						{ this.siteSettings() }
-						{ this.wpAdmin() }
-					</ul>
-				</li>
-				: null }
+				{ appearance
+					? <SidebarMenu>
+						<SidebarHeading>{ this.translate( 'Personalize' ) }</SidebarHeading>
+						<ul>
+							{ this.themes() }
+							{ this.menus() }
+						</ul>
+					</SidebarMenu>
+					: null
+				}
 
-			</ul>
+				{ configuration
+					? <SidebarMenu>
+						<SidebarHeading>{ this.translate( 'Configure' ) }</SidebarHeading>
+						<ul>
+							{ this.sharing() }
+							{ this.users() }
+							{ this.plugins() }
+							{ this.upgrades() }
+							{ this.siteSettings() }
+							{ this.wpAdmin() }
+						</ul>
+					</SidebarMenu>
+					: null
+				}
+			</Sidebar>
 		);
 	}
 } );

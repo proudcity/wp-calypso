@@ -2,30 +2,57 @@
 	margin-bottom: 30px;
 }
 
-.plan-status__info {
-	align-items: center;
-	display: flex;
+// the nesting here is necessary to override the styles in the `PlanOverview` stylesheet
+.plan-overview .plan-status__button.button {
+	@include breakpoint( "<960px" ) {
+		margin-left: 0;
+		min-width: 0;
+	}
 }
 
 .plan-status__header {
-	float: left;
-	margin-left: 20px;
-	width: 80%;
+	flex-grow: 1;
+
+	@include breakpoint( ">480px" ) {
+		margin-left: 20px;
+		margin-right: 10px;
+	}
 }
 
 .plan-status__icon {
 	background-position: center;
 	background-repeat: no-repeat;
-	float: left;
+	border-radius: 50%;
+	border: 3px solid lighten( $gray, 30% );
 	height: 50px;
-	width: 50px;
+	min-width: 50px;
+	position: relative;
 
 	&.is-premium {
 		background-image: url( '/calypso/images/plans/plan-trial-premium.svg' );
+
+		&.is-expired {
+			background-image: url( '/calypso/images/plans/plan-premium.svg' );
+		}
 	}
 
 	&.is-business {
 		background-image: url( '/calypso/images/plans/plan-trial-business.svg' );
+
+		&.is-expired {
+			background-image: url( '/calypso/images/plans/plan-business.svg' );
+		}
+	}
+
+	@include breakpoint( "<480px" ) {
+		display: none;
+	}
+
+	.gridicon {
+		fill: $alert-red;
+		position: absolute;
+			bottom: -7px;
+			right: -7px;
 	}
 }
 
@@ -38,19 +65,10 @@
 .plan-status__plan {
 	line-height: 26px;
 	font-family: Merriweather, Georgia, "Times New Roman", Times, serif;
-	font-size: 24px;
+	font-size: 18px;
 	font-weight: 700;
-}
 
-.plan-status__time-until-expiry {
-	box-sizing: border-box;
-	float: left;
-	font-weight: 700;
-	padding-right: 20px;
-	text-align: center;
-	width: 180px;
-}
-
-.plan-status__progress {
-	margin-left: 180px;
+	@include breakpoint( ">960px" ) {
+		font-size: 21px;
+	}
 }

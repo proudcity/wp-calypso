@@ -2,7 +2,10 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-pure-render/mixin';
 import isNaN from 'lodash/lang/isNaN';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /**
  * Internal dependencies
@@ -10,13 +13,15 @@ import isNaN from 'lodash/lang/isNaN';
 import TextInput from 'components/forms/form-text-input';
 import postActions from 'lib/posts/actions';
 import { recordEvent, recordStat } from 'lib/posts/stats';
+import { setMenuOrder } from 'state/ui/editor/post/actions';
 
-export default React.createClass( {
+const EditorPageOrder = React.createClass( {
 	displayName: 'EditorPageOrder',
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	propTypes: {
+		setMenuOrder: PropTypes.func,
 		menuOrder: PropTypes.oneOfType( [
 			PropTypes.number,
 			PropTypes.string
@@ -25,6 +30,7 @@ export default React.createClass( {
 
 	getDefaultProps() {
 		return {
+			setMenuOrder: () => {},
 			menuOrder: 0
 		};
 	},
@@ -54,9 +60,11 @@ export default React.createClass( {
 			recordStat( 'advanced_menu_order_changed' );
 			recordEvent( 'Changed page menu order' );
 
+			// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 			postActions.edit( {
 				menu_order: newOrder
 			} );
+			this.props.setMenuOrder( newOrder );
 		}
 	},
 
@@ -71,3 +79,8 @@ export default React.createClass( {
 		);
 	}
 } );
+
+export default connect(
+	null,
+	dispatch => bindActionCreators( { setMenuOrder }, dispatch )
+)( EditorPageOrder );

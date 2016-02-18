@@ -6,16 +6,16 @@ import { expect } from 'chai';
 /**
  * Internal dependencies
  */
-import { SET_SELECTED_SITE } from 'state/action-types';
-import { setSelectedSite } from '../actions';
+import { SELECTED_SITE_SET } from 'state/action-types';
+import { setSelectedSiteId } from '../actions';
 
 describe( 'actions', () => {
-	describe( '#setSelectedSite()', () => {
+	describe( '#setSelectedSiteId()', () => {
 		it( 'should return an action object', () => {
-			const action = setSelectedSite( 2916284 );
+			const action = setSelectedSiteId( 2916284 );
 
 			expect( action ).to.eql( {
-				type: SET_SELECTED_SITE,
+				type: SELECTED_SITE_SET,
 				siteId: 2916284
 			} );
 		} );

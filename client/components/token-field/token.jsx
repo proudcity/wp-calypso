@@ -1,29 +1,40 @@
 /**
  * External dependencies
  */
-var React = require( 'react/addons' ),
-	noop = require( 'lodash/utility/noop' );
+var React = require( 'react' ),
+	PureRenderMixin = require( 'react-pure-render/mixin' ),
+	classNames = require( 'classnames' );
 
 var Token = React.createClass( {
 	propTypes: {
 		value: React.PropTypes.string.isRequired,
-		valueTransform: React.PropTypes.func.isRequired,
-		onClickRemove: React.PropTypes.func
+		displayTransform: React.PropTypes.func.isRequired,
+		onClickRemove: React.PropTypes.func,
+		status: React.PropTypes.oneOf( [ 'error', 'success', 'validating' ] ),
+		isBorderless: React.PropTypes.bool
 	},
 
 	getDefaultProps: function() {
 		return {
-			onClickRemove: noop
+			onClickRemove: function() {},
+			isBorderless: false
 		};
 	},
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	render: function() {
+		const tokenClasses = classNames( 'token-field__token', {
+			'is-error': 'error' === this.props.status,
+			'is-success': 'success' === this.props.status,
+			'is-validating': 'validating' === this.props.status,
+			'is-borderless': this.props.isBorderless
+		} );
+
 		return (
-			<span className="token-field__token" tabIndex="-1">
+			<span className={ tokenClasses } tabIndex="-1">
 				<span className="token-field__token-text">
-					{ this.props.valueTransform( this.props.value ) }
+					{ this.props.displayTransform( this.props.value ) }
 				</span>
 				<span
 					className="token-field__remove-token noticon noticon-close-alt"

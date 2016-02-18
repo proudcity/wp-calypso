@@ -2,6 +2,7 @@
  * External dependencies
  */
 var React = require( 'react' ),
+	LinkedStateMixin = require( 'react-addons-linked-state-mixin' ),
 	debug = require( 'debug' )( 'calypso:me:reauth-required' );
 
 /**
@@ -25,7 +26,7 @@ module.exports = React.createClass( {
 
 	displayName: 'ReauthRequired',
 
-	mixins: [ React.addons.LinkedStateMixin, observe( 'twoStepAuthorization' ), eventRecorder ],
+	mixins: [ LinkedStateMixin, observe( 'twoStepAuthorization' ), eventRecorder ],
 
 	getInitialState: function() {
 		return {
@@ -143,7 +144,6 @@ module.exports = React.createClass( {
 		return (
 			<div className="reauth-required__send-sms-throttled">
 				<Notice
-					isCompact={ true }
 					showDismiss={ false }
 					text={ this.translate(
 						'SMS codes are limited to once per minute. Please wait and try again.'

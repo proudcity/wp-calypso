@@ -8,9 +8,11 @@ import indexBy from 'lodash/collection/indexBy';
  * Internal dependencies
  */
 import {
-	FETCH_PUBLICIZE_CONNECTIONS,
-	RECEIVE_PUBLICIZE_CONNECTIONS,
-	FAIL_PUBLICIZE_CONNECTIONS_REQUEST
+	PUBLICIZE_CONNECTIONS_REQUEST,
+	PUBLICIZE_CONNECTIONS_RECEIVE,
+	PUBLICIZE_CONNECTIONS_REQUEST_FAILURE,
+	SERIALIZE,
+	DESERIALIZE
 } from 'state/action-types';
 
 /**
@@ -25,14 +27,17 @@ import {
  */
 export function fetchingConnections( state = {}, action ) {
 	switch ( action.type ) {
-		case FETCH_PUBLICIZE_CONNECTIONS:
-		case RECEIVE_PUBLICIZE_CONNECTIONS:
-		case FAIL_PUBLICIZE_CONNECTIONS_REQUEST:
+		case PUBLICIZE_CONNECTIONS_REQUEST:
+		case PUBLICIZE_CONNECTIONS_RECEIVE:
+		case PUBLICIZE_CONNECTIONS_REQUEST_FAILURE:
 			const { type, siteId } = action;
-			state = Object.assign( {}, state, {
-				[ siteId ]: FETCH_PUBLICIZE_CONNECTIONS === type
+			return Object.assign( {}, state, {
+				[ siteId ]: PUBLICIZE_CONNECTIONS_REQUEST === type
 			} );
-			break;
+		case SERIALIZE:
+			return state;
+		case DESERIALIZE:
+			return state;
 	}
 
 	return state;
@@ -47,9 +52,12 @@ export function fetchingConnections( state = {}, action ) {
  */
 export function connections( state = {}, action ) {
 	switch ( action.type ) {
-		case RECEIVE_PUBLICIZE_CONNECTIONS:
-			state = Object.assign( {}, state, indexBy( action.data.connections, 'ID' ) );
-			break;
+		case PUBLICIZE_CONNECTIONS_RECEIVE:
+			return Object.assign( {}, state, indexBy( action.data.connections, 'ID' ) );
+		case SERIALIZE:
+			return state;
+		case DESERIALIZE:
+			return state;
 	}
 
 	return state;
@@ -66,11 +74,14 @@ export function connections( state = {}, action ) {
  */
 export function connectionsBySiteId( state = {}, action ) {
 	switch ( action.type ) {
-		case RECEIVE_PUBLICIZE_CONNECTIONS:
-			state = Object.assign( {}, state, {
+		case PUBLICIZE_CONNECTIONS_RECEIVE:
+			return Object.assign( {}, state, {
 				[ action.siteId ]: action.data.connections.map( ( connection ) => connection.ID )
 			} );
-			break;
+		case SERIALIZE:
+			return state;
+		case DESERIALIZE:
+			return state;
 	}
 
 	return state;

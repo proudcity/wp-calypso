@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-pure-render/mixin';
 
 /**
  * Internal dependencies
@@ -9,11 +10,12 @@ import React, { PropTypes } from 'react';
 import AuthorSelector from 'components/author-selector';
 import UserItem from 'components/user';
 import user from 'lib/user';
+import Gridicon from 'components/gridicon'
 
 export default React.createClass( {
 	displayName: 'ImporterAuthorMapping',
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	propTypes: {
 		hasSingleAuthor: PropTypes.bool.isRequired,
@@ -30,6 +32,14 @@ export default React.createClass( {
 		} ).isRequired
 	},
 
+	componentWillMount() {
+		const { hasSingleAuthor, onSelect: selectAuthor } = this.props;
+
+		if ( hasSingleAuthor ) {
+			selectAuthor( this.getCurrentUser() );
+		}
+	},
+
 	getCurrentUser() {
 		const currentUser = user().get();
 
@@ -44,13 +54,12 @@ export default React.createClass( {
 				<span className="importer__source-author">
 					{ name }
 				</span>
-				<span className="importer__mapping-relation" />
-				{ ! hasSingleAuthor ?
-					<AuthorSelector siteId={ siteId } onSelect={ onSelect }>
-						<UserItem user={ selectedAuthor } />
-					</AuthorSelector>
-				:
-					<UserItem user={ this.getCurrentUser() } />
+				<Gridicon className="importer__mapping-relation" icon="arrow-right" />
+				{ ! hasSingleAuthor
+					?	<AuthorSelector siteId={ siteId } onSelect={ onSelect }>
+							<UserItem user={ selectedAuthor } />
+						</AuthorSelector>
+					: 	<UserItem user={ this.getCurrentUser() } />
 				}
 			</div>
 		);

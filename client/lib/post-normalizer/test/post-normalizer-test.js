@@ -15,6 +15,7 @@ const assert = require( 'chai' ).assert,
  * Internal dependencies
  */
 let normalizer = require( '../' ),
+	safeImageUrlFake = require( 'lib/safe-image-url' ),
 	allTransforms = [
 		normalizer.decodeEntities,
 		normalizer.stripHTML,
@@ -215,12 +216,24 @@ describe( 'post-normalizer', function() {
 				featured_media: {
 					uri: 'http://example.com/media.jpg',
 					type: 'image'
+				},
+				attachments: {
+					1234: {
+						mime_type: 'image/png',
+						URL: 'http://example.com/media.jpg'
+					},
+					3456: {
+						mime_type: 'text/text',
+						URL: 'http://example.com/media.jpg'
+					}
 				}
 			};
 			normalizer( post, [ normalizer.safeImageProperties( 200 ) ], function( err, normalized ) {
 				assert.strictEqual( normalized.author.avatar_URL, 'http://example.com/me.jpg-SAFE?w=200&quality=80&strip=info' );
 				assert.strictEqual( normalized.featured_image, 'http://foo.bar/-SAFE?w=200&quality=80&strip=info' );
 				assert.strictEqual( normalized.featured_media.uri, 'http://example.com/media.jpg-SAFE?w=200&quality=80&strip=info' );
+				assert.strictEqual( normalized.attachments['1234'].URL, 'http://example.com/media.jpg-SAFE?w=200&quality=80&strip=info' )
+				assert.strictEqual( normalized.attachments['3456'].URL, 'http://example.com/media.jpg' );
 				done( err );
 			} );
 		} );
@@ -277,6 +290,34 @@ describe( 'post-normalizer', function() {
 				assert.deepEqual( normalized.primary_tag, post.tags[ 0 ] );
 				done( err );
 			} );
+		} );
+	} );
+
+	describe( 'content.disableAutoPlayOnMediaShortcodes', function() {
+		it( 'should strip autoplay attributes from video', function( done ) {
+			normalizer(
+				{
+					content: '<video autoplay="1"></video>'
+				},
+				[ normalizer.withContentDOM( [ normalizer.content.disableAutoPlayOnMedia ] ) ],
+				function( err, normalized ) {
+					assert.deepEqual( normalized, { content: '<video></video>' } );
+					done( err );
+				}
+			)
+		} );
+
+		it( 'should strip autoplay attributes from audio', function( done ) {
+			normalizer(
+				{
+					content: '<audio autoplay="1"></audio>'
+				},
+				[ normalizer.withContentDOM( [ normalizer.content.disableAutoPlayOnMedia ] ) ],
+				function( err, normalized ) {
+					assert.deepEqual( normalized, { content: '<audio></audio>' } );
+					done( err );
+				}
+			)
 		} );
 	} );
 
@@ -401,6 +442,20 @@ describe( 'post-normalizer', function() {
 			);
 		} );
 
+		it( 'can remove images that cannot be made safe', function( done ) {
+			safeImageUrlFake.setReturns( null );
+			normalizer(
+				{
+					content: '<img width="700" height="700" src="http://example.com/example.jpg?nope">'
+				},
+				[ normalizer.withContentDOM( [ normalizer.content.safeContentImages( 400 ) ] ) ], function( err, normalized ) {
+					assert.equal( normalized.content, '' );
+					done( err );
+				}
+			);
+			safeImageUrlFake.undoReturns();
+		} );
+
 		it( 'removes event handlers from content images', function( done ) {
 			normalizer(
 				{
@@ -408,6 +463,18 @@ describe( 'post-normalizer', function() {
 				},
 				[ normalizer.withContentDOM( [ normalizer.content.safeContentImages() ] ) ], function( err, normalized ) {
 					assert.equal( normalized.content, '<img src="http://example.com/example.jpg-SAFE">' );
+					done( err );
+				}
+			);
+		} );
+
+		it( 'fixes up srcsets', function( done ) {
+			normalizer(
+				{
+					content: '<img src="http://example.com/example.jpg" srcset="http://example.com/example-100.jpg 100w, http://example.com/example-600.jpg 600w">'
+				},
+				[ normalizer.withContentDOM( [ normalizer.content.safeContentImages() ] ) ], function( err, normalized ) {
+					assert.equal( normalized.content, '<img src="http://example.com/example.jpg-SAFE" srcset="http://example.com/example-100.jpg-SAFE 100w, http://example.com/example-600.jpg-SAFE 600w">' );
 					done( err );
 				}
 			);

@@ -1,13 +1,16 @@
 /**
  * External dependencies
  */
-var noop = require( 'lodash/utility/noop' ),
-	React = require( 'react/addons' );
+const noop = require( 'lodash/utility/noop' ),
+	React = require( 'react' ),
+	PureRenderMixin = require( 'react-pure-render/mixin' );
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /**
  * Internal dependencies
  */
-var Card = require( 'components/card' ),
+const Card = require( 'components/card' ),
 	EditPostStatus = require( 'post-editor/edit-post-status' ),
 	Gridicon = require( 'components/gridicon' ),
 	Popover = require( 'components/popover' ),
@@ -15,20 +18,18 @@ var Card = require( 'components/card' ),
 	StatusLabel = require( 'post-editor/status-label' ),
 	postUtils = require( 'lib/posts/utils' ),
 	siteUtils = require( 'lib/site/utils' ),
-	Popover = require( 'components/popover' ),
 	PostSchedule = require( 'components/post-schedule' ),
 	postActions = require( 'lib/posts/actions' ),
-	StickyPanel = require( 'components/sticky-panel' ),
 	Tooltip = require( 'components/tooltip' ),
 	PostListFetcher = require( 'components/post-list-fetcher' ),
-	StickyPanel = require( 'components/sticky-panel' ),
 	stats = require( 'lib/posts/stats' );
+import { setDate } from 'state/ui/editor/post/actions';
 
 function isPostEmpty( props ) {
 	return ( props.isNew && ! props.isDirty ) || ! props.hasContent;
 }
 
-module.exports = React.createClass( {
+const EditorGroundControl = React.createClass( {
 	displayName: 'EditorGroundControl',
 	propTypes: {
 		hasContent: React.PropTypes.bool,
@@ -41,12 +42,13 @@ module.exports = React.createClass( {
 		onPublish: React.PropTypes.func,
 		onSaveDraft: React.PropTypes.func,
 		post: React.PropTypes.object,
+		setDate: React.PropTypes.func,
 		savedPost: React.PropTypes.object,
 		site: React.PropTypes.object,
 		type: React.PropTypes.string
 	},
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	getDefaultProps: function() {
 		return {
@@ -60,6 +62,7 @@ module.exports = React.createClass( {
 			onSaveDraft: noop,
 			post: null,
 			savedPost: null,
+			setDate: () => {},
 			site: {}
 		};
 	},
@@ -69,14 +72,15 @@ module.exports = React.createClass( {
 			showSchedulePopover: false,
 			showAdvanceStatus: false,
 			showDateTooltip: false,
-			siteTooltip: false,
 			firstDayOfTheMonth: this.getFirstDayOfTheMonth(),
 			lastDayOfTheMonth: this.getLastDayOfTheMonth()
 		};
 	},
 
 	setPostDate: function( date ) {
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		postActions.edit( { date: date ? date.format() : null } );
+		this.props.setDate( date );
 	},
 
 	setCurrentMonth: function( date ) {
@@ -258,14 +262,6 @@ module.exports = React.createClass( {
 		this.setState( { showAdvanceStatus: ! this.state.showAdvanceStatus } );
 	},
 
-	showSiteTooltip: function() {
-		this.setState( { siteTooltip: true } );
-	},
-
-	hideSiteTooltip: function() {
-		this.setState( { siteTooltip: false } );
-	},
-
 	onPrimaryButtonClick: function() {
 		this.trackPrimaryButton();
 
@@ -324,101 +320,95 @@ module.exports = React.createClass( {
 
 	render: function() {
 		return (
-			<StickyPanel className="editor-ground-control">
-				<Card>
-					<Site
-						site={ this.props.site }
-						indicator={ false }
-						href={ this.props.site.URL }
-						externalLink={ true }
-						ref="site"
-						onMouseEnter={ this.showSiteTooltip }
-						onMouseLeave={ this.hideSiteTooltip }
+			<Card className="editor-ground-control">
+				<Site
+					site={ this.props.site }
+					indicator={ false }
+					homeLink={ true }
+					externalLink={ true }
+				/>
+				<hr className="editor-ground-control__separator" />
+				<div className="editor-ground-control__status">
+					<StatusLabel
+						post={ this.props.savedPost }
+						onClick={ this.toggleAdvancedStatus }
+						advancedStatus={ this.state.showAdvanceStatus }
+						type={ this.props.type }
 					/>
-					<Tooltip context={ this.refs && this.refs.site } isVisible={ this.state.siteTooltip } position="right">
-						<span className="editor-ground-control__view-site-tooltip">
-							{ this.translate( 'View site' ) }
-						</span>
-					</Tooltip>
-					<hr className="editor-ground-control__separator" />
-					<div className="editor-ground-control__status">
-						<StatusLabel
-							post={ this.props.savedPost }
-							onClick={ this.toggleAdvancedStatus }
-							advancedStatus={ this.state.showAdvanceStatus }
-							type={ this.props.type }
-						/>
-						{ this.isSaveEnabled() &&
-							<button
-								className="editor-ground-control__save button is-link"
-								onClick={ this.onSaveButtonClick }
-								tabIndex={ 3 }
-							>
-								{ this.translate( 'Save' ) }
-							</button>
-						}
-						{ this.props.isSaving &&
-							<span className="editor-ground-control__saving">
-								{ this.translate( 'Saving…' ) }
-							</span>
-						}
-					</div>
-					{
-						this.state.showAdvanceStatus &&
-							<EditPostStatus
-								post={ this.props.post }
-								savedPost={ this.props.savedPost }
-								type={ this.props.type }
-								onSave={ this.props.onSave }
-								onTrashingPost={ this.props.onTrashingPost }
-								onDateChange={ this.setPostDate }
-								site={ this.props.site }>
-							</EditPostStatus>
-					}
-					<div className="editor-ground-control__action-buttons">
+					{ this.isSaveEnabled() &&
 						<button
-							className="editor-ground-control__preview-button button"
-							disabled={ ! this.isPreviewEnabled() }
-							onClick={ this.onPreviewButtonClick }
-							tabIndex={ 4 }
+							className="editor-ground-control__save button is-link"
+							onClick={ this.onSaveButtonClick }
+							tabIndex={ 3 }
 						>
-							{ this.getPreviewLabel() }
+							{ this.translate( 'Save' ) }
 						</button>
-						<div className="editor-ground-control__publish-combo">
-							<button
-								className="editor-ground-control__publish-button button is-primary"
-								onClick={ this.onPrimaryButtonClick }
-								disabled={ ! this.isPrimaryButtonEnabled() }
-								tabIndex={ 5 }
-							>
-								{ this.getPrimaryButtonLabel() }
-							</button>
-							{ siteUtils.userCan( 'publish_posts', this.props.site ) &&
-								<button
-									ref="schedulePost"
-									className="editor-ground-control__time-button button is-primary"
-									onClick={ this.toggleSchedulePopover }
-									onMouseEnter={ this.showDateTooltip }
-									onMouseLeave={ this.hideDateTooltip }
-									aria-label={ this.translate( 'Schedule date and time to publish post.' ) }
-									aria-pressed={ !! this.state.showSchedulePopover }
-									tabIndex={ 6 }
-								>
-									{ postUtils.isFutureDated( this.props.post )
-										? <Gridicon icon="scheduled" size={ 18 } />
-										: <Gridicon icon="calendar" size={ 18 } />
-									}
-								</button>
-							}
-							{ this.renderDateTooltip() }
-						</div>
+					}
+					{ this.props.isSaving &&
+						<span className="editor-ground-control__saving">
+							{ this.translate( 'Saving…' ) }
+						</span>
+					}
+				</div>
+				{
+					this.state.showAdvanceStatus &&
+						<EditPostStatus
+							post={ this.props.post }
+							savedPost={ this.props.savedPost }
+							type={ this.props.type }
+							onSave={ this.props.onSave }
+							onTrashingPost={ this.props.onTrashingPost }
+							onDateChange={ this.setPostDate }
+							site={ this.props.site }>
+						</EditPostStatus>
+				}
+				<div className="editor-ground-control__action-buttons">
+					<button
+						className="editor-ground-control__preview-button button"
+						disabled={ ! this.isPreviewEnabled() }
+						onClick={ this.onPreviewButtonClick }
+						tabIndex={ 4 }
+					>
+						{ this.getPreviewLabel() }
+					</button>
+					<div className="editor-ground-control__publish-combo">
+						<button
+							className="editor-ground-control__publish-button button is-primary"
+							onClick={ this.onPrimaryButtonClick }
+							disabled={ ! this.isPrimaryButtonEnabled() }
+							tabIndex={ 5 }
+						>
+							{ this.getPrimaryButtonLabel() }
+						</button>
 						{ siteUtils.userCan( 'publish_posts', this.props.site ) &&
-							this.schedulePostPopover()
+							<button
+								ref="schedulePost"
+								className="editor-ground-control__time-button button is-primary"
+								onClick={ this.toggleSchedulePopover }
+								onMouseEnter={ this.showDateTooltip }
+								onMouseLeave={ this.hideDateTooltip }
+								aria-label={ this.translate( 'Schedule date and time to publish post.' ) }
+								aria-pressed={ !! this.state.showSchedulePopover }
+								tabIndex={ 6 }
+							>
+								{ postUtils.isFutureDated( this.props.post )
+									? <Gridicon icon="scheduled" size={ 18 } />
+									: <Gridicon icon="calendar" size={ 18 } />
+								}
+							</button>
 						}
+						{ this.renderDateTooltip() }
 					</div>
-				</Card>
-			</StickyPanel>
+					{ siteUtils.userCan( 'publish_posts', this.props.site ) &&
+						this.schedulePostPopover()
+					}
+				</div>
+			</Card>
 		);
 	}
 } );
 
+export default connect(
+	null,
+	dispatch => bindActionCreators( { setDate }, dispatch )
+)( EditorGroundControl );

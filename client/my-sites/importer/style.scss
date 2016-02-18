@@ -99,12 +99,6 @@
 	transform: translateY( -50% );
 }
 
-.importer__upload-icon {
-	&:before {
-		@include noticon( '\f441', 32px );
-	}
-}
-
 .importer__upload-progress,
 .importer__import-progress {
 	width: 80%;
@@ -116,6 +110,12 @@
 	&.is-complete .progress-bar__progress {
 		background-color: $alert-green;
 	}
+}
+
+.importer__import-spinner {
+	position: absolute;
+		left: 50%;
+	transform: translateX( -50% );
 }
 
 .importer__start {
@@ -144,6 +144,14 @@
 	color: $gray;
 
 	@include clear-fix;
+}
+
+.importer__mapping-description {
+	margin-bottom: 16px;
+
+	& strong {
+		white-space: nowrap;
+	}
 }
 
 .importer__mapping-source-title {
@@ -186,10 +194,5 @@
 
 .importer__mapping-relation {
 	float: left;
-
-	&:before {
-		color: lighten( $gray, 10% );
-
-		@include noticon( '\f429', 32px );
-	}
+	color: lighten( $gray, 10% );
 }

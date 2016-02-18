@@ -1,0 +1,130 @@
+.themes-thanks-modal  {
+		width: 300px;
+		padding: 1.5em;
+		min-height: 245px;
+
+		@include breakpoint( "<480px" ) {
+			box-sizing: border-box;
+			width: 100%;
+		}
+
+
+		h1 {
+			display: block;
+			font-weight: 300;
+			line-height: 1.5em;
+			margin-bottom: 4rem;
+			text-align: center;
+			height: auto;
+
+			p {
+				margin: 0;
+			}
+		}
+
+		ul {
+			display: block;
+			margin-left: 10px;
+		}
+}
+
+.themes__selection .themes-list {
+	margin-top: 24px;
+}
+
+.themes__site-selector-modal {
+	padding-bottom: 24px;
+
+	.site-selector-modal__content {
+		.theme {
+			@include breakpoint( ">480px" ) {
+				width: 300px;
+			}
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		h1 {
+			text-align: center;
+			font-weight: 300;
+			margin-bottom: 0;
+		}
+
+		>h2 {
+			text-align: center;
+			font-size: 0.75em;
+			line-height: 0.75em;
+		}
+	}
+}
+
+.sticky-panel .themes__search-card {
+	transition: 0.3s box-shadow;
+}
+
+.sticky-panel.is-sticky .themes__search-card {
+	box-shadow: 0 0 0 1px transparentize( lighten( $gray, 20% ), .5 ),
+		0 2px 4px lighten( $gray, 20% );
+}
+
+.themes__sheet {
+	max-width: none;
+	height: 100vh;
+}
+
+.themes__sheet-bar
+{
+	background-color: $blue-wordpress;
+	color: white;
+	height: 180px;
+	padding: 0;
+	margin: 0;
+}
+
+.themes__sheet-bar-title {
+	display: block;
+	font-size: 33px;
+	font-weight: 100;
+	padding-top: 70px;
+	padding-left: 25px;
+	line-height: 1;
+}
+
+.themes__sheet-bar-tag {
+	max-width: none;
+	display: block;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 16px;
+	font-weight: 200;
+	padding-top: 5px;
+	padding-left: 25px
+}
+
+.themes__sheet-screenshot {
+	position: absolute;
+	width: 500px;
+	top: 90px;
+	right: 20px;
+}
+
+.themes__sheet-img {
+	display: block;
+	height: auto;
+	width: auto;
+	border: 1px solid $gray;
+	box-shadow: 0px 2px 8px 0px rgba(46,68,83,0.45);
+}
+
+@include breakpoint( "<660px" ) {
+	.themes__sheet-screenshot {
+		position: relative;
+		width: auto;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		top: 0;
+		right: 0;
+		margin-top: 20px;
+	}
+}

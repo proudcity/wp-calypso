@@ -34,6 +34,10 @@ function getSolvedPromise( dataToPass ) {
 	return new Promise( resolve => resolve( dataToPass ) );
 }
 
+function getRejectedPromise( errorToPass ) {
+	return new Promise( ( resolve, reject ) => reject( errorToPass ) );
+}
+
 function queueSitePluginAction( action, siteId, pluginId, callback ) {
 	let next = function( nextCallback, error, data ) {
 		let nextAction;
@@ -68,7 +72,7 @@ function recordEvent( eventType, plugin, site, error ) {
 	if ( error ) {
 		analytics.tracks.recordEvent( eventType + '_error', {
 			site: site.ID,
-			pluginSlug: plugin.slug,
+			plugin: plugin.slug,
 			error: error.error
 		} );
 		analytics.mc.bumpStat( eventType, 'failed' );
@@ -76,13 +80,13 @@ function recordEvent( eventType, plugin, site, error ) {
 	}
 	analytics.tracks.recordEvent( eventType + '_success', {
 		site: site.ID,
-		pluginSlug: plugin.slug
+		plugin: plugin.slug
 	} );
 	analytics.mc.bumpStat( eventType, 'succeeded' );
 }
 
 function processAutoupdates( site, plugins ) {
-	if ( site.canUpdateFiles && site.jetpack && site.canManage() && site.user_can_manage ) {
+	if ( site.canAutoupdateFiles && site.jetpack && site.canManage() && site.user_can_manage ) {
 		plugins.forEach( function( plugin ) {
 			if ( plugin.update && plugin.autoupdate ) {
 				autoupdatePlugin( site, plugin );
@@ -103,7 +107,7 @@ function autoupdatePlugin( site, plugin ) {
 
 	analytics.tracks.recordEvent( 'calypso_plugin_update_automatic', {
 		site: site.ID,
-		pluginSlug: plugin.slug
+		plugin: plugin.slug
 	} );
 	analytics.mc.bumpStat( 'calypso_plugin_update_automatic' );
 
@@ -137,10 +141,10 @@ PluginsActions = {
 					site: site
 				} );
 			} );
+
 			return;
 		}
 		const endpoint = site.jetpack ? wpcom.plugins : wpcom.wpcomPlugins;
-
 		endpoint.call( wpcom, site.ID, ( error, data ) => {
 			Dispatcher.handleServerAction( {
 				type: 'RECEIVE_PLUGINS',
@@ -189,10 +193,14 @@ PluginsActions = {
 	},
 
 	installPlugin: function( site, plugin ) {
-		var install, activate, autoupdate, dispatchMessage;
+		var install, activate, autoupdate, dispatchMessage, manageError, manageSuccess;
 
-		if ( ! site.canUpdateFiles || ! site.user_can_manage ) {
-			return;
+		if ( ! site.canUpdateFiles ) {
+			return getRejectedPromise( 'Error: Can\'t update files on the site' )
+		}
+
+		if ( ! site.user_can_manage ) {
+			return getRejectedPromise( 'Error: User can\'t manage the site' )
 		}
 
 		install = function() {
@@ -224,19 +232,46 @@ PluginsActions = {
 			recordEvent( 'calypso_plugin_installed', plugin, site, error );
 		};
 
+		manageSuccess = function( responseData ) {
+			dispatchMessage( 'RECEIVE_INSTALLED_PLUGIN', responseData );
+			return responseData;
+		};
+
+		manageError = function( error ) {
+			if ( error.name === 'PluginAlreadyInstalledError' ) {
+				if ( site.isMainNetworkSite() ) {
+					return autoupdate( plugin )
+						.then( manageSuccess )
+						.catch( manageError );
+				}
+				return activate( plugin )
+					.then( autoupdate )
+					.then( manageSuccess )
+					.catch( manageError );
+			}
+			if ( error.name === 'ActivationErrorError' ) {
+				return autoupdate( plugin )
+					.then( manageSuccess )
+					.catch( manageError );
+			}
+
+			dispatchMessage( 'RECEIVE_INSTALLED_PLUGIN', null, error );
+			return error;
+		}
+
 		dispatchMessage( 'INSTALL_PLUGIN' );
 
 		if ( site.isMainNetworkSite() ) {
 			return install()
 				.then( autoupdate )
 				.then( responseData => dispatchMessage( 'RECEIVE_INSTALLED_PLUGIN', responseData ) )
-				.catch( error => dispatchMessage( 'RECEIVE_INSTALLED_PLUGIN', null, error ) );
+				.catch( manageError );
 		}
 		return install()
 			.then( activate )
 			.then( autoupdate )
 			.then( responseData => dispatchMessage( 'RECEIVE_INSTALLED_PLUGIN', responseData ) )
-			.catch( error => dispatchMessage( 'RECEIVE_INSTALLED_PLUGIN', null, error ) );
+			.catch( manageError );
 	},
 
 	removePlugin: function( site, plugin ) {
@@ -291,22 +326,6 @@ PluginsActions = {
 			.catch( error => dispatchMessage( 'RECEIVE_REMOVE_PLUGIN', null, error ) );
 	},
 
-	togglePluginSelection: function( plugin ) {
-		Dispatcher.handleViewAction( {
-			type: 'TOGGLE_PLUGIN_SELECTION',
-			plugin: plugin
-		} );
-	},
-
-	selectPlugins: function( sites, filter, options ) {
-		Dispatcher.handleViewAction( {
-			type: 'SELECT_FILTER_PLUGINS',
-			sites: sites,
-			filter: filter,
-			options: options
-		} );
-	},
-
 	activatePlugin: function( site, plugin ) {
 		var endpoint = site.jetpack ? wpcom.pluginsActivate : wpcom.activateWpcomPlugin,
 			pluginId = site.jetpack ? plugin.id : plugin.slug;
@@ -335,7 +354,7 @@ PluginsActions = {
 				analytics.tracks.recordEvent( 'calypso_plugin_activated_error', {
 					error: error && error.error ? error.error : 'Undefined activation error',
 					site: site.ID,
-					pluginSlug: plugin.slug
+					plugin: plugin.slug
 				} );
 
 				return;
@@ -343,7 +362,7 @@ PluginsActions = {
 			analytics.mc.bumpStat( 'calypso_plugin_activated', 'succeeded' );
 			analytics.tracks.recordEvent( 'calypso_plugin_activated_success', {
 				site: site.ID,
-				pluginSlug: plugin.slug
+				plugin: plugin.slug
 			} );
 		} );
 	},
@@ -376,7 +395,7 @@ PluginsActions = {
 				analytics.tracks.recordEvent( 'calypso_plugin_deactivated_error', {
 					error: error.error ? error.error : 'Undefined deactivation error',
 					site: site.ID,
-					pluginSlug: plugin.slug
+					plugin: plugin.slug
 				} );
 
 				return;
@@ -384,12 +403,16 @@ PluginsActions = {
 			analytics.mc.bumpStat( 'calypso_plugin_deactivated', 'succeeded' );
 			analytics.tracks.recordEvent( 'calypso_plugin_deactivated_success', {
 				site: site.ID,
-				pluginSlug: plugin.slug
+				plugin: plugin.slug
 			} );
 		} );
 	},
 
 	togglePluginActivation: function( site, plugin ) {
+		if ( ! site.user_can_manage ) {
+			return;
+		}
+
 		debug( 'togglePluginActivation', site, plugin );
 		if ( ! plugin.active ) {
 			PluginsActions.activatePlugin( site, plugin );
@@ -399,6 +422,9 @@ PluginsActions = {
 	},
 
 	enableAutoUpdatesPlugin: function( site, plugin ) {
+		if ( ! site.user_can_manage || ! site.canAutoupdateFiles ) {
+			return;
+		}
 		Dispatcher.handleViewAction( {
 			type: 'ENABLE_AUTOUPDATE_PLUGIN',
 			action: 'ENABLE_AUTOUPDATE_PLUGIN',
@@ -424,6 +450,9 @@ PluginsActions = {
 	},
 
 	disableAutoUpdatesPlugin: function( site, plugin ) {
+		if ( ! site.user_can_manage || ! site.canAutoupdateFiles ) {
+			return;
+		}
 		Dispatcher.handleViewAction( {
 			type: 'DISABLE_AUTOUPDATE_PLUGIN',
 			action: 'DISABLE_AUTOUPDATE_PLUGIN',
@@ -446,6 +475,9 @@ PluginsActions = {
 	},
 
 	togglePluginAutoUpdate: function( site, plugin ) {
+		if ( ! site.user_can_manage || ! site.canAutoupdateFiles ) {
+			return;
+		}
 		if ( ! plugin.autoupdate ) {
 			PluginsActions.enableAutoUpdatesPlugin( site, plugin );
 		} else {
@@ -453,9 +485,16 @@ PluginsActions = {
 		}
 	},
 
+	removePluginUpdateInfo: function( site, plugin ) {
+		Dispatcher.handleViewAction( {
+			type: 'REMOVE_PLUGINS_UPDATE_INFO',
+			site: site,
+			plugin: plugin
+		} );
+	},
+
 	resetQueue: function() {
 		_actionsQueueBySite = {};
 	}
 };
-
 module.exports = PluginsActions;

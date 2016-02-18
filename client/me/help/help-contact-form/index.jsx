@@ -2,10 +2,14 @@
  * External dependencies
  */
 import React from 'react';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import PureRenderMixin from 'react-pure-render/mixin';
+import isEqual from 'lodash/lang/isEqual';
 
 /**
  * Internal dependencies
  */
+import analytics from 'analytics';
 import FormLabel from 'components/forms/form-label';
 import SegmentedControl from 'components/segmented-control';
 import ControlItem from 'components/segmented-control/item';
@@ -14,12 +18,18 @@ import DropdownItem from 'components/select-dropdown/item';
 import FormTextarea from 'components/forms/form-textarea';
 import FormTextInput from 'components/forms/form-text-input';
 import FormButton from 'components/forms/form-button';
-import SelectSite from 'me/select-site';
+import SitesDropdown from 'components/sites-dropdown';
+import siteList from 'lib/sites-list';
+
+/**
+ * Module variables
+ */
+const sites = siteList();
 
 module.exports = React.createClass( {
 	displayName: 'HelpContactForm',
 
-	mixins: [ React.addons.LinkedStateMixin, React.addons.PureRenderMixin ],
+	mixins: [ LinkedStateMixin, PureRenderMixin ],
 
 	propTypes: {
 		formDescription: React.PropTypes.node,
@@ -31,7 +41,11 @@ module.exports = React.createClass( {
 		showSiteField: React.PropTypes.bool,
 		siteFilter: React.PropTypes.func,
 		siteList: React.PropTypes.object,
-		disabled: React.PropTypes.bool
+		disabled: React.PropTypes.bool,
+		valueLink: React.PropTypes.shape( {
+			value: React.PropTypes.any,
+			requestChange: React.PropTypes.func.isRequired
+		} ),
 	},
 
 	getDefaultProps: function() {
@@ -41,7 +55,11 @@ module.exports = React.createClass( {
 			showHowYouFeelField: false,
 			showSubjectField: false,
 			showSiteField: false,
-			disabled: false
+			disabled: false,
+			valueLink: {
+				value: null,
+				requestChange: () => {}
+			}
 		}
 	},
 
@@ -50,20 +68,42 @@ module.exports = React.createClass( {
 	 * @return {Object} An object representing our initial state
 	 */
 	getInitialState: function() {
-		const { showSiteField, siteList } = this.props;
+		const site = sites.getLastSelectedSite() || sites.getPrimary();
 
-		return {
+		return this.props.valueLink.value || {
 			howCanWeHelp: 'gettingStarted',
 			howYouFeel: 'unspecified',
 			message: '',
 			subject: '',
-			site: showSiteField ? siteList.getLastSelectedSite() || siteList.getPrimary() : null
+			siteSlug: site ? site.slug : null
 		};
 	},
 
-	setSite: function( event ) {
-		const site = this.props.siteList.getSite( parseInt( event.target.value, 10 ) );
-		this.setState( { site: site } );
+	componentWillReceiveProps: function( nextProps ) {
+		if ( ! nextProps.valueLink.value || isEqual( nextProps.valueLink.value, this.state ) ) {
+			return;
+		}
+
+		this.setState( nextProps.valueLink.value );
+	},
+
+	componentDidUpdate: function() {
+		this.props.valueLink.requestChange( this.state );
+	},
+
+	setSite: function( siteSlug ) {
+		this.setState( { siteSlug } );
+	},
+
+	trackClickStats: function( selectionName, selectedOption ) {
+		const tracksEvent = {
+			howCanWeHelp: 'calypso_help_how_can_we_help_click',
+			howYouFeel: 'calypso_help_how_you_feel_click'
+		}[ selectionName ];
+
+		if ( tracksEvent ) {
+			analytics.tracks.recordEvent( tracksEvent, { selected_option: selectedOption } );
+		}
 	},
 
 	/**
@@ -86,8 +126,10 @@ module.exports = React.createClass( {
 				key: option.value,
 				selected: option.value === this.state[ selectionName ],
 				value: option.value,
+				title: option.label,
 				onClick: () => {
-					this.setState( { [ selectionName ]: option.value } )
+					this.setState( { [ selectionName ]: option.value } );
+					this.trackClickStats( selectionName, option.value );
 				}
 			}
 		} ) );
@@ -152,7 +194,7 @@ module.exports = React.createClass( {
 				{ value: 'panicked', label: this.translate( 'Panicked' ) }
 			];
 
-		const { formDescription, buttonLabel, showHowCanWeHelpField, showHowYouFeelField, showSubjectField, showSiteField, siteList, siteFilter } = this.props;
+		const { formDescription, buttonLabel, showHowCanWeHelpField, showHowYouFeelField, showSubjectField, showSiteField } = this.props;
 
 		return (
 			<div className="help-contact-form">
@@ -173,14 +215,11 @@ module.exports = React.createClass( {
 				) }
 
 				{ showSiteField && (
-					<div>
+					<div className="help-contact-form__site-selection">
 						<FormLabel>{ this.translate( 'Which site do you need help with?' ) }</FormLabel>
-						<SelectSite
-							className="help-contact-form__site-selection"
-							sites={ siteList }
-							filter={ siteFilter }
-							value={ this.state.site.ID }
-							onChange={ this.setSite } />
+						<SitesDropdown
+							selected={ this.state.siteSlug }
+							onSiteSelect={ this.setSite } />
 					</div>
 				) }
 

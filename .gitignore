@@ -6,7 +6,7 @@
 .idea
 *.iml
 *.iws
-tags
+/tags
 node_modules
 /npm-debug.log*
 *.sw?
@@ -17,6 +17,9 @@ env-config.sh
 
 # added during build
 /config/secrets.json
+
+# config overrides
+/config/*.local.json
 
 /build
 

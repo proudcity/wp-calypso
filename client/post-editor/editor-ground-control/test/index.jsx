@@ -6,7 +6,8 @@ require( 'lib/react-test-env-setup' )();
  */
 var chai = require( 'chai' ),
 	moment = require( 'moment' ),
-	React = require( 'react/addons' ),
+	ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
 	sinon = require( 'sinon' ),
 	sinonChai = require( 'sinon-chai' ),
 	mockery = require( 'mockery' );
@@ -49,13 +50,17 @@ describe( 'EditorGroundControl', function() {
 		mockery.registerMock( 'post-editor/status-label', MOCK_COMPONENT );
 		mockery.registerMock( 'components/sticky-panel', MOCK_COMPONENT );
 		mockery.registerMock( 'components/post-schedule', MOCK_COMPONENT );
-		EditorGroundControl = require( '../' );
+		EditorGroundControl = require( '../' ).WrappedComponent;
 		EditorGroundControl.prototype.__reactAutoBindMap.translate = sinon.stub().returnsArg( 0 );
 		EditorGroundControl.prototype.__reactAutoBindMap.moment = moment;
+		// TODO: REDUX - add proper tests when whole post-editor is reduxified
+		mockery.registerMock( 'react-redux', {
+			connect: () => component => component
+		} );
 	} );
 
 	beforeEach( function() {
-		React.unmountComponentAtNode( document.body );
+		ReactDom.unmountComponentAtNode( document.body );
 	} );
 
 	after( function() {
@@ -67,7 +72,7 @@ describe( 'EditorGroundControl', function() {
 
 	describe( '#getPreviewLabel()', function() {
 		it( 'should return View if the site is a Jetpack site and the post is published', function() {
-			var tree = React.render(
+			var tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'publish' } }
 					site={ { jetpack: true } }
@@ -79,7 +84,7 @@ describe( 'EditorGroundControl', function() {
 		} );
 
 		it( 'should return Preview if the post was not originally published', function() {
-			var tree = React.render(
+			var tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft' } }
 					post={ { status: 'publish' } }
@@ -94,7 +99,7 @@ describe( 'EditorGroundControl', function() {
 
 	describe( '#getPrimaryButtonLabel()', function() {
 		it( 'should return Update if the post was originally published and is still slated to be published', function() {
-			var tree = React.render(
+			var tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'publish' } }
 					post={ { status: 'publish' } }
@@ -107,7 +112,7 @@ describe( 'EditorGroundControl', function() {
 		} );
 
 		it( 'should return Update if the post was originally published and is currently reverted to non-published status', function() {
-			var tree = React.render(
+			var tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'publish' } }
 					post={ { status: 'draft' } }
@@ -124,7 +129,7 @@ describe( 'EditorGroundControl', function() {
 				nextMonth = now.month( now.month() + 1 ).format(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft' } }
 					post={ { date: nextMonth } }
@@ -141,7 +146,7 @@ describe( 'EditorGroundControl', function() {
 				nextMonth = now.month( now.month() + 1 ).format(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft' } }
 					post={ { date: nextMonth } }
@@ -158,7 +163,7 @@ describe( 'EditorGroundControl', function() {
 				nextMonth = now.month( now.month() + 1 ).format(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'future', date: nextMonth } }
 					post={ { title: 'change', status: 'future', date: nextMonth } }
@@ -175,7 +180,7 @@ describe( 'EditorGroundControl', function() {
 				nextMonth = now.month( now.month() + 1 ).format(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'future', date: nextMonth } }
 					post={ { title: 'change', status: 'draft', date: nextMonth } }
@@ -192,7 +197,7 @@ describe( 'EditorGroundControl', function() {
 				lastMonth = now.month( now.month() - 1 ).format(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'future', date: lastMonth } }
 					post={ { title: 'change', status: 'future', date: lastMonth } }
@@ -205,7 +210,7 @@ describe( 'EditorGroundControl', function() {
 		} );
 
 		it( 'should return Publish if the post is a draft', function() {
-			var tree = React.render(
+			var tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft' } }
 					site={ MOCK_SITE }
@@ -217,7 +222,7 @@ describe( 'EditorGroundControl', function() {
 		} );
 
 		it( 'should return "Submit for Review" if the post is a draft and user can\'t publish', function() {
-			var tree = React.render(
+			var tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft' } }
 					site={ {
@@ -235,37 +240,37 @@ describe( 'EditorGroundControl', function() {
 
 	describe( '#isSaveEnabled()', function() {
 		it( 'should return false if form is saving', function() {
-			var tree = React.render( <EditorGroundControl isSaving />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaving />, document.body );
 
 			expect( tree.isSaveEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if saving is blocked', function() {
-			var tree = React.render( <EditorGroundControl isSaveBlocked />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaveBlocked />, document.body );
 
 			expect( tree.isSaveEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if post does not exist', function() {
-			var tree = React.render( <EditorGroundControl isSaving={ false } hasContent isDirty />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaving={ false } hasContent isDirty />, document.body );
 
 			expect( tree.isSaveEnabled() ).to.be.false;
 		} );
 
 		it( 'should return true if dirty and post has content and post is not published', function() {
-			var tree = React.render( <EditorGroundControl isSaving={ false } post={ {} } hasContent isDirty />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaving={ false } post={ {} } hasContent isDirty />, document.body );
 
 			expect( tree.isSaveEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if dirty, but post has no content', function() {
-			var tree = React.render( <EditorGroundControl isSaving={ false } isDirty />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaving={ false } isDirty />, document.body );
 
 			expect( tree.isSaveEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if dirty and post is published', function() {
-			var tree = React.render( <EditorGroundControl isSaving={ false } post={ { status: 'publish' } } isDirty />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaving={ false } post={ { status: 'publish' } } isDirty />, document.body );
 
 			expect( tree.isSaveEnabled() ).to.be.false;
 		} );
@@ -273,31 +278,31 @@ describe( 'EditorGroundControl', function() {
 
 	describe( '#isPreviewEnabled()', function() {
 		it( 'should return true if post is not empty', function() {
-			var tree = React.render( <EditorGroundControl post={ {} } isNew hasContent isDirty />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl post={ {} } isNew hasContent isDirty />, document.body );
 
 			expect( tree.isPreviewEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if saving is blocked', function() {
-			var tree = React.render( <EditorGroundControl isSaveBlocked />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaveBlocked />, document.body );
 
 			expect( tree.isPreviewEnabled() ).to.be.false;
 		} );
 
 		it( 'should return true even if form is publishing', function() {
-			var tree = React.render( <EditorGroundControl post={ {} } hasContent isPublishing />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl post={ {} } hasContent isPublishing />, document.body );
 
 			expect( tree.isPreviewEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if not dirty', function() {
-			var tree = React.render( <EditorGroundControl post={ {} } isDirty={ false } isNew />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl post={ {} } isDirty={ false } isNew />, document.body );
 
 			expect( tree.isPreviewEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if post has no content', function() {
-			var tree = React.render( <EditorGroundControl post={ {} } hasContent={ false } />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl post={ {} } hasContent={ false } />, document.body );
 
 			expect( tree.isPreviewEnabled() ).to.be.false;
 		} );
@@ -305,31 +310,31 @@ describe( 'EditorGroundControl', function() {
 
 	describe( '#isPrimaryButtonEnabled()', function() {
 		it( 'should return true if form is not publishing and post is not empty', function() {
-			var tree = React.render( <EditorGroundControl isPublishing={ false } post={ {} } hasContent isDirty isNew />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isPublishing={ false } post={ {} } hasContent isDirty isNew />, document.body );
 
 			expect( tree.isPrimaryButtonEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if form is publishing', function() {
-			var tree = React.render( <EditorGroundControl isPublishing />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isPublishing />, document.body );
 
 			expect( tree.isPrimaryButtonEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if saving is blocked', function() {
-			var tree = React.render( <EditorGroundControl isSaveBlocked />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl isSaveBlocked />, document.body );
 
 			expect( tree.isPrimaryButtonEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if not dirty', function() {
-			var tree = React.render( <EditorGroundControl post={ {} } isDirty={ false } isNew />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl post={ {} } isDirty={ false } isNew />, document.body );
 
 			expect( tree.isPrimaryButtonEnabled() ).to.be.false;
 		} );
 
 		it( 'should return false if post has no content', function() {
-			var tree = React.render( <EditorGroundControl post={ {} } hasContent={ false } />, document.body );
+			var tree = ReactDom.render( <EditorGroundControl post={ {} } hasContent={ false } />, document.body );
 
 			expect( tree.isPrimaryButtonEnabled() ).to.be.false;
 		} );
@@ -340,7 +345,7 @@ describe( 'EditorGroundControl', function() {
 			var onPublish = sinon.spy(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					post={ { status: 'draft' } }
 					site={ MOCK_SITE }
@@ -360,7 +365,7 @@ describe( 'EditorGroundControl', function() {
 				onSave = sinon.spy(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft', date: nextMonth } }
 					post={ { title: 'change', status: 'draft', date: nextMonth } }
@@ -381,7 +386,7 @@ describe( 'EditorGroundControl', function() {
 				onSave = sinon.spy(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'future', date: nextMonth } }
 					post={ { title: 'change', status: 'future', date: nextMonth } }
@@ -402,7 +407,7 @@ describe( 'EditorGroundControl', function() {
 				onPublish = sinon.spy(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'future', date: lastMonth } }
 					post={ { title: 'change', status: 'future', date: lastMonth } }
@@ -421,7 +426,7 @@ describe( 'EditorGroundControl', function() {
 			var onSave = sinon.spy(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'publish' } }
 					post={ { title: 'change', status: 'draft' } }
@@ -440,7 +445,7 @@ describe( 'EditorGroundControl', function() {
 			var onSave = sinon.spy(),
 				tree;
 
-			tree = React.render(
+			tree = ReactDom.render(
 				<EditorGroundControl
 					savedPost={ { status: 'draft' } }
 					onSave={ onSave }

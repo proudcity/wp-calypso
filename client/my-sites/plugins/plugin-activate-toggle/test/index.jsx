@@ -3,10 +3,12 @@
  */
 var chai = require( 'chai' ),
 	expect = chai.expect,
-	React = require( 'react/addons' ),
+	ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
 	mockery = require( 'mockery' ),
 	sinon = require( 'sinon' ),
-	TestUtils = React.addons.TestUtils;
+	noop = require( 'lodash/utility/noop' ),
+	TestUtils = require( 'react-addons-test-utils' );
 
 /**
  * Mocks & fixtures
@@ -29,6 +31,9 @@ describe( 'PluginActivateToggle', function() {
 		mockery.registerMock( 'analytics', analyticsMock );
 		mockery.registerMock( 'my-sites/plugins/plugin-action/plugin-action', mockedPluginAction );
 		mockery.registerMock( 'lib/plugins/actions', mockedActions );
+		mockery.registerMock( 'component-classes', function() {
+			return { add: noop, toggle: noop, remove: noop }
+		} );
 		mockery.registerSubstitute( 'matches-selector', 'component-matches-selector' );
 		mockery.registerSubstitute( 'query', 'component-query' );
 		mockery.enable( {
@@ -45,7 +50,7 @@ describe( 'PluginActivateToggle', function() {
 	} );
 
 	afterEach( function() {
-		React.unmountComponentAtNode( document.body );
+		ReactDom.unmountComponentAtNode( document.body );
 		mockedActions.togglePluginActivation.reset();
 		analyticsMock.ga.recordEvent.reset();
 	} );
@@ -59,7 +64,7 @@ describe( 'PluginActivateToggle', function() {
 
 	it( 'should register an event when the subcomponent action is executed', function() {
 		var rendered = TestUtils.renderIntoDocument( <PluginActivateToggle { ...fixtures } /> ),
-			pluginActionToggle = React.findDOMNode( rendered );
+			pluginActionToggle = ReactDom.findDOMNode( rendered );
 
 		TestUtils.Simulate.click( pluginActionToggle );
 
@@ -69,11 +74,10 @@ describe( 'PluginActivateToggle', function() {
 
 	it( 'should call an action when the subcomponent action is executed', function() {
 		var rendered = TestUtils.renderIntoDocument( <PluginActivateToggle { ...fixtures } /> ),
-			pluginActionToggle = React.findDOMNode( rendered );
+			pluginActionToggle = ReactDom.findDOMNode( rendered );
 
 		TestUtils.Simulate.click( pluginActionToggle );
 
 		expect( mockedActions.togglePluginActivation.called ).to.equal( true );
 	} );
 } );
-

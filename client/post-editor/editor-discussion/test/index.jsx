@@ -4,8 +4,9 @@ require( 'lib/react-test-env-setup' )();
 /**
  * External dependencies
  */
-var React = require( 'react/addons' ),
-	TestUtils = React.addons.TestUtils,
+var ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
+	TestUtils = require( 'react-addons-test-utils' ),
 	sinon = require( 'sinon' ),
 	sinonChai = require( 'sinon-chai' ),
 	mockery = require( 'mockery' ),
@@ -47,12 +48,12 @@ describe( 'EditorDiscussion', function() {
 			recordEvent: noop,
 			recordStat: noop
 		} );
-		EditorDiscussion = require( '../' );
+		EditorDiscussion = require( '../' ).WrappedComponent;
 		EditorDiscussion.prototype.__reactAutoBindMap.translate = sinon.stub().returnsArg( 0 );
 	} );
 
 	beforeEach( function() {
-		React.unmountComponentAtNode( document.body );
+		ReactDom.unmountComponentAtNode( document.body );
 	} );
 
 	after( function() {
@@ -134,10 +135,10 @@ describe( 'EditorDiscussion', function() {
 			var tree, checkbox;
 
 			tree = TestUtils.renderIntoDocument(
-				<EditorDiscussion post={ post } site={ DUMMY_SITE } />
+				<EditorDiscussion post={ post } site={ DUMMY_SITE } setDiscussionSettings={ function() {} } />
 			);
 
-			checkbox = React.findDOMNode( tree ).querySelector( '[name=ping_status]' );
+			checkbox = ReactDom.findDOMNode( tree ).querySelector( '[name=ping_status]' );
 			TestUtils.Simulate.change( checkbox, {
 				target: {
 					name: 'comment_status',
@@ -157,10 +158,10 @@ describe( 'EditorDiscussion', function() {
 			var tree, checkbox;
 
 			tree = TestUtils.renderIntoDocument(
-				<EditorDiscussion post={ post } site={ DUMMY_SITE } />
+				<EditorDiscussion post={ post } site={ DUMMY_SITE } setDiscussionSettings={ function() {} } />
 			);
 
-			checkbox = React.findDOMNode( tree ).querySelector( '[name=ping_status]' );
+			checkbox = ReactDom.findDOMNode( tree ).querySelector( '[name=ping_status]' );
 			TestUtils.Simulate.change( checkbox, {
 				target: {
 					name: 'ping_status',

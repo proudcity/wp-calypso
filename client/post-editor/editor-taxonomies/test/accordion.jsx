@@ -4,11 +4,13 @@ require( 'lib/react-test-env-setup' )();
 /**
  * External dependencies
  */
-var React = require( 'react/addons' ),
+var ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
 	ReactInjection = require( 'react/lib/ReactInjection' ),
 	mockery = require( 'mockery' ),
 	expect = require( 'chai' ).expect,
-	TestUtils = React.addons.TestUtils;
+	noop = require( 'lodash/utility/noop' ),
+	TestUtils = require( 'react-addons-test-utils' );
 
 /**
  * Internal dependencies
@@ -31,8 +33,15 @@ mockery.enable( {
 } );
 
 mockery.registerMock( 'components/info-popover', MOCK_COMPONENT );
+mockery.registerMock( 'component-classes', function() {
+	return { add: noop, toggle: noop, remove: noop }
+} );
 mockery.registerSubstitute( 'matches-selector', 'component-matches-selector' );
 mockery.registerSubstitute( 'query', 'component-query' );
+// TODO: REDUX - add proper tests when whole post-editor is reduxified
+mockery.registerMock( 'react-redux', {
+	connect: () => component => component
+} );
 i18n.initialize();
 ReactInjection.Class.injectMixin( i18n.mixin );
 TaxonomiesAccordion = require( 'post-editor/editor-taxonomies/accordion' );
@@ -43,7 +52,7 @@ describe( 'EditorTaxonomiesAccordion', function() {
 
 	function render( postTaxonomiesProps ) {
 		unmount();
-		wrapper = React.render(
+		wrapper = ReactDom.render(
 			<CategoryListData siteId={ common.TEST_SITE_ID }>
 				<TagListData siteId={ common.TEST_SITE_ID }>
 					<TaxonomiesAccordion
@@ -59,7 +68,7 @@ describe( 'EditorTaxonomiesAccordion', function() {
 
 	function unmount() {
 		if ( wrapper ) {
-			React.unmountComponentAtNode( document.body );
+			ReactDom.unmountComponentAtNode( document.body );
 			wrapper = null;
 		}
 	}

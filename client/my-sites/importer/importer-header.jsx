@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import PureRenderMixin from 'react-pure-render/mixin';
 import includes from 'lodash/collection/includes';
 
 /**
@@ -29,7 +30,7 @@ const startStates = [ appStates.DISABLED, appStates.INACTIVE ],
 export default React.createClass( {
 	displayName: 'ImporterHeader',
 
-	mixins: [ React.addons.PureRenderMixin ],
+	mixins: [ PureRenderMixin ],
 
 	propTypes: {
 		importerStatus: PropTypes.shape( {
@@ -43,14 +44,14 @@ export default React.createClass( {
 	},
 
 	controlButtonClicked: function() {
-		const { id: importerId, importerState, type } = this.props.importerStatus;
+		const { importerStatus: { importerId, importerState, type }, site: { ID: siteId } } = this.props;
 
 		if ( includes( [ ...cancelStates, ...stopStates ], importerState ) ) {
-			cancelImport( importerId );
+			cancelImport( siteId, importerId );
 		} else if ( includes( startStates, importerState ) ) {
-			startImport( type );
+			startImport( siteId, type );
 		} else if ( includes( doneStates, importerState ) ) {
-			resetImport( importerId );
+			resetImport( siteId, importerId );
 		}
 	},
 
@@ -75,16 +76,18 @@ export default React.createClass( {
 	},
 
 	render: function() {
-		const { importerStatus: { importerState }, icon, isEnabled, title, description } = this.props,
-			isPrimary = includes( [ ...cancelStates, ...stopStates ], importerState );
+		const { importerStatus: { importerState }, icon, isEnabled, title, description } = this.props;
+		const canCancel = isEnabled && ! includes( [ appStates.UPLOADING ], importerState );
+		const isScary = includes( [ ...stopStates, ...cancelStates ], importerState );
 
 		return (
 			<header className="importer-service">
 				<ImporterIcon {...{ icon } } />
 				<Button
 					className="importer__master-control"
-					disabled={ ! isEnabled }
-					isPrimary={ isPrimary }
+					disabled={ ! canCancel }
+					isPrimary={ false }
+					scary={ isScary }
 					onClick={ this.controlButtonClicked }
 				>
 					{ this.getButtonText() }

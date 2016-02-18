@@ -4,6 +4,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import omit from 'lodash/object/omit';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /**
  * Internal dependencies
@@ -16,11 +18,13 @@ import TrackInputChanges from 'components/track-input-changes';
 import FormTextInput from 'components/forms/form-text-input';
 import { isMobile } from 'lib/viewport';
 import * as stats from 'lib/posts/stats';
+import { setTitle } from 'state/ui/editor/post/actions';
 
-export default React.createClass( {
+const EditorTitle = React.createClass( {
 	displayName: 'EditorTitle',
 
 	propTypes: {
+		setTitle: PropTypes.func,
 		post: PropTypes.object,
 		site: PropTypes.object,
 		isNew: PropTypes.bool,
@@ -36,8 +40,26 @@ export default React.createClass( {
 	getDefaultProps() {
 		return {
 			isNew: true,
-			onChange: () => {}
+			onChange: () => {},
+			setTitle: () => {},
 		};
+	},
+
+	componentWillReceiveProps( nextProps ) {
+		if ( isMobile() ) {
+			return;
+		}
+
+		// If next post is new, or the next site is different, focus title
+		if ( nextProps.isNew && ! this.props.isNew ||
+			( nextProps.isNew && ( this.props.site && nextProps.site ) && ( this.props.site.ID !== nextProps.site.ID ) )
+		) {
+			this.setState( {
+				isFocused: true
+			}, () => {
+				this.refs.titleInput.focus();
+			} );
+		}
 	},
 
 	onChange( event ) {
@@ -47,10 +69,12 @@ export default React.createClass( {
 			return;
 		}
 
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		PostActions.edit( {
 			title: event.target.value
 		} );
 
+		this.props.setTitle( event.target.value );
 		onChange( event );
 	},
 
@@ -91,8 +115,8 @@ export default React.createClass( {
 					<EditorPermalink
 						slug={ post.slug }
 						path={ isPermalinkEditable ? PostUtils.getPermalinkBasePath( post ) : post.URL }
-						isEditable={ isPermalinkEditable }
-					/> }
+						isEditable={ isPermalinkEditable } />
+				}
 				<TrackInputChanges onNewValue={ this.recordChangeStats }>
 					<FormTextInput
 						{ ...omit( this.props, Object.keys( this.constructor.propTypes ) ) }
@@ -104,9 +128,14 @@ export default React.createClass( {
 						autoFocus={ isNew && ! isMobile() }
 						value={ post ? post.title : '' }
 						aria-label={ this.translate( 'Edit title' ) }
-					/>
+						ref="titleInput" />
 				</TrackInputChanges>
 			</div>
 		);
 	}
 } );
+
+export default connect(
+	null,
+	dispatch => bindActionCreators( { setTitle }, dispatch )
+)( EditorTitle );

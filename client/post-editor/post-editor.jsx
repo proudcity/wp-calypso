@@ -1,18 +1,20 @@
 /**
  * External dependencies
  */
-var React = require( 'react/addons' ),
+const ReactDom = require( 'react-dom' ),
+	React = require( 'react' ),
 	debug = require( 'debug' )( 'calypso:post-editor' ),
 	page = require( 'page' ),
 	classnames = require( 'classnames' ),
 	debounce = require( 'lodash/function/debounce' ),
 	throttle = require( 'lodash/function/throttle' ),
 	assign = require( 'lodash/object/assign' );
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 /**
  * Internal dependencies
  */
-var actions = require( 'lib/posts/actions' ),
+const actions = require( 'lib/posts/actions' ),
 	config = require( 'config' ),
 	route = require( 'lib/route' ),
 	PostEditStore = require( 'lib/posts/post-edit-store' ),
@@ -22,6 +24,7 @@ var actions = require( 'lib/posts/actions' ),
 	EditorGroundControl = require( 'post-editor/editor-ground-control' ),
 	EditorTitleContainer = require( 'post-editor/editor-title/container' ),
 	EditorPageSlug = require( 'post-editor/editor-page-slug' ),
+	Button = require( 'components/button' ),
 	Gridicon = require( 'components/gridicon' ),
 	NoticeAction = require( 'components/notice/notice-action' ),
 	Notice = require( 'components/notice' ),
@@ -33,7 +36,6 @@ var actions = require( 'lib/posts/actions' ),
 	EditorMobileNavigation = require( 'post-editor/editor-mobile-navigation' ),
 	layoutFocus = require( 'lib/layout-focus' ),
 	titleActions = require( 'lib/screen-title/actions' ),
-	user = require( 'lib/user' )(),
 	observe = require( 'lib/mixins/data-observe' ),
 	DraftList = require( 'my-sites/drafts/draft-list' ),
 	DraftsButton = require( 'post-editor/drafts-button' ),
@@ -47,8 +49,20 @@ var actions = require( 'lib/posts/actions' ),
 	stats = require( 'lib/posts/stats' ),
 	analytics = require( 'analytics' ),
 	postTypesList = require( 'lib/post-types-list')();
+import {
+	setContent,
+	setExcerpt,
+	stopEditing,
+	setTitle,
+	setRawContent,
+	save,
+	autosave,
+	setPostPrivate,
+	setPostPublished,
+	resetRawContent
+} from 'state/ui/editor/post/actions';
 
-var messages = {
+const messages = {
 	post: {
 		publishFailure: function() {
 			return i18n.translate( 'Publishing of post failed.' );
@@ -88,7 +102,7 @@ var messages = {
 			return i18n.translate( 'View Post' );
 		},
 		allPosts: function() {
-			return i18n.translate( 'All Posts' );
+			return i18n.translate( 'Posts' );
 		},
 		updated: function() {
 			var site = this.props.sites.getSelectedSite();
@@ -144,7 +158,7 @@ var messages = {
 			return i18n.translate( 'View Page' );
 		},
 		allPosts: function() {
-			return i18n.translate( 'All Pages' );
+			return i18n.translate( 'Pages' );
 		},
 		updated: function() {
 			var site = this.props.sites.getSelectedSite();
@@ -163,10 +177,35 @@ var messages = {
 	}
 };
 
-var PostEditor = React.createClass( {
+const PostEditor = React.createClass( {
 	propTypes: {
+		setContent: React.PropTypes.func,
+		setExcerpt: React.PropTypes.func,
+		stopEditing: React.PropTypes.func,
+		setTitle: React.PropTypes.func,
+		setRawContent: React.PropTypes.func,
+		save: React.PropTypes.func,
+		autosave: React.PropTypes.func,
+		setPostPrivate: React.PropTypes.func,
+		setPostPublished: React.PropTypes.func,
+		resetRawContent: React.PropTypes.func,
 		preferences: React.PropTypes.object,
 		sites: React.PropTypes.object
+	},
+
+	getDefaultProps: function() {
+		return {
+			setContent: () => {},
+			setExcerpt: () => {},
+			stopEditing: () => {},
+			setTitle: () => {},
+			setRawContent: () => {},
+			save: () => {},
+			autosave: () => {},
+			setPostPrivate: () => {},
+			setPostPublished: () => {},
+			resetRawContent: () => {}
+		};
 	},
 
 	_previewWindow: null,
@@ -222,7 +261,10 @@ var PostEditor = React.createClass( {
 
 	componentWillUnmount: function() {
 		PostEditStore.removeListener( 'change', this.onEditedPostChange );
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.stopEditing();
+
+		this.props.stopEditing();
 		this.debouncedAutosave.cancel();
 		this.debouncedSaveRawContent.cancel();
 		this._previewWindow = null;
@@ -286,18 +328,88 @@ var PostEditor = React.createClass( {
 		return (
 			<div className="post-editor">
 				<div className="post-editor__inner">
+					<div className="post-editor__content">
+						<EditorMobileNavigation site={ site } onClose={ this.onClose } />
+						<div className="editor">
+							<EditorActionBar
+								isNew={ this.state.isNew }
+								onTrashingPost={ this.onTrashingPost }
+								onPrivatePublish={ this.onPublish }
+								post={ this.state.post }
+								savedPost={ this.state.savedPost }
+								site={ site }
+								type={ this.props.type }
+							/>
+							<FeaturedImage
+								site={ site }
+								post={ this.state.post }
+								maxWidth={ 1462 } />
+							{ this.renderNotice() }
+							<div className={ headerClass }>
+								<EditorTitleContainer
+									onChange={ this.debouncedAutosave }
+									tabIndex={ 1 } />
+								{ this.state.post && isPage && site ?
+									<EditorPageSlug
+										slug={ this.state.post.slug }
+										path={ this.state.post.URL ? utils.getPagePath( this.state.post ) : site.URL + '/' }
+									/> :
+									null
+								}
+								<SegmentedControl className="editor__switch-mode" compact={ true }>
+									<SegmentedControlItem selected={ mode === 'tinymce' } onClick={ this.switchEditorMode.bind( this, 'tinymce' ) }>
+										{ this.translate( 'Visual', { context: 'Editor writing mode' } ) }
+									</SegmentedControlItem>
+									<SegmentedControlItem selected={ mode === 'html' } onClick={ this.switchEditorMode.bind( this, 'html' ) }>
+										HTML
+									</SegmentedControlItem>
+								</SegmentedControl>
+							</div>
+							<hr className="editor__header-divider" />
+							<TinyMCE
+								ref="editor"
+								mode={ mode }
+								tabIndex={ 2 }
+								isNew={ this.state.isNew }
+								onSetContent={ this.debouncedSaveRawContent }
+								onChange={ this.onEditorContentChange }
+								onKeyUp={ this.debouncedSaveRawContent }
+								onFocus={ this.onEditorFocus }
+								onTextEditorChange={ this.onEditorContentChange }
+								onTogglePin={ this.onTogglePin } />
+						</div>
+						<EditorWordCount />
+						{ this.iframePreviewEnabled() ?
+							<EditorPreview
+								showPreview={ this.state.showPreview }
+								onClose={ this.onPreviewClose }
+								isSaving={ this.state.isSaving || this.state.isAutosaving }
+								isLoading={ this.state.isLoading }
+								previewUrl={ this.state.previewUrl }
+
+							/>
+						: null }
+					</div>
 					<div className="post-editor__sidebar">
 						<div className="post-editor__sidebar-header">
 							{ this.state.showDrafts ?
-								<button className="post-editor__close" onClick={ this.toggleDrafts } aria-label={ this.translate( 'Close drafts list' ) }>
-									<Gridicon icon="cross" size={ 18 } />
-									<span>{ this.translate( 'Close' ) }</span>
-								</button>
+								<Button
+									compact borderless
+									className="post-editor__close"
+									onClick={ this.toggleDrafts }
+									aria-label={ this.translate( 'Close drafts list' ) }
+								>
+									<Gridicon icon="cross" /> <span>{ this.translate( 'Close' ) }</span>
+								</Button>
 							:
-								<a className="post-editor__close" href={ this.getAllPostsUrl() } aria-label={ this.translate( 'View list of posts' ) }>
-									<Gridicon icon="arrow-left" size={ 18 } />
-									<span>{ this.getMessage( 'allPosts' ) }</span>
-								</a>
+								<Button
+									compact borderless
+									className="post-editor__close"
+									href={ this.getAllPostsUrl() }
+									aria-label={ this.translate( 'View list of posts' ) }
+								>
+									<Gridicon icon="arrow-left" size={ 18 } /> <span>{ this.getMessage( 'allPosts' ) }</span>
+								</Button>
 							}
 							{ this.props.type === 'post' && site ?
 								<PostCountsData siteId={ site.ID } status="draft">
@@ -342,69 +454,6 @@ var PostEditor = React.createClass( {
 
 						</div> }
 					</div>
-					<div className="post-editor__content">
-						<EditorMobileNavigation site={ site } onClose={ this.onClose } />
-						<div className="editor">
-							<EditorActionBar
-								isNew={ this.state.isNew }
-								onTrashingPost={ this.onTrashingPost }
-								onPrivatePublish={ this.onPublish }
-								post={ this.state.post }
-								savedPost={ this.state.savedPost }
-								site={ site }
-								type={ this.props.type }
-							/>
-							<div className={ headerClass }>
-								{ this.renderNotice() }
-								<FeaturedImage
-									site={ site }
-									post={ this.state.post }
-									maxWidth={ 1462 } />
-								<EditorTitleContainer
-									onChange={ this.debouncedAutosave }
-									tabIndex={ 1 } />
-								{ this.state.post && isPage ?
-									<EditorPageSlug
-										slug={ this.state.post.slug }
-										path={ site.URL + '/' }
-									/> :
-									null
-								}
-								<SegmentedControl className="editor__switch-mode" compact={ true }>
-									<SegmentedControlItem selected={ mode === 'tinymce' } onClick={ this.switchEditorMode.bind( this, 'tinymce' ) }>
-										{ this.translate( 'Visual', { context: 'Editor writing mode' } ) }
-									</SegmentedControlItem>
-									<SegmentedControlItem selected={ mode === 'html' } onClick={ this.switchEditorMode.bind( this, 'html' ) }>
-										HTML
-									</SegmentedControlItem>
-								</SegmentedControl>
-							</div>
-							<TinyMCE
-								ref="editor"
-								mode={ mode }
-								tabIndex={ 2 }
-								isNew={ this.state.isNew }
-								onSetContent={ this.debouncedSaveRawContent }
-								onChange={ this.onEditorContentChange }
-								onKeyUp={ this.debouncedSaveRawContent }
-								onFocus={ this.onEditorFocus }
-								onTextEditorChange={ this.onEditorContentChange }
-								onTogglePin={ this.onTogglePin } />
-						</div>
-						<div className="post-editor__word-count-wrapper">
-							<EditorWordCount />
-						</div>
-						{ this.iframePreviewEnabled() ?
-							<EditorPreview
-								showPreview={ this.state.showPreview }
-								onClose={ this.onPreviewClose }
-								isSaving={ this.state.isSaving || this.state.isAutosaving }
-								isLoading={ this.state.isLoading }
-								previewUrl={ this.state.previewUrl }
-
-							/>
-						: null }
-					</div>
 				</div>
 				{ isTrashed ?
 					<RestorePostDialog
@@ -443,7 +492,12 @@ var PostEditor = React.createClass( {
 			content: autosave.content
 		};
 
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.edit( edits );
+
+		this.props.setTitle( autosave.title );
+		this.props.setExcerpt( autosave.excerpt );
+		this.props.setContent( autosave.content );
 	},
 
 	closeAutosaveDialog: function() {
@@ -512,11 +566,14 @@ var PostEditor = React.createClass( {
 	onEditorFocus: function() {
 		// Fire a click when the editor is focused so that any global handlers have an opportunity to do their thing.
 		// In particular, this ensures that open popovers are closed when a user clicks into the editor.
-		React.findDOMNode( this.refs.editor ).click();
+		ReactDom.findDOMNode( this.refs.editor ).click();
 	},
 
 	saveRawContent: function() {
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.editRawContent( this.refs.editor.getContent( { format: 'raw' } ) );
+
+		this.props.setRawContent( this.refs.editor.getContent( { format: 'raw' } ) );
 	},
 
 	autosave: function() {
@@ -527,7 +584,10 @@ var PostEditor = React.createClass( {
 		}
 
 		this.saveRawContent();
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.edit( { content: this.refs.editor.getContent() } );
+
+		this.props.setContent( this.refs.editor.getContent() );
 
 		// Make sure that after TinyMCE processing that the post is still dirty
 		if ( ! PostEditStore.isDirty() || ! PostEditStore.hasContent() || ! this.state.post ) {
@@ -546,7 +606,9 @@ var PostEditor = React.createClass( {
 				}
 			}.bind( this );
 		}
+		this.props.autosave( callback );
 
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.autosave( callback );
 	},
 
@@ -597,6 +659,10 @@ var PostEditor = React.createClass( {
 
 		edits.content = this.refs.editor.getContent();
 
+		this.props.setContent( edits.content );
+		this.props.save();
+
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.saveEdited( edits, function( error ) {
 			if ( error && 'NO_CHANGE' !== error.message ) {
 				this.onSaveDraftFailure( error );
@@ -629,11 +695,19 @@ var PostEditor = React.createClass( {
 		}
 
 		previewPost = function() {
-			this._previewWindow.location = this.state.previewUrl;
-			this._previewWindow.focus();
+			if ( this._previewWindow ) {
+				this._previewWindow.location = this.state.previewUrl;
+				this._previewWindow.focus();
+			} else {
+				this._previewWindow = window.open( this.state.previewUrl, 'WordPress.com Post Preview' );
+			}
 		}.bind( this );
 
 		if ( status === 'publish' ) {
+			this.props.setContent( this.refs.editor.getContent() );
+			this.props.autosave( previewPost );
+
+			// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 			actions.edit( { content: this.refs.editor.getContent() } );
 			actions.autosave( previewPost );
 		} else {
@@ -685,7 +759,7 @@ var PostEditor = React.createClass( {
 	},
 
 	onSaveDraftSuccess: function() {
-		if ( this.state.post.status === 'publish' || this.state.post.status === 'private' ) {
+		if ( utils.isPublished( this.state.post ) ) {
 			this.onSaveSuccess(
 				this.getMessage( 'updated' ),
 				this.getMessage( 'view' ),
@@ -697,19 +771,22 @@ var PostEditor = React.createClass( {
 	},
 
 	onPublish: function() {
-		var currentUser = user.get(),
-			edits = {
-				status: 'publish'
-			};
+		var edits = { status: 'publish' };
 
 		// determine if this is a private publish
-		if ( this.state.post && this.state.post.status === 'private' ) {
+		if ( utils.isPrivate( this.state.post ) ) {
 			edits.status = 'private';
+			this.props.setPostPrivate();
+		} else {
+			this.props.setPostPublished();
 		}
 
 		// Update content on demand to avoid unnecessary lag and because it is expensive
 		// to serialize when TinyMCE is the active mode
 		edits.content = this.refs.editor.getContent();
+
+		this.props.setContent( edits.content );
+		this.props.save();
 
 		actions.saveEdited( edits, function( error ) {
 			if ( error && 'NO_CHANGE' !== error.message ) {
@@ -732,7 +809,7 @@ var PostEditor = React.createClass( {
 	},
 
 	onPublishSuccess: function() {
-		const publishedMessage = 'private' === utils.getVisibility( this.state.savedPost ) ?
+		const publishedMessage = utils.isPrivate( this.state.savedPost ) ?
 			this.getMessage( 'publishedPrivately' ) :
 			this.getMessage( 'published' );
 
@@ -825,18 +902,38 @@ var PostEditor = React.createClass( {
 		// dispatching inside a dispatch which can happen if for example the
 		// title field is focused when toggling the editor.
 		this._switchEditorTimeout = setTimeout( function() {
+			// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 			actions.edit( { content: content } );
 			actions.resetRawContent();
+
+			this.props.setContent( content );
+			this.props.resetRawContent();
 
 			if ( mode === 'html' ) {
 				// Set raw content directly to avoid race conditions
 				actions.editRawContent( content );
+				this.props.setRawContent( content );
 			} else {
 				this.saveRawContent();
+				this.props.save();
 			}
 		}.bind( this ), 0 );
 	}
 
 } );
 
-module.exports = PostEditor;
+export default connect(
+	null,
+	dispatch => bindActionCreators( {
+		setContent,
+		setExcerpt,
+		stopEditing,
+		setTitle,
+		setRawContent,
+		save,
+		autosave,
+		setPostPrivate,
+		setPostPublished,
+		resetRawContent
+	}, dispatch )
+)( PostEditor );

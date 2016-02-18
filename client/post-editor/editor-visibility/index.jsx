@@ -1,9 +1,12 @@
 /**
  * External dependencies
  */
+import ReactDom from 'react-dom';
 import React from 'react';
 import includes from 'lodash/collection/includes';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /**
  * Internal dependencies
@@ -22,19 +25,33 @@ import Tooltip from 'components/tooltip';
 import postActions from 'lib/posts/actions';
 import { recordEvent, recordStat } from 'lib/posts/stats';
 import accept from 'lib/accept';
+import {
+	setPostPassword,
+	setPostPasswordProtected,
+	setPostPrivate,
+	setPostPublic
+} from 'state/ui/editor/post/actions';
 
-module.exports = React.createClass( {
+const EditorVisibility = React.createClass( {
 
 	displayName: 'EditorVisibility',
 	showingAcceptDialog: false,
 
 	getDefaultProps() {
 		return {
-			isPrivateSite: false
+			isPrivateSite: false,
+			setPostPassword: () => {},
+			setPostPasswordProtected: () => {},
+			setPostPrivate: () => {},
+			setPostPublic: () => {},
 		};
 	},
 
 	propTypes: {
+		setPostPassword: React.PropTypes.func,
+		setPostPasswordProtected: React.PropTypes.func,
+		setPostPrivate: React.PropTypes.func,
+		setPostPublic: React.PropTypes.func,
 		visibility: React.PropTypes.string,
 		onPrivatePublish: React.PropTypes.func,
 		isPrivateSite: React.PropTypes.bool,
@@ -107,7 +124,7 @@ module.exports = React.createClass( {
 			return true;
 		}
 
-		password = React.findDOMNode( this.refs.postPassword ).value.trim();
+		password = ReactDom.findDOMNode( this.refs.postPassword ).value.trim();
 
 		return password.length;
 	},
@@ -159,10 +176,12 @@ module.exports = React.createClass( {
 		switch ( newVisibility ) {
 			case 'public':
 				postEdits.password = '';
+				this.props.setPostPublic();
 				break;
 
 			case 'password':
 				postEdits.password = this.props.savedPassword || ' ';
+				this.props.setPostPasswordProtected( postEdits.password );
 				break;
 		}
 
@@ -171,13 +190,14 @@ module.exports = React.createClass( {
 		recordStat( 'visibility-set-' + newVisibility );
 		recordEvent( 'Changed visibility', newVisibility );
 
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		postActions.edit( postEdits );
 	},
 
 	onKey( event ) {
 		var password;
 
-		password = React.findDOMNode( this.refs.postPassword ).value.trim();
+		password = ReactDom.findDOMNode( this.refs.postPassword ).value.trim();
 
 		if ( event.key === 'Backspace' &&
 			! password.length ) {
@@ -190,6 +210,7 @@ module.exports = React.createClass( {
 	},
 
 	setPostToPrivate() {
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		postActions.edit( {
 			password: '',
 			status: 'private'
@@ -199,6 +220,8 @@ module.exports = React.createClass( {
 
 		recordStat( 'visibility-set-private' );
 		recordEvent( 'Changed visibility', 'private' );
+
+		this.props.setPostPrivate();
 	},
 
 	onPrivatePublish() {
@@ -236,9 +259,12 @@ module.exports = React.createClass( {
 	onPasswordChange( event ) {
 		var newPassword = event.target.value.trim();
 
+		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		postActions.edit( { password: newPassword } );
 
 		this.setState( { passwordIsValid: newPassword.length > 0 } );
+
+		this.props.setPostPassword( newPassword );
 	},
 
 	renderPasswordInput() {
@@ -322,7 +348,7 @@ module.exports = React.createClass( {
 				<Tooltip
 					context={ this.refs && this.refs.setVisibility }
 					isVisible={ this.state.tooltip && ! this.state.showPopover }
-					position="bottom"
+					position="bottom left"
 				>
 					{ this.translate( 'Edit visibility', { context: 'Editor: Tooltip shown on icon to change the post\'s visibility.' } ) }
 				</Tooltip>
@@ -389,3 +415,13 @@ module.exports = React.createClass( {
 	}
 
 } );
+
+export default connect(
+	null,
+	dispatch => bindActionCreators( {
+		setPostPassword,
+		setPostPasswordProtected,
+		setPostPrivate,
+		setPostPublic
+	}, dispatch )
+)( EditorVisibility );

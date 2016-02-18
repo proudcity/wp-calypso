@@ -2,14 +2,23 @@ var express = require( 'express' ),
 	fs = require( 'fs' ),
 	crypto = require( 'crypto' ),
 	qs = require( 'qs' ),
+	execSync = require( 'child_process' ).execSync,
 	cookieParser = require( 'cookie-parser' ),
 	i18nUtils = require( 'lib/i18n-utils' ),
-	debug = require( 'debug' )( 'calypso:pages' );
+	debug = require( 'debug' )( 'calypso:pages' ),
+	includes = require( 'lodash/collection/includes' ),
+	React = require( 'react' ),
+	ReduxProvider = require( 'react-redux' ).Provider,
+	pick = require( 'lodash/object/pick' );
 
 var config = require( 'config' ),
 	sanitize = require( 'sanitize' ),
 	utils = require( 'bundler/utils' ),
-	sections = require( '../../client/sections' );
+	sections = require( '../../client/sections' ),
+	LayoutLoggedOutDesign = require( 'layout/logged-out-design' ),
+	render = require( 'render' ).render,
+	createReduxStore = require( 'state' ).createReduxStore,
+	setSection = require( 'state/ui/actions' ).setSection;
 
 var HASH_LENGTH = 10,
 	URL_BASE_PATH = '/calypso',
@@ -107,6 +116,22 @@ function getChunk( path ) {
 	}
 }
 
+function getCurrentBranchName() {
+	try {
+		return execSync( 'git rev-parse --abbrev-ref HEAD' ).toString().replace( /\s/gm, '' );
+	} catch ( err ) {
+		return undefined;
+	}
+}
+
+function getCurrentCommitShortChecksum() {
+	try {
+		return execSync( 'git rev-parse --short HEAD' ).toString().replace( /\s/gm, '' );
+	} catch ( err ) {
+		return undefined;
+	}
+}
+
 function getDefaultContext( request ) {
 	var context, chunk;
 
@@ -137,7 +162,7 @@ function getDefaultContext( request ) {
 	if ( CALYPSO_ENV === 'wpcalypso' ) {
 		context.badge = CALYPSO_ENV;
 		context.devDocs = true;
-		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/new';
+		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		context.faviconURL = '/calypso/images/favicons/favicon-wpcalypso.ico';
 	}
 
@@ -149,15 +174,17 @@ function getDefaultContext( request ) {
 
 	if ( CALYPSO_ENV === 'stage' ) {
 		context.badge = 'staging';
-		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/new';
+		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		context.faviconURL = '/calypso/images/favicons/favicon-staging.ico';
 	}
 
 	if ( CALYPSO_ENV === 'development' ) {
 		context.badge = 'dev';
 		context.devDocs = true;
-		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/new';
+		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
 		context.faviconURL = '/calypso/images/favicons/favicon-development.ico';
+		context.branchName = getCurrentBranchName();
+		context.commitChecksum = getCurrentCommitShortChecksum();
 	}
 
 	if ( config.isEnabled( 'code-splitting' ) ) {
@@ -290,6 +317,7 @@ function renderLoggedInRoute( req, res ) {
 	}
 }
 
+
 module.exports = function() {
 	var app = express();
 
@@ -344,16 +372,52 @@ module.exports = function() {
 		}
 	} );
 
-	app.get( '/design', function( req, res ) {
+	if ( config.isEnabled( 'manage/themes/details' ) ) {
+		app.get( '/themes/:theme_slug', function( req, res ) {
+			const context = getDefaultContext( req );
+
+			if ( config.isEnabled( 'server-side-rendering' ) ) {
+				const store = createReduxStore();
+
+				store.dispatch( setSection( 'themes', { hasSidebar: false, isFullScreen: true } ) );
+				context.initialReduxState = pick( store.getState(), 'ui' );
+
+				Object.assign( context, render( (
+					<ReduxProvider store={ store }>
+						<LayoutLoggedOutDesign store={ store } routeName={ 'themes' } match={ { theme_slug: req.params.theme_slug } } />
+					</ReduxProvider>
+				) ) );
+			}
+
+			res.render( 'index.jade', context );
+		} );
+	}
+
+	app.get( '/design(/type/:themeTier)?', function( req, res ) {
 		if ( req.cookies.wordpress_logged_in || ! config.isEnabled( 'manage/themes/logged-out' ) ) {
 			// the user is probably logged in
 			renderLoggedInRoute( req, res );
 		} else {
-			renderLoggedOutRoute( req, res );
+			const context = getDefaultContext( req );
+			const tier = includes( [ 'all', 'free', 'premium' ], req.params.themeTier )
+				? req.params.themeTier
+				: 'all';
+
+			if ( config.isEnabled( 'server-side-rendering' ) ) {
+				const store = createReduxStore();
+				store.dispatch( setSection( 'design', { hasSidebar: false } ) );
+				context.initialReduxState = pick( store.getState(), 'ui' );
+
+				Object.assign( context,
+					render( <LayoutLoggedOutDesign tier={ tier } store={ store } /> )
+				);
+			}
+
+			res.render( 'index.jade', context );
 		}
 	} );
 
-	app.get( '/accept-invite/:site_id/:invitation_key', function( req, res ) {
+	app.get( '/accept-invite/:site_id?/:invitation_key?/:activation_key?/:auth_key?/:locale?', function( req, res ) {
 		if ( req.cookies.wordpress_logged_in ) {
 			// the user is probably logged in
 			renderLoggedInRoute( req, res );
@@ -379,12 +443,12 @@ module.exports = function() {
 		} );
 	}
 
-	if ( config.isEnabled( 'reader/discover' ) ) {
+	if ( config.isEnabled( 'reader/discover' ) && config( 'env' ) !== 'development' ) {
 		app.get( '/discover', function( req, res ) {
 			if ( req.cookies.wordpress_logged_in ) {
 				renderLoggedInRoute( req, res );
 			} else {
-				res.redirect( 'https://discover.wordpress.com' );
+				res.redirect( config( 'discover_logged_out_redirect_url' ) );
 			}
 		} );
 	}

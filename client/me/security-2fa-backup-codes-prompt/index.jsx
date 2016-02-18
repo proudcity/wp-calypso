@@ -2,6 +2,7 @@
  * External dependencies
  */
 var React = require( 'react' ),
+	LinkedStateMixin = require( 'react-addons-linked-state-mixin' ),
 	debug = require( 'debug' )( 'calypso:me:security:2fa-backup-codes-prompt' );
 
 /**
@@ -20,7 +21,7 @@ module.exports = React.createClass( {
 
 	displayName: 'Security2faBackupCodesPrompt',
 
-	mixins: [ React.addons.LinkedStateMixin ],
+	mixins: [ LinkedStateMixin ],
 
 	propTypes: {
 		onPrintAgain: React.PropTypes.func,
@@ -85,6 +86,11 @@ module.exports = React.createClass( {
 		this.setState( { lastError: false } );
 	},
 
+	onClickPrintButton: function( event ) {
+		analytics.ga.recordEvent( 'Me', 'Clicked On 2fa Print Backup Codes Again Button' );
+		this.onPrintAgain( event );
+	},
+
 	possiblyRenderPrintAgainButton: function() {
 		if ( ! this.props.onPrintAgain ) {
 			return null;
@@ -95,10 +101,7 @@ module.exports = React.createClass( {
 				className="security-2fa-backup-codes-prompt__print"
 				disabled={ this.state.submittingCode }
 				isPrimary={ false }
-				onClick={ function( event ) {
-					analytics.ga.recordEvent( 'Me', 'Clicked On 2fa Print Backup Codes Again Button' );
-					this.onPrintAgain( event );
-				}.bind( this ) }
+				onClick={ this.onClickPrintButton }
 				type="button"
 			>
 				{ this.translate( "Didn't Print The Codes?" ) }
@@ -113,7 +116,6 @@ module.exports = React.createClass( {
 
 		return (
 			<Notice
-				isCompact
 				status="is-error"
 				onDismissClick={ this.clearLastError }
 				text={ this.state.lastError }
@@ -125,7 +127,7 @@ module.exports = React.createClass( {
 		return (
 			<form className="security-2fa-backup-codes-prompt" onSubmit={ this.onVerify }>
 				<FormFieldset>
-					<FormLabel htmlFor="backup-code-entry">{ this.translate( 'Type a Backup Code' ) }</FormLabel>
+					<FormLabel htmlFor="backup-code-entry">{ this.translate( 'Type a Backup Code to Verify' ) }</FormLabel>
 					<FormTelInput
 						disabled={ this.state.submittingCode }
 						name="backup-code-entry"

@@ -7,9 +7,11 @@ import { expect } from 'chai';
  * Internal dependencies
  */
 import {
-	FETCH_PUBLICIZE_CONNECTIONS,
-	RECEIVE_PUBLICIZE_CONNECTIONS,
-	FAIL_PUBLICIZE_CONNECTIONS_REQUEST
+	PUBLICIZE_CONNECTIONS_REQUEST,
+	PUBLICIZE_CONNECTIONS_RECEIVE,
+	PUBLICIZE_CONNECTIONS_REQUEST_FAILURE,
+	DESERIALIZE,
+	SERIALIZE
 } from 'state/action-types';
 import {
 	fetchingConnections,
@@ -20,7 +22,7 @@ import {
 describe( '#fetchingConnections()', () => {
 	it( 'should set fetching to true for fetching action', () => {
 		const state = fetchingConnections( null, {
-			type: FETCH_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_REQUEST,
 			siteId: 2916284
 		} );
 
@@ -29,7 +31,7 @@ describe( '#fetchingConnections()', () => {
 
 	it( 'should set fetching to false for received action', () => {
 		const state = fetchingConnections( null, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284
 		} );
 
@@ -38,18 +40,58 @@ describe( '#fetchingConnections()', () => {
 
 	it( 'should set fetching to false for failed action', () => {
 		const state = fetchingConnections( null, {
-			type: FAIL_PUBLICIZE_CONNECTIONS_REQUEST,
+			type: PUBLICIZE_CONNECTIONS_REQUEST_FAILURE,
 			siteId: 2916284
 		} );
 
 		expect( state[ 2916284 ] ).to.be.false;
+	} );
+
+	describe( 'persistence', () => {
+		it( 'should load valid persisted data', () => {
+			const persistedState = Object.freeze( {
+				2916284: false,
+				123456: undefined
+			} );
+			const state = fetchingConnections( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( { 2916284: false, 123456: undefined } );
+		} );
+
+		it.skip( 'should ignore loading data with invalid keys', () => {
+			const persistedState = Object.freeze( { foo: false } );
+			const state = fetchingConnections( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( {} );
+		} );
+
+		it.skip( 'should ignore loading data with invalid values', () => {
+			const persistedState = Object.freeze( { 2916284: 'foo' } );
+			const state = fetchingConnections( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( {} );
+		} );
+
+		it( 'should persists data', () => {
+			const state = Object.freeze( {
+				2916284: false,
+				123456: undefined
+			} );
+			const persistedState = fetchingConnections( state, {
+				type: SERIALIZE
+			} );
+			expect( persistedState ).to.eql( state );
+		} );
 	} );
 } );
 
 describe( '#connections()', () => {
 	it( 'should index connections by ID', () => {
 		const state = connections( null, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284,
 			data: {
 				connections: [ { ID: 1, site_ID: 2916284 } ]
@@ -65,7 +107,7 @@ describe( '#connections()', () => {
 		const state = connections( {
 			1: { ID: 1, site_ID: 2916284 }
 		}, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284,
 			data: {
 				connections: [ { ID: 2, site_ID: 2916284 } ]
@@ -83,7 +125,7 @@ describe( '#connections()', () => {
 		const state = connections( {
 			1: { ID: 1, site_ID: 2916284 }
 		}, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284,
 			data: {
 				connections: [ connection ]
@@ -94,12 +136,56 @@ describe( '#connections()', () => {
 			1: connection
 		} );
 	} );
+
+	describe( 'persistence', () => {
+		it( 'should persist data', () => {
+			const state = Object.freeze( {
+				1: { ID: 1, site_ID: 2916284 },
+				2: { ID: 2, site_ID: 2916284 }
+			} );
+			const persistedState = connections( state, { type: SERIALIZE } );
+			expect( persistedState ).to.eql( state );
+		} );
+
+		it( 'should load valid data', () => {
+			const persistedState = Object.freeze( {
+				1: { ID: 1, site_ID: 2916284 },
+				2: { ID: 2, site_ID: 2916284 }
+			} );
+			const state = connections( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( persistedState );
+		} );
+
+		it.skip( 'should ignore loading data with invalid keys', () => {
+			const persistedState = Object.freeze( {
+				foo: { ID: 1, site_ID: 2916284 },
+				bar: { ID: 2, site_ID: 2916284 }
+			} );
+			const state = connections( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( {} );
+		} );
+
+		it.skip( 'should ignore loading data with invalid values', () => {
+			const persistedState = Object.freeze( {
+				1: { ID: 1, site_ID: 'foo' },
+				2: { ID: 2, site_ID: 2916284 }
+			} );
+			const state = connections( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( {} );
+		} );
+	} );
 } );
 
 describe( '#connectionsBySiteId()', () => {
 	it( 'should map site ID to connection IDs', () => {
 		const state = connectionsBySiteId( null, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284,
 			data: {
 				connections: [
@@ -118,7 +204,7 @@ describe( '#connectionsBySiteId()', () => {
 		const state = connectionsBySiteId( {
 			2916284: [ 1, 2 ]
 		}, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284,
 			data: {
 				connections: [
@@ -136,7 +222,7 @@ describe( '#connectionsBySiteId()', () => {
 		const state = connectionsBySiteId( {
 			77203074: [ 1, 2 ]
 		}, {
-			type: RECEIVE_PUBLICIZE_CONNECTIONS,
+			type: PUBLICIZE_CONNECTIONS_RECEIVE,
 			siteId: 2916284,
 			data: {
 				connections: [
@@ -148,6 +234,50 @@ describe( '#connectionsBySiteId()', () => {
 		expect( state ).to.eql( {
 			77203074: [ 1, 2 ],
 			2916284: [ 1 ]
+		} );
+	} );
+
+	describe( 'persistence', () => {
+		it( 'should persist data', () => {
+			const state = Object.freeze( {
+				77203074: [ 1, 2 ],
+				2916284: [ 1 ]
+			} );
+			const persistedState = connectionsBySiteId( state, { type: SERIALIZE } );
+			expect( persistedState ).to.eql( state );
+		} );
+
+		it( 'should load valid data', () => {
+			const persistedState = Object.freeze( {
+				77203074: [ 1, 2 ],
+				2916284: [ 1 ]
+			} );
+			const state = connectionsBySiteId( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( persistedState );
+		} );
+
+		it.skip( 'should ignore loading data with invalid keys', () => {
+			const persistedState = Object.freeze( {
+				77203074: [ 1, 2 ],
+				foo: [ 1 ]
+			} );
+			const state = connectionsBySiteId( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( {} );
+		} );
+
+		it.skip( 'should ignore loading data with invalid values', () => {
+			const persistedState = Object.freeze( {
+				77203074: [ 1, 'bar' ],
+				2916284: [ 1 ]
+			} );
+			const state = connectionsBySiteId( persistedState, {
+				type: DESERIALIZE
+			} );
+			expect( state ).to.eql( {} );
 		} );
 	} );
 } );

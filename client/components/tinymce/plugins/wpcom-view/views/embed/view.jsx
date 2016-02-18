@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import ReactDom from 'react-dom';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 
@@ -9,7 +10,6 @@ import { Container } from 'flux/utils';
  */
 import ResizableIframe from 'components/resizable-iframe';
 import EmbedsStore from 'lib/embeds/store';
-import actions from 'lib/embeds/actions';
 
 class EmbedView extends Component {
 	static getStores() {
@@ -21,11 +21,13 @@ class EmbedView extends Component {
 	}
 
 	componentDidMount() {
-		if ( ! this.state.status || this.state.status === 'ERROR' ) {
-			setTimeout( () => actions.fetch( this.props.siteId, this.props.content ), 0 );
-		}
-
-		this.setState( {
+		// Rendering the frame follows a specific set of steps, whereby an
+		// initial rendering pass is made, at which time the frame is rendered
+		// in a second pass, before finally setting the frame markup.
+		//
+		// TODO: Investigate and evaluate whether we need to avoid rendering
+		//       the iframe on the initial render pass
+		this.setState( { // eslint-disable-line react/no-did-mount-set-state
 			wrapper: this.refs.view
 		}, this.setHtml );
 	}
@@ -43,8 +45,8 @@ class EmbedView extends Component {
 			return;
 		}
 
-		const view = React.findDOMNode( this.refs.view );
-		const iframe = React.findDOMNode( this.refs.iframe );
+		const view = ReactDom.findDOMNode( this.refs.view );
+		const iframe = ReactDom.findDOMNode( this.refs.iframe );
 		if ( ! iframe.contentDocument ) {
 			return;
 		}
@@ -72,7 +74,7 @@ class EmbedView extends Component {
 			return;
 		}
 
-		const iframe = React.findDOMNode( this.refs.iframe );
+		const iframe = ReactDom.findDOMNode( this.refs.iframe );
 		if ( ! iframe.contentDocument ) {
 			return;
 		}

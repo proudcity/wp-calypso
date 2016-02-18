@@ -4,7 +4,7 @@
 import debugModule from 'debug';
 const debug = debugModule( 'calypso:signup' );
 import React from 'react';
-import TimeoutTransitionGroup from 'timeout-transition-group';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import page from 'page';
 import startsWith from 'lodash/string/startsWith';
 import sortBy from 'lodash/collection/sortBy';
@@ -21,6 +21,7 @@ import reject from 'lodash/collection/reject';
 /**
  * Internal dependencies
  */
+import config from 'config';
 import SignupDependencyStore from 'lib/signup/dependency-store';
 import SignupProgressStore from 'lib/signup/progress-store';
 import SignupFlowController from 'lib/signup/flow-controller';
@@ -35,6 +36,7 @@ const user = userModule();
 import analytics from 'analytics';
 import SignupProcessingScreen from 'signup/processing-screen';
 import utils from './utils';
+import * as oauthToken from 'lib/oauth-token';
 
 /**
  * Constants
@@ -144,12 +146,21 @@ const Signup = React.createClass( {
 
 		analytics.tracks.recordEvent( 'calypso_signup_complete', { flow: this.props.flowName } );
 
-		if ( user.get() ) {
+		const userIsLoggedIn = Boolean( user.get() );
+
+		if ( userIsLoggedIn ) {
 			// deferred in case the user is logged in and the redirect triggers a dispatch
 			defer( function() {
 				page( destination );
 			}.bind( this ) );
-		} else {
+		}
+
+		if ( ! userIsLoggedIn && config.isEnabled( 'oauth' ) ) {
+			oauthToken.setToken( dependencies.bearer_token );
+			window.location.href = destination;
+		}
+
+		if ( ! userIsLoggedIn && ! config.isEnabled( 'oauth' ) ) {
 			this.setState( {
 				bearerToken: dependencies.bearer_token,
 				username: dependencies.username,
@@ -188,7 +199,7 @@ const Signup = React.createClass( {
 	},
 
 	firstUnsubmittedStepName() {
-		const signupProgress = signupProgressStore.get(),
+		const signupProgress = SignupProgressStore.get(),
 			currentSteps = flows.getFlow( this.props.flowName ).steps,
 			nextStepName = currentSteps[ signupProgress.length ],
 			firstInProgressStep = find( signupProgress, { status: 'in-progress' } ) || {},
@@ -300,6 +311,7 @@ const Signup = React.createClass( {
 					<CurrentComponent
 						path={ this.props.path }
 						step={ currentStepProgress }
+						stepName={ this.props.stepName }
 						goToNextStep={ this.goToNextStep }
 						flowName={ this.props.flowName }
 						signupProgressStore={ this.state.progress }
@@ -328,13 +340,13 @@ const Signup = React.createClass( {
 						positionInFlow={ this.positionInFlow() }
 						flowName={ this.props.flowName } />
 				}
-				<TimeoutTransitionGroup
+				<ReactCSSTransitionGroup
 					className="signup__steps"
 					transitionName="signup__step"
-					enterTimeout={ 500 }
-					leaveTimeout={ 300 }>
+					transitionEnterTimeout={ 500 }
+					transitionLeaveTimeout={ 300 }>
 					{ this.currentStep() }
-				</TimeoutTransitionGroup>
+				</ReactCSSTransitionGroup>
 				{ this.loginForm() }
 			</span>
 		);

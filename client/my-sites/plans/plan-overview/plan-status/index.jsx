@@ -3,48 +3,76 @@
  */
 import React from 'react';
 import classNames from 'classnames';
+import page from 'page';
 
 /**
  * Internal dependencies
  */
+import Button from 'components/button';
+import { cartItems } from 'lib/cart-values';
 import CompactCard from 'components/card/compact';
-import ProgressBar from 'components/progress-bar';
+import config from 'config';
+import Gridicon from 'components/gridicon';
+import { getDaysUntilUserFacingExpiry, isInGracePeriod } from 'lib/plans';
+import Notice from 'components/notice';
+import PlanProgress from '../plan-progress';
 import { isPremium, isBusiness } from 'lib/products-values';
+import * as upgradesActions from 'lib/upgrades/actions';
 
 const PlanStatus = React.createClass( {
 	propTypes: {
-		plan: React.PropTypes.object.isRequired
+		plan: React.PropTypes.object.isRequired,
+		selectedSite: React.PropTypes.oneOfType( [
+			React.PropTypes.object,
+			React.PropTypes.bool
+		] ).isRequired
 	},
 
-	getDaysUntilExpiry() {
-		const { userFacingExpiryMoment } = this.props.plan;
+	purchasePlan() {
+		upgradesActions.addItem( cartItems.planItem( this.props.plan.productSlug ) );
 
-		return userFacingExpiryMoment.diff( this.moment(), 'days' );
+		page( `/checkout/${ this.props.selectedSite.slug }` );
 	},
 
-	renderProgressBar() {
-		const { subscribedMoment, userFacingExpiryMoment } = this.props.plan,
-			// we strip the hour/minute/second/millisecond data here from `subscribed_date` to match `expiry`
-			trialPeriodInDays = userFacingExpiryMoment.diff( subscribedMoment, 'days' ),
-			timeUntilExpiryInDays = this.getDaysUntilExpiry(),
-			progress = Math.max( 0.5, trialPeriodInDays - timeUntilExpiryInDays );
+	renderNotice() {
+		const { plan } = this.props;
+
+		if ( isInGracePeriod( plan ) ) {
+			const daysAfterUserFacingExpiry = Math.abs( getDaysUntilUserFacingExpiry( plan ) );
+			let noticeText;
+
+			if ( daysAfterUserFacingExpiry === 0 ) {
+				noticeText = this.translate( 'Expired today' );
+			} else {
+				noticeText = this.translate(
+					'Expired %(days)d day ago',
+					'Expired %(days)d days ago', {
+						args: { days: daysAfterUserFacingExpiry },
+						count: daysAfterUserFacingExpiry
+					}
+				);
+			}
+
+			return (
+				<Notice isCompact status="is-error">
+					{ noticeText }
+				</Notice>
+			);
+		}
+	},
+
+	renderPurchaseButton() {
+		if ( ! config.isEnabled( 'upgrades/checkout' ) ) {
+			return null;
+		}
 
 		return (
-			<ProgressBar
-				value={ progress }
-				total={ trialPeriodInDays } />
-		);
-	},
-
-	renderDaysRemaining() {
-		return this.translate(
-			'%(daysUntilExpiry)s day remaining',
-			'%(daysUntilExpiry)s days remaining',
-			{
-				args: { daysUntilExpiry: this.getDaysUntilExpiry() },
-				count: this.getDaysUntilExpiry(),
-				context: 'The amount of time until the trial plan expires, e.g. "5 days remaining"'
-			}
+			<Button
+				className="plan-status__button"
+				onClick={ this.purchasePlan }
+				primary>
+				{ this.translate( 'Purchase Now' ) }
+			</Button>
 		);
 	},
 
@@ -52,34 +80,36 @@ const PlanStatus = React.createClass( {
 		const { plan } = this.props,
 			iconClasses = classNames( 'plan-status__icon', {
 				'is-premium': isPremium( plan ),
-				'is-business': isBusiness( plan )
+				'is-business': isBusiness( plan ),
+				'is-expired': isInGracePeriod( plan )
 			} );
 
 		return (
 			<div className="plan-status">
 				<CompactCard className="plan-status__info">
-					<div className={ iconClasses } />
+					<div className={ iconClasses }>
+						{ isInGracePeriod( plan ) && <Gridicon icon="notice" /> }
+					</div>
+
 					<div className="plan-status__header">
 						<span className="plan-status__text">
 							{ this.translate( 'Your Current Plan:' ) }
 						</span>
+
 						<h1 className="plan-status__plan">
 							{
 								this.translate( '%(planName)s Free Trial', {
-									args: { planName: this.props.plan.productName }
+									args: { planName: plan.productName }
 								} )
 							}
 						</h1>
+						{ this.renderNotice() }
 					</div>
+
+					{ this.renderPurchaseButton() }
 				</CompactCard>
-				<CompactCard>
-					<div className="plan-status__time-until-expiry">
-						{ this.renderDaysRemaining() }
-					</div>
-					<div className="plan-status__progress">
-						{ this.renderProgressBar() }
-					</div>
-				</CompactCard>
+
+				{ ! isInGracePeriod( plan ) && <PlanProgress plan={ plan } /> }
 			</div>
 		);
 	}

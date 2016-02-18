@@ -8,7 +8,8 @@ var React = require( 'react' );
 var cartValues = require( 'lib/cart-values' ),
 	getRefundPolicy = cartValues.getRefundPolicy,
 	cartItems = cartValues.cartItems,
-	hasFreeTrial = cartItems.hasFreeTrial;
+	hasFreeTrial = cartItems.hasFreeTrial,
+	abtest = require( 'lib/abtest' ).abtest;
 
 var SupportingText = React.createClass( {
 
@@ -50,11 +51,11 @@ var SupportingText = React.createClass( {
 	liveChatSupportingText: function() {
 		var cart = this.props.cart,
 			title = this.translate( 'Get Support' ),
-			content = this.translate( 'Need help? Our Happiness Engineers can help you setup your site & answer questions.' );
+			content = this.translate( 'Need help? Our Happiness Engineers can help you set up your site & answer questions.' );
 
 		if ( cartItems.hasProduct( cart, 'business-bundle' ) ) {
 			title = this.translate( 'Live Chat Support?' );
-			content = this.translate( 'Need help? Our Happiness Engineers can help you setup your site & answer questions.' );
+			content = this.translate( 'Need help? Our Happiness Engineers can help you set up your site & answer questions.' );
 		}
 
 		return this.supportingTextBox( 'live-chat-supporting-text', title, content );
@@ -70,6 +71,10 @@ var SupportingText = React.createClass( {
 	},
 
 	render: function() {
+		if ( abtest( 'checkoutFooter' ) === 'noFooter' ) {
+			return null;
+		}
+
 		return hasFreeTrial( this.props.cart )
 		? null : (
 				<ul className="supporting-text">

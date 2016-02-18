@@ -9,8 +9,6 @@
 	border: 1px solid lighten( $gray, 20% );
 	color: $gray-dark;
 	cursor: text;
-	font-size: 16px;
-	line-height: 1.5;
 	transition: all .15s ease-in-out;
 
 	&:hover {
@@ -26,7 +24,8 @@
 .token-field__input-container {
 	display: flex;
 	flex-wrap: wrap;
-	padding: 7px 14px 0 0;
+	align-items: flex-start;
+	padding: 5px 14px 5px 0;
 }
 
 // Token input
@@ -34,8 +33,9 @@ input[type="text"].token-field__input {
 	display: inline-block;
 	width: auto;
 	max-width: 100%;
-	margin: 0 0 7px 5px;
-	padding: 2px 0 2px 7px;
+	margin: 2px 0 2px 8px;
+	padding: 0 0 0 6px;
+	line-height: 24px;
 	background: inherit;
 	border: 0;
 	outline: none;
@@ -51,13 +51,36 @@ input[type="text"].token-field__input {
 // Tokens
 .token-field__token {
 	font-size: 14px;
-	display: inline-block;
+	display: flex;
 	margin: 2px 0 2px 8px;
 	padding: 0;
 	color: $white;
 	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+
+	&.is-success {
+		.token-field__token-text, .token-field__remove-token {
+			background: $alert-green;
+		}
+	}
+
+	&.is-error {
+		.token-field__token-text, .token-field__remove-token {
+			background: $alert-red;
+		}
+	}
+}
+
+.token-field__token.is-borderless {
+	.token-field__token-text {
+		background: transparent;
+		color: $gray-dark;
+	}
+
+	.token-field__remove-token {
+		background: transparent;
+		color: $gray;
+		padding: 0 2px;
+	}
 }
 
 .token-field__token-text, .token-field__remove-token {
@@ -69,6 +92,9 @@ input[type="text"].token-field__input {
 .token-field__token-text {
 	border-radius: 4px 0 0 4px;
 	padding: 0 4px 0 6px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .token-field__remove-token {
@@ -83,7 +109,6 @@ input[type="text"].token-field__input {
 		background: darken( $gray, 10% );
 	}
 }
-
 
 // Suggestion list
 .token-field__suggestions-list {
