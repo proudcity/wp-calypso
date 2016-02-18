@@ -59,6 +59,7 @@
     "keymaster": "1.6.2",
     "lodash": "3.10.1",
     "lunr": "0.5.7",
+    "request": "2.67.0",
     "marked": "0.3.5",
     "moment": "2.10.6",
     "moment-timezone": "^0.4.0",
