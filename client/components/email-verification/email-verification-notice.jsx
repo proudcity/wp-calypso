@@ -148,7 +148,7 @@ module.exports = React.createClass( {
 		if ( ! user || this.state.emailSent || this.state.dismissed || ! this.state.activeNotice ) {
 			return null;
 		}
-
+console.log(user);
 		if ( 'UNVERIFIED' === this.state.activeNotice && ! user.email_verified ) {
 			return this.unverifiedNotice();
 		}

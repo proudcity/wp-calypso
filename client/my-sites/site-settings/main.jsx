@@ -12,7 +12,7 @@ var config = require( 'config' ),
 	NavTabs = require( 'components/section-nav/tabs' ),
 	NavItem = require( 'components/section-nav/item' ),
 	GeneralSettings = require( './section-general' ),
-	WritingSettings = require( './section-writing' ),
+	SocialMediaSettings = require( './section-social-media' ),
 	DiscussionSettings = require( './section-discussion' ),
 	AnalyticsSettings = require( './section-analytics' ),
 	ImportSettings = require( './section-import' ),
@@ -56,7 +56,7 @@ module.exports = React.createClass( {
 	getStrings: function() {
 		return {
 			general: this.translate( 'General', { context: 'settings screen' } ),
-			writing: this.translate( 'Social media', { context: 'settings screen' } ),
+			'social-media': this.translate( 'Social media', { context: 'settings screen' } ),
 			discussion: this.translate( 'Map', { context: 'settings screen' } ),
 			analytics: this.translate( 'Analytics', { context: 'settings screen' } ),
 			security: this.translate( 'Security', { context: 'settings screen' } ),
@@ -69,7 +69,7 @@ module.exports = React.createClass( {
 		var site = this.state.site;
 		return {
 			general: <GeneralSettings site={ site } />,
-			writing: <WritingSettings site={ site } />,
+			'social-media': <SocialMediaSettings site={ site } />,
 			discussion: <DiscussionSettings site={ site } />,
 			security: <SiteSecurity site={ site } />,
 			analytics: <AnalyticsSettings site={ site } />,
@@ -97,7 +97,7 @@ module.exports = React.createClass( {
 					<SectionNav selectedText={ selectedText }>
 						<NavTabs>
 							<NavItem path={ '/settings/general/' + site.slug } selected={ section === 'general' }>{ strings.general }</NavItem>
-							<NavItem path={ '/settings/writing/' + site.slug } selected={ section === 'writing' } >{ strings.writing }</NavItem>
+							<NavItem path={ '/settings/social-media/' + site.slug } selected={ section === 'social-media' } >{ strings['social-media'] }</NavItem>
 							<NavItem path={ '/settings/discussion/' + site.slug } selected={ section === 'discussion' } >{ strings.discussion }</NavItem>
 							{ ! site.jetpack && config.isEnabled( 'manage/plans' ) ?
 								<NavItem path={ '/settings/analytics/' + site.slug } selected={ section === 'analytics' } >{ strings.analytics }</NavItem>

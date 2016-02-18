@@ -654,7 +654,6 @@ module.exports = React.createClass( {
 					</ul>
 				</li>
 				: null }
-
 				{ publish ?
 				<li className="sidebar-menu wordpress-content">
 					<h2 className="sidebar-heading">{ this.translate( 'Publish' ) }</h2>

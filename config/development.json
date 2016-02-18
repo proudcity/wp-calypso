@@ -58,7 +58,7 @@
 		"manage/posts": true,
 		"manage/drafts": true,
 		"manage/events": true,
-		"manage/plugins": true,
+		"manage/plugins": false,
 		"manage/plugins/browser": true,
 		"manage/plugins/compatibility-warning": false,
 		"manage/plugins/cache": false,
