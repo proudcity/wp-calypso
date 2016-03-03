@@ -1,6 +1,26 @@
 ProudCity Calypso
 =================
 
+### Getting started
+
+1. Checkout the `feb2016` branch of https://github.com/proudcity/wp-calypso, `npm install`.
+
+2. Edit `./node_modules/wpcom-proxy-request/index.js` and `./node_modules/wpcom-xhr-request/index.js`, changing
+  ```
+  https://public-api.wordpress.com
+  ```
+  to
+  ```
+  http://localhost:4000
+  ```
+
+3. Clone https://github.com/proudcity/proudcity-api, copy files from `Dropbox/Albatross Digital/Projects/ProudCity/dev/proudcity-api`, install and run:
+  ```
+  npm install
+  forever -w ./bin/www
+  ```
+
+
 ### Essential modifications
 
 * `./node_modules/wpcom-xhr-request/index.js`: change `
