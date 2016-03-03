@@ -112,7 +112,7 @@
     "walk": "2.3.4",
     "webpack": "1.12.6",
     "webpack-dev-middleware": "1.2.0",
-    "wpcom-proxy-request": "git+https://github.com/proudcity/wpcom-proxy-request.git",
+    "wpcom-proxy-request": "*",
     "wpcom-unpublished": "1.0.8",
     "wpcom-xhr-request": "*",
     "xgettext-js": "0.2.2"
