@@ -12,7 +12,8 @@ var jsonp = require( './jsonp' );
 /**
  * Constants
  */
-var _WPORG_PLUGINS_LIST = 'https://api.wordpress.org/plugins/info/1.1/?action=query_plugins',
+//var _WPORG_PLUGINS_LIST = 'https://api.wordpress.org/plugins/info/1.1/?action=query_plugins',
+var _WPORG_PLUGINS_LIST = 'http://localhost:4000/proudcity/plugins',
 	_DEFAULT_PAGE_SIZE = 24,
 	_DEFAULT_CATEGORY = 'all',
 	_DEFAULT_FIRST_PAGE = 1;
@@ -29,8 +30,8 @@ module.exports = {
 			query = { fields: 'icons,banners,compatibility,ratings,-contributors' };
 
 		pluginSlug = pluginSlug.replace( new RegExp( '.php$' ), '' );
-
-		baseUrl = 'https://api.wordpress.org/plugins/info/1.0/' + pluginSlug + '.jsonp';
+    //baseUrl = 'https://api.wordpress.org/plugins/info/1.0/' + pluginSlug + '.jsonp';
+		baseUrl = 'http://localhost:4000/proudcity/plugin/' + pluginSlug + '.jsonp';
 		jsonp( baseUrl, query, function( error, data ) {
 			if ( error ) {
 				debug( 'error downloading plugin details from .org: %s', error );
