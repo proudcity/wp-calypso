@@ -20,7 +20,7 @@
 	},
 	"signup_url": "http://dev.proudcity.com:4000",
 	"login_url": "http://dev.proudcity.com:4000",
-	"logout_url": "https://wordpress.com/wp-login.php?action=logout&redirect_to=https%3A%2F%2F|subdomain|wordpress.com",
+	"logout_url": "https://proudcity.auth0.com/v2/logout?returnTo=https://proudcity.com",
 	"facebook_api_key": "249643311490",
 	"discover_blog_id": 53424024,
 	"desktop_oauth_client_id": "y4bZCQsSaTebQRwIhZOJsWN6worUUGn6",
@@ -58,17 +58,18 @@
 		"manage/posts": true,
 		"manage/drafts": true,
 		"manage/events": true,
-		"manage/plugins": false,
-		"manage/plugins/browser": true,
+		"manage/plugins": true,
+		"manage/plugins/updates": false,
+		"manage/plugins/browser": false,
 		"manage/plugins/compatibility-warning": false,
-		"manage/plugins/cache": false,
+		"manage/plugins/cache": true,
 
 		"manage/export": true,
 		"manage/security": true,
 		"manage/option_sync_non_public_post_stati": true,
 
 		"manage/stats": true,
-		"manage/stats/insights": true,
+		"manage/stats/insights": false,
 
 		"manage/site-settings/analytics": true,
 		"manage/site-settings/delete-site": true,
@@ -108,6 +109,8 @@
 
 		"manage/ads": false,
 		"manage/ads/jetpack": false,
+
+		"google-analytics": true,
 
 		"vip": false,
 		"vip/deploys": true,
