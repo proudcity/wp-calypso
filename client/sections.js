@@ -188,4 +188,12 @@ if ( config.isEnabled( 'mailing-lists/unsubscribe' ) ) {
 	} );
 }
 
+if ( config.isEnabled( 'google-analytics' ) ) {
+	sections.push( {
+		name: 'google-analytics',
+		paths: [ '/google-analytics' ],
+		module: 'my-sites/google-analytics'
+	} );
+}
+
 module.exports = sections;
