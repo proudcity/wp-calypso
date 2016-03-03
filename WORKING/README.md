@@ -21,6 +21,11 @@ https://proudcity.auth0.com/authorize/?response_type=code&client_id=y4bZCQsSaTeb
 https://proudcity.auth0.com/authorize?client_id=LJyMRCUoZGdkNRZhx3bCXnsqlGZu5S2R&response_type=code&redirect_uri=http://localhost:8080/index.php?auth0=1&state={"redirect_to":"wp-admin/"}
 
 
+### Read
+
+https://public-api.wordpress.com/rest/v1.3/read/following?http_envelope=1&orderBy=date&number=40&before=2016-03-03T00%3A30%3A40.741Z&after=2016-03-02T17%3A00%3A02%2B00%3A00
+
+
 
 ###@todo endpoints
 x http://localhost:4000/rest/v1.1/sites/56c2c0d774a20fbf145a0aa9/roles
