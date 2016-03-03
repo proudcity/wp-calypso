@@ -10,11 +10,13 @@ const TOKEN_NAME = 'wpcom_token';
 const MAX_AGE = 365 * 24 * 60 * 60 * 1000;   // How long to store the OAuth cookie
 
 export function getToken() {
+	console.log('getToken');
 	//let cookies = cookie.parse( document.cookie );
 
 	//if ( typeof cookies[TOKEN_NAME] !== 'undefined' ) {
 	//	return cookies[TOKEN_NAME];
 	//}
+	console.log(localStorage.getItem('userToken'));
 	return localStorage.getItem('userToken');
 
 	//return false;
