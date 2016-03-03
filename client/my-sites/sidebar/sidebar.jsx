@@ -167,17 +167,7 @@ module.exports = React.createClass( {
 			themesLink = '/design';
 		}
 
-		return (
-			<SidebarMenuItem
-				label={ this.translate( 'Appearance' ) }
-				className={ this.itemLinkClass( '/design', 'themes' ) }
-				link={ getCustomizeUrl( null, site ) }
-				//buttonLink={ getCustomizeUrl( null, site ) }
-				//buttonLabel={ this.translate( 'Customize' ) }
-				onNavigate={ this.onNavigate }
-				icon={ 'themes' }
-			/>
-		);
+		
 	},
 
 	menus: function() {
@@ -434,7 +424,7 @@ module.exports = React.createClass( {
 			usersLink = site.options.admin_url + 'users.php';
 		}
 
-		if ( site.options && ( ! config.isEnabled( 'manage/add-people' ) || site.jetpack ) ) {
+		if ( site.options && ( ! config.isEnabled( 'manage/add-people' ) ) ) {
 			addPeopleLink = ( site.jetpack )
 				? site.options.admin_url + 'user-new.php'
 				: site.options.admin_url + 'users.php?page=wpcom-invite-users';
@@ -442,7 +432,7 @@ module.exports = React.createClass( {
 		}
 
 		if ( config.isEnabled( 'manage/people' ) ) {
-			addPeopleButton = <a onClick={ this.onNavigate } href={ addPeopleLink } className="add-new" target={ addPeopleTarget }>{ this.translate( 'Add' ) }</a>;
+			addPeopleButton = <a onClick={ this.onNavigate } href={ addPeopleLink } className="add-new">{ this.translate( 'Add' ) }</a>;
 		}
 
 		return (
