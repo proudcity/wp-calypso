@@ -116,9 +116,9 @@ function StatsList( options ) {
 		return new StatsList( options );
 	}
 
-	if ( 'number' !== typeof options.siteID ) {
-		throw new TypeError( 'options.siteID must be a number' );
-	}
+	//if ( 'number' !== typeof options.siteID ) {
+	//	throw new TypeError( 'options.siteID must be a number' );
+	//}
 
 	if ( undocumentedEndpoints.indexOf( options.statType ) === -1 &&
 		documentedEndpoints.indexOf( options.statType ) === -1
