@@ -26,15 +26,14 @@ module.exports = React.createClass( {
 	getDefaultProps: function() {
 		return {
 			themes: [
-				{ name: 'Boardwalk', slug: 'boardwalk' },
-				{ name: 'Cubic', slug: 'cubic' },
-				{ name: 'Edin', slug: 'edin' },
-				{ name: 'Cols', slug: 'cols' },
-				{ name: 'Minnow', slug: 'minnow' },
-				{ name: 'Sequential', slug: 'sequential' },
-				{ name: 'Penscratch', slug: 'penscratch' },
-				{ name: 'Intergalactic', slug: 'intergalactic' },
-				{ name: 'Eighties', slug: 'eighties' },
+			  { name: "ProudCity", slug: "proudcity" },
+			  { name: "Proud Department", slug: "proudagency" },
+			  { name: "Proud Intranet", slug: "proudintranet" },
+			  { name: "Proud Library", slug: "proudlibrary" },
+			  { name: "Proud City Council", slug: "proudcitycouncil" },
+			  { name: "Proud Chamber of Commerce", slug: "proudchamberofcommerce" },
+			  //{ name: "Proud Police", slug: "ProudPolice" },
+			  //{ name: "Proud Mayor", slug: "ProudMayor" },
 			],
 
 			useHeadstart: false
@@ -77,7 +76,8 @@ module.exports = React.createClass( {
 				return {
 					id: theme.slug,
 					name: theme.name,
-					screenshot: 'https://i1.wp.com/s0.wp.com/wp-content/themes/pub/' + theme.slug + '/screenshot.png?w=660'
+					//screenshot:  'https://i1.wp.com/s0.wp.com/wp-content/themes/pub/' + theme.slug + '/screenshot?w=660'
+					screenshot: 'https://proudcity.github.io/proudcity-plugins/distributions/screenshots/'+ theme.slug + '.png'
 				}
 			} );
 		return (
@@ -97,9 +97,9 @@ module.exports = React.createClass( {
 		const defaultDependencies = this.props.useHeadstart ? { theme: 'pub/twentyfifteen' } : undefined;
 		return (
 			<StepWrapper
-				fallbackHeaderText={ this.translate( 'Choose a theme.' ) }
-				fallbackSubHeaderText={ this.translate( 'No need to overthink it. You can always switch to a different theme later.' ) }
-				subHeaderText={ this.translate( 'Choose a theme. You can always switch to a different theme later.' ) }
+				fallbackHeaderText={ this.translate( 'Select your distribution.' ) }
+				fallbackSubHeaderText={ this.translate( 'ProudCity comes in many flavors. Choose the correct one for your new site.' ) }
+				subHeaderText={ this.translate( 'Select your distribution.' ) }
 				stepContent={ this.renderThemesList() }
 				defaultDependencies={ defaultDependencies }
 				{ ...this.props } />
