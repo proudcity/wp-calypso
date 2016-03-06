@@ -38,7 +38,7 @@ The ProudCity Apps repo on GitHub is our Open Source method for managing our app
 ### Signup flows
 Calypso has a nice configurable "flows" idea.  The flows are defined in `./client/signup/config/flows.js`.  There is more info in `./client/signup/README.md`. Once you've added the flow to `flows.js`, it'll be available for users at `/start/flow-name` where `flow-name` is the key of your flow in `flows`.  We have created a number of flows, the primary one being `/start/proudcity`.
 
-The available themes (ProudCity Distributions) are defined in `./client/signup/steps/theme-selection/index.json`.  Assets for these themes are in stored in the proudcity-plugins repo: `https://proudcity.github.io/proudcity-plugins/distributions/screenshots/*`.
+The available themes (ProudCity Distributions) are defined in `./client/signup/steps/theme-selection/index.json`.  Assets for these themes are in stored in the proudcity-appstore repo: `https://proudcity.github.io/proudcity-appstore/distributions/screenshots/*`.
 
 
 ### Theme changes

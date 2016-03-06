@@ -77,7 +77,7 @@ module.exports = React.createClass( {
 					id: theme.slug,
 					name: theme.name,
 					//screenshot:  'https://i1.wp.com/s0.wp.com/wp-content/themes/pub/' + theme.slug + '/screenshot?w=660'
-					screenshot: 'https://proudcity.github.io/proudcity-plugins/distributions/screenshots/'+ theme.slug + '.png'
+					screenshot: 'https://proudcity.github.io/proudcity-appstore/distributions/screenshots/'+ theme.slug + '.png'
 				}
 			} );
 		return (
