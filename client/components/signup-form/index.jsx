@@ -9,6 +9,7 @@ import includes from 'lodash/collection/includes';
 import keys from 'lodash/object/keys';
 import debugModule from 'debug';
 import classNames from 'classnames';
+import Auth0Lock from 'auth0-lock';
 
 /**
  * Internal dependencies
@@ -108,6 +109,17 @@ export default React.createClass( {
 	},
 
 	componentDidMount() {
+		var lock = new Auth0Lock('LJyMRCUoZGdkNRZhx3bCXnsqlGZu5S2R', 'proudcity.auth0.com');
+		lock.show({
+      container: 'auth0',
+      icon: 'https://s.gravatar.com/avatar/e03d599ad377f00d233bf9d00f538878?s=80',
+      //focusInput: false,
+      //popup: false,
+      responseType: 'token',
+      //theme: 'mycroft',
+      mode: 'signup'
+    });
+
 		// If we initialized the form with an email, we need to validate the email
 		if ( this.props.email ) {
 			this.handleBlur();
@@ -302,6 +314,7 @@ export default React.createClass( {
 	},
 
 	formFields() {
+    return (<div id="auth0"></div>);
 		return (
 			<div>
 				<ValidationFieldset errorMessages={ this.getErrorMessagesWithLogin( 'email' ) }>

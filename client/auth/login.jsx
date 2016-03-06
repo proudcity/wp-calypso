@@ -63,45 +63,8 @@ module.exports = React.createClass( {
   mixins: [ LinkedStateMixin, eventRecorder ],
 
   componentDidMount: function() {
-    AuthStore.on( 'change', this.refreshData );
-  },
 
-  componentWillUnmount: function() {
-    AuthStore.off( 'change', this.refreshData );
-  },
-
-  refreshData: function() {
-    this.setState( AuthStore.get() );
-  },
-
-  componentDidUpdate() {
-    if ( this.state.requires2fa && this.state.inProgress === false ) {
-      ReactDom.findDOMNode( this.refs.auth_code ).focus();
-    }
-  },
-
-  getInitialState: function() {
-    console.log('initialstate');
-    console.log(Auth0Lock);
-
-    // instantiate Lock
-    var lock = new Auth0Lock('LJyMRCUoZGdkNRZhx3bCXnsqlGZu5S2R', 'proudcity.auth0.com');
-
-    // sso requires redirect mode, hence we need to parse
-    // the response from Auth0 that comes on location hash
-    var hash = lock.parseHash(window.location.hash);
-    if (hash && hash.id_token) {
-      console.log('HASH');
-      console.log(hash);
-      // the user came back from the login (either SSO or regular login),
-      // save the token
-      localStorage.setItem('userToken', hash.id_token);
-      // redirect to "targetUrl" if any
-      // This would go to a different route like
-      // window.location.href = hash.state || '#home';
-      // But in this case, we just hide and show things
-      //goToHomepage(hash.state, hash.id_token);console.log('initialstate');
-    console.log(Auth0Lock);
+    //--------------start auth0 sso-------------------
 
     // instantiate Lock
     var lock = new Auth0Lock('LJyMRCUoZGdkNRZhx3bCXnsqlGZu5S2R', 'proudcity.auth0.com');
@@ -160,63 +123,37 @@ module.exports = React.createClass( {
           // If the user wanted to go to some other URL, you can track it with `state`
           //state: '',//getQueryParameter('targetUrl'),
           callbackOnLocationHash: true,
-          scope: 'openid name picture'
         });
       } else {
         lock.show({
-          authParams: {
-            scope: 'openid name picture'
-          }
+          container: 'auth0'
         });
-        // regular login
-        document.body.style.display = 'inline';
-      }
-    });
-      location.reload(); // @todo: hella janky
-      return;
-    }
-
-    // Get the user token if we've saved it in localStorage before
-    var idToken = localStorage.getItem('userToken');
-    if (idToken) {
-      console.log('LOCALSTORAGE');
-      console.log(idToken);
-      // This would go to a different route like
-      // window.location.href = '#home';
-      // But in this case, we just hide and show things
-      //goToHomepage(getQueryParameter('targetUrl'), idToken);
-      /*Dispatcher.handleServerAction( {
-        type: actions.RECEIVE_AUTH_LOGIN,
-        {},
-        {}
-      } );*/
-      return;
-    }
-
-    // user is not logged, check whether there is an SSO session or not
-    lock.$auth0.getSSOData(function(err, data) {
-      console.log('SSO');
-      console.log(data);
-      if (!err && data.sso) {
-        // there is! redirect to Auth0 for SSO
-        lock.$auth0.signin({
-          // If the user wanted to go to some other URL, you can track it with `state`
-          //state: '',//getQueryParameter('targetUrl'),
-          callbackOnLocationHash: true,
-          scope: 'openid name picture'
-        });
-      } else {
-        lock.show({
-          authParams: {
-            scope: 'openid name picture'
-          }
-        });
-        // regular login
-        document.body.style.display = 'inline';
       }
     });
 
 
+    //--------------end auth0-------------------
+
+
+
+    AuthStore.on( 'change', this.refreshData );
+  },
+
+  componentWillUnmount: function() {
+    AuthStore.off( 'change', this.refreshData );
+  },
+
+  refreshData: function() {
+    this.setState( AuthStore.get() );
+  },
+
+  componentDidUpdate() {
+    if ( this.state.requires2fa && this.state.inProgress === false ) {
+      ReactDom.findDOMNode( this.refs.auth_code ).focus();
+    }
+  },
+
+  getInitialState: function() {
     return Object.assign( {
       login: '',
       password: '',
@@ -261,7 +198,7 @@ module.exports = React.createClass( {
 
   render: function() {
     const { requires2fa, inProgress, errorMessage, errorLevel, showInstructions } = this.state;
-
+    return (<Main className="auth"><div id="auth0"></div></Main>);
     return (
       <Main className="auth">
         <WordPressLogo />
