@@ -23,10 +23,31 @@ ProudCity Calypso
 
 ### Essential modifications
 
+The followins is a list of the bare-bones changes that need to be made to Automattic/wp-calypso to make it work with proudcity/proudcity-api and Auth0:
 * `./node_modules/wpcom-xhr-request/index.js`: change `
 * `./client/lib/oauth-token/index.js`: change `getToken()` to return `localStorage.getItem('userToken');`
 * `./client/auth/login.jsx`: Add auth0 SSO code to `getInitialState()`
+* `./client/components/signup-form/index.jsx`: Replace the signup form with Auth0
 
+### ProudCity apps
+
+The ProudCity Apps repo on GitHub is our Open Source method for managing our apps (plugins), distributions, and related assets.  To browse the repo: https://github.com/proudcity/proudcity-api/. To call the api: `https://proudcity.github.io/proudcity-api/*`.  This is defined as `PLUGIN_REPO` in `proudcity-api`'s `.env` file.
+
+
+
+### Signup flows
+Calypso has a nice configurable "flows" idea.  The flows are defined in `./client/signup/config/flows.js`.  There is more info in `./client/signup/README.md`. Once you've added the flow to `flows.js`, it'll be available for users at `/start/flow-name` where `flow-name` is the key of your flow in `flows`.  We have created a number of flows, the primary one being `/start/proudcity`.
+
+The available themes (ProudCity Distributions) are defined in `./client/signup/steps/theme-selection/index.json`.  Assets for these themes are in stored in the proudcity-plugins repo: `https://proudcity.github.io/proudcity-plugins/distributions/screenshots/*`.
+
+
+### Theme changes
+
+ProudCity theme overrides are contained in `./assets/stylesheets/proudcity/*`. Colors are overwritten in `./assets/stylesheets/shared/_colors.scss`.
+
+---
+### OLD NOTES
+(ignore these)
 
 Other changes noted (from diff)
 * /home/jeff/labspace/wp-calypso/client/my-sites/plugins/access-control.js:  function hasErrorCondition
@@ -69,17 +90,8 @@ db.users.update(
   }
 );
 
+db.sites.update({"url":"http://localhost:8080"}, {"$set":{"url":"https://beta.proudcity.com"}});
+
+
 ```
 
-
-/sites/[]/updates
-jp_version: "3.9.1"
-plugins: 12
-themes: 2
-total: 14
-translations: 0
-wordpress: 0
-wp_version: "4.4.2"
-
-
-headers":[{"name":"Content-Type","value":"application\/json"}],"body":{"profile_links":[]}}
