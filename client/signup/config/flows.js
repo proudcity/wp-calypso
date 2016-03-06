@@ -29,6 +29,20 @@ function getPostsDestination( dependencies ) {
 const flows = {
 	/* Production flows*/
 
+	proudcity: {
+		steps: [ 'location', 'plans', 'user'  ],
+		destination: getCheckoutDestination,
+		description: 'The ProudCity full registration and new site flow',
+		lastModified: '2016-03-03'
+	},
+
+	proudsite: {
+		steps: [ 'themes', 'location', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'The ProudCity full registration and new site flow',
+		lastModified: '2016-03-03'
+	},
+
 	account: {
 		steps: [ 'user' ],
 		destination: '/',
@@ -225,7 +239,8 @@ function filterFlowName( flowName ) {
 module.exports = {
 	filterFlowName: filterFlowName,
 
-	defaultFlowName: 'main',
+	//defaultFlowName: 'main',
+	defaultFlowName: 'proudcity',
 
 	getFlow: function( flowName ) {
 		return user.get() ? removeUserStepFromFlow( flows[ flowName ] ) : flows[ flowName ];

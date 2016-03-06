@@ -119,5 +119,12 @@ module.exports = {
 			subHeaderText: i18n.translate( 'You\'re moments away from connecting Jetpack.' )
 		},
 		providesDependencies: [ 'bearer_token', 'username' ]
+	},
+
+	location: {
+		stepName: 'location',
+		apiRequestFunction: stepActions.addDomainItemsToCart,
+		providesDependencies: [ 'siteSlug', 'domainItem', 'themeItem' ],
+		delayApiRequestUntilComplete: true
 	}
 };
