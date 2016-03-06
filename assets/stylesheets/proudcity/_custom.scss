@@ -1,0 +1,24 @@
+// loading logo
+.wpcom-site__logo {
+  //display: none;
+  &:before {
+    width: 50px;
+    height: 50px;
+    top: 45%;
+    left: 45%;
+    content: '';
+    background: url(https://my.proudcity.com/images/IconBlack.png) center no-repeat;
+  }
+}
+
+
+// Auth0 lock 
+.a0-zocial.a0-icon,
+.a0-zocial.a0-icon span {
+  display: block !important;
+}
+
+.a0-zocial.a0-icon span {
+  padding-left: 5% !important;
+  width: 95% !important;
+}
