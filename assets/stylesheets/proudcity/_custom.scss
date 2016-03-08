@@ -1,6 +1,7 @@
 // loading logo
 .wpcom-site__logo {
   //display: none;
+  background: url(https://my.proudcity.com/images/IconBlack.png) center no-repeat;
   &:before {
     width: 50px;
     height: 50px;
@@ -21,4 +22,27 @@
 .a0-zocial.a0-icon span {
   padding-left: 5% !important;
   width: 95% !important;
+}
+
+.environment-badge {
+  //display: none;
+}
+
+
+.a0-panel {
+  box-shadow: none !important;
+  margin: 0 auto !important;
+}
+
+.a0-top-header {
+  display: none;
+}
+
+.a0-primary.a0-next {
+  text-indent: 0 !important;
+  background: $blue-light !important;
+
+  &:after {
+    display: none !important;
+  }
 }
