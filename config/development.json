@@ -18,8 +18,8 @@
 		"business_account_id": "3146-815-10-9343",
 		"business_group_id": false
 	},
-	"signup_url": "http://dev.proudcity.com:4000",
-	"login_url": "http://dev.proudcity.com:4000",
+	"signup_url": "/start/proudsite",
+	"login_url": "/login",
 	"logout_url": "https://proudcity.auth0.com/v2/logout?returnTo=https://proudcity.com",
 	"facebook_api_key": "249643311490",
 	"discover_blog_id": 53424024,
