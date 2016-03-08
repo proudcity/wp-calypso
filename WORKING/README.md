@@ -20,6 +20,8 @@ ProudCity Calypso
   forever -w ./bin/www
   ```
 
+4. Ensure that [proudpack](), auth0 and wp-jwt-auth Wordpress plugins are enabled and properly configured. @todo: more info here.
+
 
 ### Essential modifications
 
@@ -43,7 +45,9 @@ The available themes (ProudCity Distributions) are defined in `./client/signup/s
 
 ### Theme changes
 
-ProudCity theme overrides are contained in `./assets/stylesheets/proudcity/*`. Colors are overwritten in `./assets/stylesheets/shared/_colors.scss`.
+ProudCity theme overrides are contained in `./assets/stylesheets/proudcity/*`. Colors are overwritten in `./assets/stylesheets/shared/_colors.scss`.  
+
+Icons are overwritten with their FontAwesome equivalents in `./client/components/gridicon/index.jsx`. Copy the `d` attribute in `<path>` from the FontAwesome repo (ex: https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/white/svg/bell.svg).
 
 ---
 ### OLD NOTES
