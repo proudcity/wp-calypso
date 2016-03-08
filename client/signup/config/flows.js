@@ -30,14 +30,14 @@ const flows = {
 	/* Production flows*/
 
 	proudcity: {
-		steps: [ 'location', 'plans', 'user'  ],
+		steps: [ 'proudcity-location', 'proudcity-domains', 'plans', 'user'  ],
 		destination: getCheckoutDestination,
 		description: 'The ProudCity full registration and new site flow',
 		lastModified: '2016-03-03'
 	},
 
 	proudsite: {
-		steps: [ 'themes', 'location', 'plans', 'user' ],
+		steps: [ 'themes', 'proudcity-location', 'plans', 'user' ],
 		destination: getCheckoutDestination,
 		description: 'The ProudCity full registration and new site flow',
 		lastModified: '2016-03-03'

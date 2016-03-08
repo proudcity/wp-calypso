@@ -10,7 +10,8 @@ var UserSignupComponent = require( 'signup/steps/user' ),
 	DomainsStepComponent = require( 'signup/steps/domains' ),
 	DesignTypeComponent = require( 'signup/steps/design-type' ),
 	SurveyStepComponent = require( 'signup/steps/survey' ),
-	LocationStepComponent = require( 'signup/steps/location' ),
+	ProudcityLocationStepComponent = require( 'signup/steps/proudcity-location' ),
+	ProudcityDomainsStepComponent = require( 'signup/steps/proudcity-domains' ),
 	config = require( 'config' );
 
 module.exports = {
@@ -28,5 +29,6 @@ module.exports = {
 	altthemes: ThemeSelectionComponent,
 	'domains-with-theme': DomainsStepComponent,
 	'jetpack-user': UserSignupComponent,
-	location: LocationStepComponent
+	'proudcity-location': ProudcityLocationStepComponent,
+	'proudcity-domains': ProudcityDomainsStepComponent
 };

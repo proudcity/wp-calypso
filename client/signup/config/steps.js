@@ -121,8 +121,15 @@ module.exports = {
 		providesDependencies: [ 'bearer_token', 'username' ]
 	},
 
-	location: {
-		stepName: 'location',
+	'proudcity-location': {
+		stepName: 'proudcity-location',
+		apiRequestFunction: stepActions.addDomainItemsToCart,
+		providesDependencies: [ 'siteSlug', 'domainItem', 'themeItem' ],
+		delayApiRequestUntilComplete: true
+	},
+
+	'proudcity-domains': {
+		stepName: 'proudcity-domains',
 		apiRequestFunction: stepActions.addDomainItemsToCart,
 		providesDependencies: [ 'siteSlug', 'domainItem', 'themeItem' ],
 		delayApiRequestUntilComplete: true
