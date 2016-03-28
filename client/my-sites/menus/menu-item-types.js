@@ -71,12 +71,21 @@ MenuItemTypes.prototype.init = function( site ) {
 MenuItemTypes.prototype.initializeDefaultTypes = function() {
 	this._defaultItemTypes = [
 			{
+				name: 'new',
+				family: 'custom',
+				icon: 'plus',
+				renderer: 'renderNewOptions',
+				show: true,
+				label: i18n.translate( 'New' ),
+				gaEventLabel: 'New'
+			},
+			{
 				name: 'page',
 				family: 'post_type',
 				icon: 'document',
 				renderer: 'renderPostOptions',
 				show: true,
-				label: i18n.translate( 'Page' ),
+				label: i18n.translate( 'Existing' ),
 				createLink: '//wordpress.com/page/' + this.site.ID  + '/new',
 				gaEventLabel: 'Page'
 			},
@@ -89,6 +98,8 @@ MenuItemTypes.prototype.initializeDefaultTypes = function() {
 				label: i18n.translate( 'Link' ),
 				gaEventLabel: 'Link'
 			},
+			// ProudCity custom
+			/*
 			{
 				name: 'category',
 				family: 'taxonomy',
@@ -128,7 +139,7 @@ MenuItemTypes.prototype.initializeDefaultTypes = function() {
 				label: i18n.translate( 'Post' ),
 				createLink: '//wordpress.com/post/' + this.site.ID  + '/new',
 				gaEventLabel: 'Post'
-			}
+			}*/
 	];
 };
 
