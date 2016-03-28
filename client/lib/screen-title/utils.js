@@ -28,9 +28,9 @@ function buildTitle( title, options ) {
 	}
 
 	if ( pageTitle ) {
-		pageTitle = decodeEntities( pageTitle ) + ' — WordPress.com';
+		pageTitle = decodeEntities( pageTitle ) + ' — MyProudCity';
 	} else {
-		pageTitle = 'WordPress.com';
+		pageTitle = 'MyProudCity';
 	}
 
 	return pageTitle;
