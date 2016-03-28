@@ -46,3 +46,90 @@
     display: none !important;
   }
 }
+
+
+// Misc tweaks
+.infinite-scroll-end { // @todo: throw the PC logo in herr
+  &:after {
+    display: none !important;
+  }
+}
+
+
+// Make publish menu togglable
+// From ./client/reader/sidebar/_style.scss
+.is-togglable {
+
+  .sidebar__heading {
+    margin: 0;
+    padding: 10px 16px 10px 55px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+
+    .gridicon {
+      top: 10px;
+      left: 20px;
+      height: 16px; // Smaller than recommended for gridicon, but works here
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .count {
+      margin-left: 8px;
+    }
+
+    &:hover {
+      color: $blue-medium;
+      background-color: $gray-light;
+
+      .gridicon {
+        fill: $blue-medium;
+      }
+    }
+  }
+
+  .sidebar__menu-list,
+  .sidebar__menu-empty {
+    height: 0;
+    overflow: hidden;
+  }
+
+  .sidebar__menu-item {
+    transition: transform 0.15s cubic-bezier(0.230, 1.000, 0.320, 1.000),
+      opacity 0.15s ease-in-out;
+    transition-delay: 0.05s;
+    opacity: 0;
+    transform: translateY( -100px );
+  }
+
+  &.is-toggle-open {
+    .sidebar__heading {
+      background-color: $gray-light;
+      box-shadow: 0 1px 0 lighten( $gray, 20 ),
+        0 -1px 0 lighten( $gray, 20 );
+
+      .gridicon {
+        transform: rotate( 180deg );
+      }
+    }
+
+    .sidebar__menu-add-button {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX( 0 );
+    }
+
+    .sidebar__menu-list,
+    .sidebar__menu-empty {
+      height: auto;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .sidebar__menu-item {
+      opacity: 1;
+      transform: translateY( 0 );
+    }
+  }
+}
