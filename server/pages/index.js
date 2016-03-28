@@ -146,7 +146,7 @@ function getDefaultContext( request ) {
 		badge: false,
 		lang: config( 'i18n_default_locale_slug' ),
 		jsFile: 'build',
-		faviconURL: '//s1.wp.com/i/favicon.ico',
+		faviconURL: 'https://i1.wp.com/proudcity.com/wp-content/uploads/2016/01/cropped-favicon-1.png?fit=32%2C32',
 		isFluidWidth: !! config.isEnabled( 'fluid-width' ),
 		devDocsURL: '/devdocs'
 	};
@@ -182,7 +182,7 @@ function getDefaultContext( request ) {
 		context.badge = 'dev';
 		context.devDocs = true;
 		context.feedbackURL = 'https://github.com/Automattic/wp-calypso/issues/';
-		context.faviconURL = '/calypso/images/favicons/favicon-development.ico';
+		context.faviconURL = 'https://i1.wp.com/proudcity.com/wp-content/uploads/2016/01/cropped-favicon-1.png?fit=32%2C32';
 		context.branchName = getCurrentBranchName();
 		context.commitChecksum = getCurrentCommitShortChecksum();
 	}
