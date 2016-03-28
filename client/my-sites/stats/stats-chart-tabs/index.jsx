@@ -72,7 +72,7 @@ module.exports = React.createClass( {
 		switch ( this.props.chartTab ) {
 			case 'comments':
 				tooltipData.push( {
-					label: this.translate( 'Comments' ),
+					label: this.translate( 'Submissions' ),
 					value: this.numberFormat( item.value ),
 					className: 'is-comments',
 					icon: 'comment'
@@ -81,7 +81,7 @@ module.exports = React.createClass( {
 
 			case 'likes':
 				tooltipData.push( {
-					label: this.translate( 'Likes' ),
+					label: this.translate( 'ProudScore' ),
 					value: this.numberFormat( item.value ),
 					className: 'is-likes',
 					icon: 'star'
