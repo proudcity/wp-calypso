@@ -119,6 +119,16 @@ module.exports = React.createClass( {
 	},
 
 	pluginMeta: function( pluginData ) {
+		
+		// ProudCity custom
+		if (this.props.plugin.short_description != undefined && this.props.plugin.short_description.length < 32) {
+			return this.props.plugin.short_description+' by '+this.props.plugin.author_name;
+		}
+		else {
+			return 'By '+this.props.plugin.author_name;
+		}
+		
+
 		if ( this.props.progress.length ) {
 			return (
 				<Notice isCompact status="is-info" text={ this.doing() } inline={ true }/>
@@ -166,13 +176,7 @@ module.exports = React.createClass( {
 					disabled={ this.props.isSelectable }
 					site={ this.props.selectedSite }
 					notices={ this.props.notices } />
-				<PluginAutoupdateToggle
-					isMock={ this.props.isMock }
-					plugin={ this.props.plugin }
-					disabled={ this.props.isSelectable }
-					site={ this.props.selectedSite }
-					notices={ this.props.notices }
-					wporg={ !! this.props.plugin.wporg } />
+				
 			</div>
 		);
 	},
