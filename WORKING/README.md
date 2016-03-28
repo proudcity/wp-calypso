@@ -49,6 +49,43 @@ ProudCity theme overrides are contained in `./assets/stylesheets/proudcity/*`. C
 
 Icons are overwritten with their FontAwesome equivalents in `./client/components/gridicon/index.jsx`. Copy the `d` attribute in `<path>` from the FontAwesome repo (ex: https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/white/svg/bell.svg).
 
+
+### Specific pages/sections
+* Config
+  * config/development.json : Main config file : Enable/disable sections, customize settings
+  * client/sections.js : Main sections router : Define Checklist page
+* Reader
+  * client/reader/sidebar/index.jsx : Reader sidebar : Change sidebar items
+  * client/reader/sidebar/reader-sidebar-lists/index.jsx : List sidebar section : Change Lists to Channels
+* Stats
+  * client/my-sites/stats/site.jsx : Day/Wk/Mo page : Change blocks on Days page
+  * client/my-sites/stats/controller.js : Add Google Analytics link, change star to heart, comments to submissions
+  * client/my-sites/stats/insights/index.jsx : Insights page : Altered boxes
+  * client/my-sites/stats/stats-site-overview/index.jsx : Overview box : Change star to heart, comments to submissions
+  * client/my-sites/stats/stats-chart-tabs/index.jsx : Tabs below charts : Change star to heart, comments to submissions
+* Plugins
+  * client/my-sites/plugins/plugin-meta/index.jsx : Main plugin wrapper: Hide version, update info
+  * client/my-sites/plugins/plugin-information/index.jsx : Plugin details : Hide ratings
+  * client/my-sites/plugins/plugin-sections/index.jsx : Plugin tabs : Hide tabs, add configuration tab
+  * client/my-sites/plugins/main.jsx : Plugin list : Hide extra plugin tabs (Updates)
+  * client/my-sites/plugins/plugin-item/plugin-item.jsx : List item : Remove autopdates, Set plugin meta to return Plugin name
+  * client/lib/plugins/utils.js : Allow array for plugin configuration section
+* Menus
+  * client/my-sites/menus/main.jsx : Menu wrapper : Hide menu location selector
+  * client/my-sites/menus/menu-item-types.js : Actions for new menu item : Limit list
+  * client/my-sites/menus/menu-editable-item.jsx : JSX for actions : Add New Action
+* Users
+  * client/components/signup-form/index.jsx : Signup form : Add Auth0 lock
+  * client/signup/steps/theme-selection/index.jsx : List of available themes : Customize themes for ProudCity distros
+* Sidebar
+  * client/my-sites/sidebar/sidebar.jsx : Sidebar menu : Hide menu items, add checklist item 
+  * client/my-sites/sidebar/publish-menu.jsx : Publish sidebar menu : Make Publish menu collapsed by default
+* Branding
+  * client/lib/screen-title/utils.js : Screen title : Change <title> to My ProudCity
+  * client/components/site-selector/index.jsx : Site selector : Change "Create new Wordpress" to "Create new site"
+  * client/layout/masterbar/logged-in.jsx : Topnav : Change Reader to MyCity Feed
+  * client/components/gridicon/index.jsx : Gridicons svg defn : updating icons
+
 ---
 ### OLD NOTES
 (ignore these)
@@ -76,26 +113,4 @@ https://public-api.wordpress.com/rest/v1.3/read/following?http_envelope=1&orderB
 x http://localhost:4000/rest/v1.1/sites/56c2c0d774a20fbf145a0aa9/roles
 x http://localhost:4000/rest/v1.1/me/settings/profile-links
 https://public-api.wordpress.com/rest/v1.1/notifications/?fields=id%2Ctype%2Cunread%2Cbody%2Csubject%2Ctimestamp%2Cmeta%2Cnote_hash&number=10
-
-
-### Mongo commands
-```
-mongo ds029595.mongolab.com:29595/proudcity_api -u proudcity-api -p loaBEk5vdVtNR34b
-db.users.find();
-
-db.users.update(
-  { email: "info@proudcity.com" },
-  { 
-    $push: {
-      sites: {
-        "roles": ["editor"]
-      }
-    }
-  }
-);
-
-db.sites.update({"url":"http://localhost:8080"}, {"$set":{"url":"https://beta.proudcity.com"}});
-
-
-```
 
