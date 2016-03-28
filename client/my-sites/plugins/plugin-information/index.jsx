@@ -186,7 +186,7 @@ export default React.createClass( {
 							{ this.renderHomepageLink() }
 						</div>
 					</div>
-					{ ! this.props.isWpcomPlugin &&
+					{ 1==2 && ! this.props.isWpcomPlugin &&
 					<PluginRatings
 						rating={ this.props.plugin.rating }
 						ratings={ this.props.plugin.ratings }
@@ -235,12 +235,14 @@ export default React.createClass( {
 							{ this.renderHomepageLink() }
 						</div>
 					</div>
+					{ 1==2 &&
 					<PluginRatings
 						rating={ this.props.plugin.rating }
 						ratings={ this.props.plugin.ratings }
 						downloaded={ this.props.plugin.downloaded }
 						numRatings={ this.props.plugin.num_ratings }
 						slug={ this.props.plugin.slug } />
+					}
 			</div>
 		);
 	},
