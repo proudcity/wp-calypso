@@ -166,15 +166,21 @@ PluginUtils = {
 				case 'sections':
 					let cleanItem = {};
 					for ( let sectionKey of Object.keys( item ) ) {
-						cleanItem[ sectionKey] = sanitizeHtml( item[ sectionKey ], {
-							allowedTags: [ 'h4', 'h5', 'h6', 'blockquote', 'code', 'b', 'i', 'em', 'strong', 'a', 'p', 'img', 'ul', 'ol', 'li' ],
-							allowedAttributes: { a: [ 'href' ], img: [ 'src' ] },
-							allowedSchemes: [ 'http', 'https' ],
-							transformTags: {
-								h1: 'h3',
-								h2: 'h3',
-							}
-						} );
+						// ProudCity customization
+						if ( sectionKey == 'configuration' ) {
+							cleanItem[ sectionKey ] = item[ sectionKey ];
+						}
+						else {
+							cleanItem[ sectionKey] = sanitizeHtml( item[ sectionKey ], {
+								allowedTags: [ 'h4', 'h5', 'h6', 'blockquote', 'code', 'b', 'i', 'em', 'strong', 'a', 'p', 'img', 'ul', 'ol', 'li' ],
+								allowedAttributes: { a: [ 'href' ], img: [ 'src' ] },
+								allowedSchemes: [ 'http', 'https' ],
+								transformTags: {
+									h1: 'h3',
+									h2: 'h3',
+								}
+							} );
+						} //end custom
 					}
 					returnData.sections = cleanItem;
 					returnData.screenshots = cleanItem.screenshots ? PluginUtils.extractScreenshots( cleanItem.screenshots ) : null;
