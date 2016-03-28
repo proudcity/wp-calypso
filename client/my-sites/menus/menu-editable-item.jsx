@@ -186,6 +186,37 @@ var MenuEditableItem = React.createClass( {
 		);
 	},
 
+	renderNewOptions: function( itemType ) {
+		console.log(itemType);
+		// /this.state.item.import
+		return (
+			<div className="menu-item-options menu-item-url">
+				<MenuPanelBackButton label={ itemType.label } onClick={ this.showLeftPanel } />
+				<label className="menu-item-form-label">{ this.translate( 'Post Type' ) }</label>
+				<select onChange={ this.selectMenu }
+						id="new-post-type-select"
+						onClick={ this.recordClick }
+						value={ this.props.selectedMenu ? this.props.selectedMenu.id : '' }
+						className="menu-item-form-address" >
+					<option value='page'>{ this.translate( 'Page', { textOnly: true } ) }</option>
+					<option value='post'>{ this.translate( 'News', { textOnly: true } ) }</option>
+					<option value='event'>{ this.translate( 'Event', { textOnly: true } ) }</option>
+					<option value='answer'>{ this.translate( 'Answer', { textOnly: true } ) }</option>
+					<option value='payment'>{ this.translate( 'Payment', { textOnly: true } ) }</option>
+					<option value='agency'>{ this.translate( 'Department', { textOnly: true } ) }</option>
+				</select>
+				<input id="menu-flag-import" type="checkbox" defaultChecked={ this.state.item.import } onChange={ this.state.item.import = !this.state.item.import } />
+				<label htmlFor="menu-flag-import">{ this.translate( 'Import' ) }</label>
+				{ this.state.item.import && <div>
+					<input id="import-type-url" type="radio" name="importType" defaultChecked={ this.state.item.importType === 'url'  } onChange={ this.state.item.importType = 'url' } />
+					<label htmlFor="import-type-url">{ this.translate( 'Website URL' ) }</label>
+					<input id="import-type-upload" type="radio" name="importType" defaultChecked={ this.state.item.importType === 'upload' } onChange={ this.state.item.importType = 'upload' } />
+					<label htmlFor="import-type-upload">{ this.translate( 'File upload' ) }</label>
+				</div> }
+			</div>
+		);
+	},
+
 	renderPostOptions: function( itemType ) {
 		return (
 			<PostList siteID={ siteMenus.siteID }
