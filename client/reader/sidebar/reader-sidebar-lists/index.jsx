@@ -38,10 +38,10 @@ const ReaderSidebarLists = React.createClass( {
 		const listCount = this.props.lists ? this.props.lists.length : 0;
 		return (
 			<ExpandableSidebarMenu
-				expanded={ this.props.isOpen }
-				title={ this.translate( 'Lists' ) }
+				expanded={ true }
+				title={ this.translate( 'Channels' ) }
 				count={ listCount }
-				addPlaceholder={ this.translate( 'Give your list a name' ) }
+				addPlaceholder={ this.translate( 'Give your channel a name' ) }
 				onAddClick={ this.handleAddClick }
 				onAddSubmit={ this.createList }
 				onClick={ this.props.onClick }>
