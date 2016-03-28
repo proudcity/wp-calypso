@@ -188,11 +188,11 @@ if ( config.isEnabled( 'mailing-lists/unsubscribe' ) ) {
 	} );
 }
 
-if ( config.isEnabled( 'google-analytics' ) ) {
+if ( config.isEnabled( 'proud-checklist' ) ) {
 	sections.push( {
-		name: 'google-analytics',
-		paths: [ '/google-analytics' ],
-		module: 'my-sites/google-analytics'
+		name: 'proud-checklist',
+		paths: [ '/checklist' ],
+		module: 'my-sites/proud-checklist'
 	} );
 }
 
