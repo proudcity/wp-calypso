@@ -128,6 +128,27 @@ module.exports = React.createClass( {
 		);
 	},
 
+	checklist: function() {
+		var site = this.getSelectedSite();
+
+		if ( ! site.capabilities ) {
+			return null;
+		}
+
+		if ( site.capabilities && ! site.capabilities.view_stats ) {
+			return null;
+		}
+
+		return (
+			<SidebarItem
+				label={ 'Checklist' }
+				className={ this.itemLinkClass( '/checklist', 'checklist' ) }
+				link={ '/checklist' }
+				onNavigate={ this.onNavigate }
+				icon={ 'list-checkmark' } />
+		);
+	},
+
 	ads: function() {
 		var site = this.getSelectedSite(),
 			adsLink = '/ads/earnings' + this.siteSuffix();
@@ -146,7 +167,7 @@ module.exports = React.createClass( {
 		);
 	},
 
-	themes: function() {
+	/*themes: function() {
 		var site = this.getSelectedSite(),
 			jetpackEnabled = config.isEnabled( 'manage/themes-jetpack' ),
 			themesLink;
@@ -166,8 +187,27 @@ module.exports = React.createClass( {
 		} else {
 			themesLink = '/design';
 		}
+	},*/
 
-		
+	themes: function() {
+		var site = this.getSelectedSite();
+
+		if ( ! site.capabilities ) {
+			return null;
+		}
+
+		if ( site.capabilities && ! site.capabilities.view_stats ) {
+			return null;
+		}
+
+		return (
+			<SidebarItem
+				label={ 'Customize' }
+				className={ this.itemLinkClass( '/customize', 'checklist' ) }
+				link={ site.options.admin_url + 'customize.php' }
+				onNavigate={ this.onNavigate }
+				icon={ 'visible' } />
+		);
 	},
 
 	menus: function() {
@@ -641,11 +681,26 @@ module.exports = React.createClass( {
 		);
 	},
 
+	showPublish: false,
+	togglePublish: function() {
+		this.showPublish = !this.showPublish;
+		// @todo: improve this by making it its own component
+		// See /home/jeff/labspace/wp-calypso/client/reader/sidebar/expandable.jsx
+		this.forceUpdate(); 
+	},
+
 	render: function() {
 		var publish = !! this.publish(),
 			appearance = ( !! this.themes() || !! this.menus() ),
 			configuration = ( !! this.sharing() || !! this.users() || !! this.siteSettings() || !! this.plugins() || !! this.upgrades() ),
 			vip = !! this.vip();
+
+
+		var publishClasses = classNames({
+				'is-toggle-open': !! this.showPublish,
+				'is-togglable': true
+			}
+		);
 
 		return (
 			<Sidebar>
@@ -655,6 +710,7 @@ module.exports = React.createClass( {
 				/>
 				<SidebarMenu>
 					<ul>
+						{ this.checklist() }
 						{ this.stats() }
 						{ this.ads() }
 						{ this.plan() }
@@ -675,10 +731,13 @@ module.exports = React.createClass( {
 					</SidebarMenu>
 					: null
 				}
-
+				
 				{ publish
-					? <SidebarMenu>
-						<SidebarHeading>{ this.translate( 'Publish' ) }</SidebarHeading>
+					? <SidebarMenu className={ publishClasses }>
+						<SidebarHeading onClick={ this.togglePublish } >
+							<Gridicon icon="chevron-down" />
+							<span>{ this.translate( 'Publish' ) }</span>
+						</SidebarHeading>
 						{ this.publish() }
 					</SidebarMenu>
 					: null
