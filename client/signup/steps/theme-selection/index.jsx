@@ -26,7 +26,7 @@ module.exports = React.createClass( {
 	getDefaultProps: function() {
 		return {
 			themes: [
-			  { name: "ProudCity", slug: "proudcity" },
+			  { name: "Proud City", slug: "proudcity" },
 			  { name: "Proud Department", slug: "proudagency" },
 			  { name: "Proud Intranet", slug: "proudintranet" },
 			  { name: "Proud Library", slug: "proudlibrary" },
