@@ -87,6 +87,7 @@ function getSiteFilters( siteId ) {
 	var filters = [
 		{ title: i18n.translate( 'Insights' ), path: '/stats/insights/' + siteId, id: 'stats-insights' },
 		{ title: i18n.translate( 'Days' ), path: '/stats/day/' + siteId, id: 'stats-day', period: 'day' },
+		{ title: i18n.translate( 'Google Analytics' ), path: 'https://analytics.google.com/analytics/web/?' + siteId, id: 'stats-day', period: 'day' },
 		{ title: i18n.translate( 'Weeks' ), path: '/stats/week/' + siteId, id: 'stats-week', period: 'week' },
 		{ title: i18n.translate( 'Months' ), path: '/stats/month/' + siteId, id: 'stats-month', period: 'month' },
 		{ title: i18n.translate( 'Years' ), path: '/stats/year/' + siteId, id: 'stats-year', period: 'year' }
@@ -307,8 +308,8 @@ module.exports = {
 				return [
 					{ attr: 'views', legendOptions: [ 'visitors' ], gridicon: 'visible', label: i18n.translate( 'Views', { context: 'noun' } ) },
 					{ attr: 'visitors', gridicon: 'user', label: i18n.translate( 'Visitors', { context: 'noun' } ) },
-					{ attr: 'likes', gridicon: 'star', label: i18n.translate( 'Likes', { context: 'noun' } ) },
-					{ attr: 'comments', gridicon: 'comment', label: i18n.translate( 'Comments', { context: 'noun' } ) }
+					{ attr: 'likes', gridicon: 'heart', label: i18n.translate( 'ProudScore', { context: 'noun' } ) },
+					{ attr: 'comments', gridicon: 'comment', label: i18n.translate( 'Submissions', { context: 'noun' } ) }
 				];
 			},
 			chartDate,
