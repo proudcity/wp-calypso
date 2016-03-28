@@ -40,6 +40,14 @@ module.exports = React.createClass( {
 
 	getFilteredSections: function() {
 		return [
+			// ProudCity Custom
+			{
+				key: 'configuration',
+				title: this.translate( 'Configuration', {
+					context: 'Navigation item',
+					textOnly: false
+				} )
+			},
 			{
 				key: 'description',
 				title: this.translate( 'Description', {
@@ -145,6 +153,8 @@ module.exports = React.createClass( {
 	},
 
 	render: function() {
+		console.log('##');
+		console.log(this.props.plugin.sections);
 		var contentClasses = classNames( 'plugin-sections__content', { trimmed: ! this.state.readMore } );
 
 		// Defensively check if this plugin has sections. If not, don't render anything.
@@ -175,10 +185,17 @@ module.exports = React.createClass( {
 					</SectionNav>
 				</PluginCardHeader>
 				<Card>
-					<div ref="content"
+					{ this.getSelected() == 'configuration' &&
+						<div ref="content" className={ contentClasses } >
+							@@@#EASFD
+						</div> }
+					{ this.getSelected() != 'configuration' &&
+						<div ref="content"
 						className={ contentClasses }
 						// Sanitized in client/lib/plugins/utils.js with sanitizeHtml
-						dangerouslySetInnerHTML={ { __html: this.props.plugin.sections[ this.getSelected() ] } } />
+						dangerouslySetInnerHTML={ { __html: this.props.plugin.sections[ this.getSelected() ] } } /> }
+
+
 					{ this.renderReadMore() }
 				</Card>
 			</div>
