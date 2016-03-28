@@ -200,6 +200,9 @@ module.exports = React.createClass( {
 								period={ this.props.period }
 								date={ queryDate }
 								beforeNavigate={ this.updateScrollPosition } />
+							
+						</div>
+						<div className="module-column">
 							<StatsModule
 								path={ 'referrers' }
 								moduleStrings={ moduleStrings.referrers }
@@ -208,32 +211,7 @@ module.exports = React.createClass( {
 								period={ this.props.period }
 								date={ queryDate }
 								beforeNavigate={ this.updateScrollPosition } />
-							<StatsModule
-								path={ 'clicks' }
-								moduleStrings={ moduleStrings.clicks }
-								site={ site }
-								dataList={ this.props.clicksList }
-								period={ this.props.period }
-								date={ queryDate }
-								beforeNavigate={ this.updateScrollPosition } />
-							<StatsModule
-								path={ 'authors' }
-								moduleStrings={ moduleStrings.authors }
-								site={ site }
-								dataList={ this.props.authorsList }
-								period={ this.props.period }
-								date={ queryDate }
-								followList={ this.props.followList }
-								className='authorviews'
-								beforeNavigate={ this.updateScrollPosition } />
-						</div>
-						<div className="module-column">
-							<Countries
-								path={ 'countries' }
-								site={ site }
-								dataList={ this.props.countriesList }
-								period={ this.props.period }
-								date={ queryDate } />
+								
 							<StatsModule
 								path={ 'searchterms' }
 								moduleStrings={ moduleStrings.search }
