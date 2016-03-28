@@ -19,6 +19,7 @@ import statsStrings from '../stats-strings';
 import MostPopular from 'my-sites/stats/most-popular';
 import PostPerformance from '../post-performance';
 import touchDetect from 'lib/touch-detect';
+import GovReady from '../stats-govready';
 
 export default React.createClass( {
 	displayName: 'StatsInsights',
@@ -58,6 +59,7 @@ export default React.createClass( {
 		let postTrends;
 		let tagsList;
 		let overview = <SiteOverviewPlaceholder insights={ true } />;
+		let govReady = <SiteOverviewPlaceholder insights={ true } />;
 
 		if ( site ) {
 			let summaryData = statSummaryList.get( site.ID, summaryDate );
@@ -80,9 +82,13 @@ export default React.createClass( {
 				<StatsNavigation section="insights" site={ site } />
 				<div id="my-stats-content">
 					{ postTrends }
+					{ 1==2 &&
 					<PostPerformance site={ site } />
+					}
 					{ overview }
+					<GovReady allTimeList={ allTimeList } />
 					<AllTime allTimeList={ allTimeList } />
+					{ 1==2 && <div>
 					<MostPopular insightsList={ insightsList } />
 					<div className="stats-nonperiodic has-recent">
 						<h3 className="stats-section-title">{ this.translate( 'Other Recent Stats', { context: 'Heading for non periodic site stats' } ) }</h3>
@@ -111,6 +117,7 @@ export default React.createClass( {
 							</div>
 						</div>
 					</div>
+					</div> }
 				</div>
 			</div>
 		);
