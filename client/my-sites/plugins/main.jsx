@@ -142,19 +142,20 @@ const PluginsMain = React.createClass( {
 			},
 			{
 				title: this.translate( 'Active', { context: 'Filter label for plugins list' } ),
-				path: '/plugins/active' + siteFilter,
+			  path: '/plugins/active' + siteFilter,
 				id: 'active'
 			},
 			{
 				title: this.translate( 'Inactive', { context: 'Filter label for plugins list' } ),
 				path: '/plugins/inactive' + siteFilter,
 				id: 'inactive'
-			},
-			{
-				title: this.translate( 'Updates', { context: 'Filter label for plugins list' } ),
-				path: '/plugins/updates' + siteFilter,
-				id: 'updates'
 			}
+			//,
+			//{
+			//	title: this.translate( 'Updates', { context: 'Filter label for plugins list' } ),
+			//	path: '/plugins/updates' + siteFilter,
+			//	id: 'updates'
+			//}
 		];
 	},
 
