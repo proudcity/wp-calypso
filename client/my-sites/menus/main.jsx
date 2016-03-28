@@ -256,11 +256,13 @@ var Menus = React.createClass( {
 		return (
 			<div>
 				<div className="menus__pickers">
+					{ 1==2 && <div>
 					<LocationPicker
 						locations={ data.locations }
 						selectedLocation={ selectedLocation }
 						selectHandler={ this.selectLocation } />
-					<p className="menus__pickers-conjunction">{ this.translate( 'uses' ) }</p>
+					<p className="menus__pickers-conjunction">{ this.translate( 'uses' ) }</p> 
+					</div> }
 					<MenuPicker
 						menuData={ this.props.siteMenus }
 						menus={ data.menus }
