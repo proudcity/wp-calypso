@@ -60,6 +60,7 @@ export default React.createClass( {
 	},
 
 	render() {
+		var readerTitle = this.props.sites != undefined && this.props.sites.data.length ? 'My '+ this.props.sites.data[0].name +' Feed' : 'Feed';
 		return (
 			<Masterbar>
 				<Stats
@@ -82,7 +83,7 @@ export default React.createClass( {
 					tooltip={ this.translate( 'Read the blogs and topics you follow', { textOnly: true } ) }
 					preloadSection={ () => sections.preload( 'reader' ) }
 				>
-					{ this.translate( 'Reader', { comment: 'Toolbar, must be shorter than ~12 chars' } ) }
+					{ this.translate( readerTitle, { comment: 'Toolbar, must be shorter than ~12 chars' } ) }
 				</Item>
 				<Publish
 					sites={ this.props.sites }
