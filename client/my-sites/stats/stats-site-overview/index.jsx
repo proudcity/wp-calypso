@@ -36,6 +36,7 @@ export default React.createClass( {
 		let headerPath = siteStatsPath;
 		let title;
 		let icon;
+		console.log(summaryData);
 
 		if ( insights ) {
 			title = this.translate( 'Today\'s Stats' );
@@ -79,14 +80,14 @@ export default React.createClass( {
 					<StatsTab
 						className={ this.isValueLow( likes ) ? 'is-low' : null }
 						href={ siteStatsPath + '?tab=likes' }
-						gridicon="star"
-						label={ this.translate( 'Likes', { context: 'noun' } ) }
+						gridicon="heart"
+						label={ this.translate( 'ProudScore', { context: 'noun' } ) }
 						value={ likes } />
 					<StatsTab
 						className={ this.isValueLow( comments ) ? 'is-low' : null }
 						href={ siteStatsPath + '?tab=comments' }
 						gridicon="comment"
-						label={ this.translate( 'Comments', { context: 'noun' } ) }
+						label={ this.translate( 'Submissions', { context: 'noun' } ) }
 						value={ comments } />
 				</StatsTabs>
 			</Card>
