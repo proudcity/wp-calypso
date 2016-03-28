@@ -289,7 +289,8 @@ export default React.createClass( {
 						isPlaceholder={ this.props.isPlaceholder }
 						site={ this.props.selectedSite }
 						pluginVersion={ plugin && plugin.version }
-						siteVersion={ this.props.selectedSite && this.props.selectedSite.options.software_version }
+						// ProudCity custom
+						//siteVersion={ this.props.selectedSite && this.props.selectedSite.options.software_version }
 						hasUpdate={ this.getAvailableNewVersions().length > 0 } /> }
 
 				</Card>
