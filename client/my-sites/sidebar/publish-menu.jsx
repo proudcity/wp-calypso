@@ -158,6 +158,8 @@ var PublishMenu = React.createClass( {
 		} else {
 			icon = 'custom-post-type';
 		}
+		icon = 'custom-post-type'; // @todo: remove
+		menuItem.buttonLink = this.props.site.options.admin_url + 'post-new.php?post_type=' + menuItem.name;
 
 		return (
 			<SidebarItem key={ menuItem.name }
@@ -197,7 +199,7 @@ var PublishMenu = React.createClass( {
 				// Required to build the menu item class name. Must be discernible from other
 				// items' paths in the same section for item highlighting to work properly.
 				link: '/' + postType.name,
-				buttonLink: '',
+				buttonLink: postType.buttonLink,
 				wpAdminLink: 'edit.php?post_type=' + postType.name,
 				showOnAllMySites: false,
 			};
@@ -206,7 +208,7 @@ var PublishMenu = React.createClass( {
 		menuItems = menuItems.concat( customMenuItems );
 
 		return (
-			<ul>
+			<ul className="sidebar__menu-list">
 				{ menuItems.map( this.renderMenuItem ) }
 			</ul>
 		);
