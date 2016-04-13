@@ -57,6 +57,7 @@ Icons are overwritten with their FontAwesome equivalents in `./client/components
 * Reader
   * client/reader/sidebar/index.jsx : Reader sidebar : Change sidebar items
   * client/reader/sidebar/reader-sidebar-lists/index.jsx : List sidebar section : Change Lists to Channels
+  * client/lib/safe-image-url/index.js : Clean urls : Allow all image urls for social feed items
 * Stats
   * client/my-sites/stats/site.jsx : Day/Wk/Mo page : Change blocks on Days page
   * client/my-sites/stats/controller.js : Add Google Analytics link, change star to heart, comments to submissions

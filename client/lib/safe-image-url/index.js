@@ -38,7 +38,12 @@ function safeImageURL( url ) {
 		return url.replace( /^http:/, 'https:' );
 	}
 
-	return photon( url );
+	// ProudCity Hack: Don't force clean urls for anything but Twitter images
+	if ( url.indexOf('pbs.twimg.com') != -1 ) {
+		return photon( url );
+	}
+	return url;
+	//return photon( url );
 }
 
 module.exports = safeImageURL;
