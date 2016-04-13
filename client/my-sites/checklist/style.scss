@@ -1,0 +1,25 @@
+.proud-checklist {
+
+  .checklist-number {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    font-size: 60px;
+    line-height: 60px;
+    color: $gray;
+    padding-right: 10px;
+  }
+
+  .pull-left {
+    float: left;
+  }
+
+  .completed {
+    .checklist-number,
+    h3{
+      color: $alert-green;
+    }
+  }
+
+
+}

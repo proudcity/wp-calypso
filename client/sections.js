@@ -190,9 +190,9 @@ if ( config.isEnabled( 'mailing-lists/unsubscribe' ) ) {
 
 if ( config.isEnabled( 'proud-checklist' ) ) {
 	sections.push( {
-		name: 'proud-checklist',
+		name: 'checklist',
 		paths: [ '/checklist' ],
-		module: 'my-sites/proud-checklist'
+		module: 'my-sites/checklist'
 	} );
 }
 
