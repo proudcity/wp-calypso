@@ -54,7 +54,8 @@ var MenuEditableItem = React.createClass( {
 				name: this.translate( 'New item', { textOnly: true } ),
 				type: 'page',
 				type_family: 'post_type',
-				status: 'publish'
+				status: 'publish',
+				import: false
 			};
 		// Here we're initialising state from props, this is generally
 		// considered an anti-pattern, but we're OK here because MenuEditableItem is
@@ -156,6 +157,7 @@ var MenuEditableItem = React.createClass( {
 
 	setItemContent: function( content ) {
 		analytics.ga.recordEvent( 'Menus', 'Selected Menu Item' );
+		console.log(content);
 		this.setState( update( this.state, {
 			item: {
 				content_id: { $set: content.ID },
@@ -208,10 +210,14 @@ var MenuEditableItem = React.createClass( {
 				<input id="menu-flag-import" type="checkbox" defaultChecked={ this.state.item.import } onChange={ this.state.item.import = !this.state.item.import } />
 				<label htmlFor="menu-flag-import">{ this.translate( 'Import' ) }</label>
 				{ this.state.item.import && <div>
-					<input id="import-type-url" type="radio" name="importType" defaultChecked={ this.state.item.importType === 'url'  } onChange={ this.state.item.importType = 'url' } />
-					<label htmlFor="import-type-url">{ this.translate( 'Website URL' ) }</label>
-					<input id="import-type-upload" type="radio" name="importType" defaultChecked={ this.state.item.importType === 'upload' } onChange={ this.state.item.importType = 'upload' } />
-					<label htmlFor="import-type-upload">{ this.translate( 'File upload' ) }</label>
+					<div>
+						<input id="import-type-url" type="radio" name="importType" defaultChecked={ this.state.item.importType === 'url'  } onChange={ this.state.item.importType = 'url' } />
+						<label htmlFor="import-type-url">{ this.translate( 'Website URL' ) }</label>
+					</div>
+					<div>
+						<input id="import-type-upload" type="radio" name="importType" defaultChecked={ this.state.item.importType === 'upload' } onChange={ this.state.item.importType = 'upload' } />
+						<label htmlFor="import-type-upload">{ this.translate( 'File upload' ) }</label>
+					</div>
 				</div> }
 			</div>
 		);
