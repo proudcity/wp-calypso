@@ -12,7 +12,7 @@ var config = require( 'config' ),
 	NavTabs = require( 'components/section-nav/tabs' ),
 	NavItem = require( 'components/section-nav/item' ),
 	GeneralSettings = require( './section-general' ),
-	SocialMediaSettings = require( './section-social-media' ),
+	LocationSettings = require( './section-location' ),
 	DiscussionSettings = require( './section-discussion' ),
 	AnalyticsSettings = require( './section-analytics' ),
 	ImportSettings = require( './section-import' ),
@@ -69,10 +69,10 @@ module.exports = React.createClass( {
 		var site = this.state.site;
 		return {
 			general: <GeneralSettings site={ site } />,
-			'social-media': <SocialMediaSettings site={ site } />,
-			discussion: <DiscussionSettings site={ site } />,
-			security: <SiteSecurity site={ site } />,
-			analytics: <AnalyticsSettings site={ site } />,
+			location: <LocationSettings site={ site } />,
+			//discussion: <DiscussionSettings site={ site } />,
+			//security: <SiteSecurity site={ site } />,
+			//analytics: <AnalyticsSettings site={ site } />,
 			'import': <ImportSettings site={ site } />,
 			'export': <ExportSettings site={ site } store={ this.props.context.store } />
 		};

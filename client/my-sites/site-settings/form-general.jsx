@@ -59,6 +59,7 @@ module.exports = React.createClass( {
 				settings.holidaysnow = site.settings.holidaysnow;
 			}
 		}
+		console.log(site.settings);
 
 		return settings;
 	},
@@ -164,6 +165,41 @@ module.exports = React.createClass( {
 				</div>
 				{ addressDescription }
 			</FormFieldset>
+		);
+	},
+
+	analyticsOptions: function() {
+		return (
+			<div>
+				<FormFieldset>
+					<FormLabel htmlFor="blogname">{ this.translate( 'Google Analytics tracking code' ) }</FormLabel>
+					<FormInput
+						name="google_analytics_key"
+						id="google_analytics_key"
+						type="text"
+						valueLink={ this.linkState( 'google_analytics_key' ) }
+						disabled={ this.state.fetchingSettings }
+						onClick={ this.recordEvent.bind( this, 'Clicked Google Analytics tracking codeField' ) }
+						onKeyPress={ this.recordEventOnce.bind( this, 'typedTitle', 'Typed in Google Analytics tracking code Field' ) } />
+				</FormFieldset>
+				<FormSettingExplanation>
+					{ this.translate( '@todo.' ) }
+				</FormSettingExplanation>
+				<FormFieldset>
+					<FormLabel htmlFor="blogdescription">{ this.translate( 'Google Analytics view' ) }</FormLabel>
+					<FormInput
+						name="google_analytics_view"
+						type="text"
+						id="google_analytics_view"
+						valueLink={ this.linkState( 'google_analytics_view' ) }
+						disabled={ this.state.fetchingSettings }
+						onClick={ this.recordEvent.bind( this, 'Clicked Site Site Tagline Field' ) }
+						onKeyPress={ this.recordEventOnce.bind( this, 'typedTagline', 'Typed in Site Site Tagline Field' ) } />
+					<FormSettingExplanation>
+						{ this.translate( '@todo.' ) }
+					</FormSettingExplanation>
+				</FormFieldset>
+			</div>
 		);
 	},
 
@@ -396,7 +432,7 @@ module.exports = React.createClass( {
 						{ this.holidaySnowOption() }
 					</form>
 				</Card>
-				<SectionHeader label={ this.translate( 'Visibility' ) }>
+				<SectionHeader className="after-compact" label={ this.translate( 'Analytics' ) }>
 					<Button
 						compact={ true }
 						onClick={ this.submitForm }
@@ -412,57 +448,7 @@ module.exports = React.createClass( {
 				</SectionHeader>
 				<Card>
 					<form onChange={ this.markChanged }>
-
-						{ this.visibilityOptions() }
-					</form>
-				</Card>
-				{ this.props.site.jetpack
-					? <div>
-						<SectionHeader label={ this.translate( 'Jetpack' ) }>
-							{ this.jetpackDisconnectOption() }
-							{ config.isEnabled( 'manage/option_sync_non_public_post_stati' )
-								? <Button
-									compact={ true }
-									onClick={ this.submitForm }
-									primary={ true }
-									type="submit"
-									disabled={ this.state.fetchingSettings || this.state.submittingForm }>
-									{ this.state.submittingForm
-										? this.translate( 'Saving…' )
-										: this.translate( 'Save Settings' )
-									}
-									</Button>
-								: null
-							}
-						</SectionHeader>
-
-						{ this.syncNonPublicPostTypes() }
-
-						<Card href={ '../security/' + site.slug } className="is-compact">
-							{ this.translate( 'View Jetpack Monitor Settings' ) }
-						</Card>
-						<Card href={ 'https://wordpress.com/manage/' + site.ID } className="is-compact">
-							{ this.translate( 'Migrate followers from another WordPress.com blog' ) }
-						</Card>
-					</div>
-					: null }
-				<SectionHeader className="after-compact" label={ this.translate( 'Related Posts' ) }>
-					<Button
-						compact={ true }
-						onClick={ this.submitForm }
-						primary={ true }
-
-						type="submit"
-						disabled={ this.state.fetchingSettings || this.state.submittingForm }>
-							{ this.state.submittingForm
-								? this.translate( 'Saving…' )
-								: this.translate( 'Save Settings' )
-							}
-					</Button>
-				</SectionHeader>
-				<Card>
-					<form onChange={ this.markChanged }>
-						{ this.relatedPostsOptions() }
+						{ this.analyticsOptions() }
 					</form>
 				</Card>
 			</div>
