@@ -46,6 +46,11 @@ module.exports = function() {
 		page( '/tag/:tag', updateLastRoute, controller.removePost, controller.sidebar, controller.tagListing );
 	}
 
+	if ( config.isEnabled( 'reader/proudcity-demo' ) ) {
+		page( '/read/documents', updateLastRoute, controller.removePost, controller.sidebar, controller.documents );
+		page( '/read/map', updateLastRoute, controller.removePost, controller.sidebar, controller.map );
+	}
+
 	if ( config.isEnabled( 'reader/teams' ) ) {
 		page( '/read/a8c', updateLastRoute, controller.removePost, controller.sidebar, forceTeamA8C, controller.readA8C );
 	}
