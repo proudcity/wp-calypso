@@ -13,7 +13,18 @@
 }
 
 
-// Auth0 lock 
+// Auth0 lock login page
+.is-section-login {
+  background: none !important;
+  padding-bottom: 200px;
+}
+
+.proudcity-login-header {
+  margin-top: 50px;
+  font-size: 2.5em;
+  font-weight: 200;
+}
+
 .a0-zocial.a0-icon,
 .a0-zocial.a0-icon span {
   display: block !important;
@@ -28,7 +39,6 @@
   //display: none;
 }
 
-
 .a0-panel {
   box-shadow: none !important;
   margin: 0 auto !important;
@@ -40,7 +50,7 @@
 
 .a0-primary.a0-next {
   text-indent: 0 !important;
-  background: $blue-light !important;
+  background: $blue-wordpress !important;
 
   &:after {
     display: none !important;
@@ -48,7 +58,12 @@
 }
 
 
-// Misc tweaks
+// Reader
+// @todo: this hsould only be temporary: hide like button
+.post-options,
+.like-button {
+  display: none;
+}
 .infinite-scroll-end { // @todo: throw the PC logo in herr
   &:after {
     display: none !important;
@@ -132,4 +147,10 @@
       transform: translateY( 0 );
     }
   }
+}
+
+
+// Plugins page
+.plugin-list-header__mode-buttons {
+  display: none;
 }
