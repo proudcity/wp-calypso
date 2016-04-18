@@ -44,8 +44,9 @@
 		"reader/recommendations": false,
 		"reader/list-management": true,
 		"reader/discover": false,
+		"reader/proudcity-demo": true,
 
-		"post-editor": true,
+		"post-editor": false,
 		"post-editor/iframe-preview": true,
 		"post-editor/live-image-updates": true,
 		"post-editor/pages": true,
@@ -55,7 +56,7 @@
 
 		"manage/media": true,
 		"manage/pages": true,
-		"manage/posts": true,
+		"manage/posts": false,
 		"manage/drafts": true,
 		"manage/events": true,
 		"manage/plugins": true,
@@ -72,6 +73,7 @@
 		"manage/stats/insights": true,
 
 		"manage/checklist": true,
+		"manage/redirect-loggedout-login": true,
 
 		"manage/site-settings/analytics": true,
 		"manage/site-settings/delete-site": true,
@@ -130,8 +132,8 @@
 		"me/billing-history": true,
 		"me/security": true,
 		"me/security/checkup": true,
-		"me/notifications": true,
-		"me/notifications-control-panel": true,
+		"me/notifications": false,
+		"me/notifications-control-panel": false,
 		"me/next-steps": true,
 		"me/credit-cards": true,
 		"me/find-friends": false,
@@ -139,11 +141,11 @@
 
 		"help": true,
 
-		"notifications2beta": true,
+		"notifications2beta": false,
 		"muse": true,
 		"olark" : false,
 		"olark_use_wpcom_configuration": false,
-		"devdocs": false,
+		"devdocs": true,
 		"devdocs/redirect-loggedout-homepage": false,
 		"jetpack_core_inline_update": true,
 		"phone_signup": true,
