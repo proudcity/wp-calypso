@@ -616,5 +616,66 @@ module.exports = {
 			} ),
 			document.getElementById( 'primary' )
 		);
+	},
+
+	documents: function( context ) {
+		const Documents = require( 'reader/documents' ),
+			basePath = '/documents',
+			fullAnalyticsPageTitle = analyticsPageTitle + ' > Documents',
+			mcKey = 'documents';
+
+		setPageTitle( i18n.translate( 'Documents' ) );
+
+		trackPageLoad( basePath, fullAnalyticsPageTitle, mcKey );
+
+		ReactDom.render(
+			React.createElement( Documents, {
+				key: 'documents',
+				list: {
+					owner: context.params.user,
+					slug: context.params.list
+				},
+				tab: 'sites',
+				/*trackScrollPage: trackScrollPage.bind(
+					null,
+					basePath,
+					fullAnalyticsPageTitle,
+					analyticsPageTitle,
+					mcKey
+				)*/
+			} ),
+			document.getElementById( 'primary' )
+	  );
+	},
+
+	map: function( context ) {
+		const Documents = require( 'reader/map' ),
+			basePath = '/map',
+			fullAnalyticsPageTitle = analyticsPageTitle + ' > Map',
+			mcKey = 'map';
+
+		setPageTitle( i18n.translate( 'Map' ) );
+
+		trackPageLoad( basePath, fullAnalyticsPageTitle, mcKey );
+
+		ReactDom.render(
+			React.createElement( Documents, {
+				key: 'map',
+				list: {
+					owner: context.params.user,
+					slug: context.params.list
+				},
+				tab: 'sites',
+				/*trackScrollPage: trackScrollPage.bind(
+					null,
+					basePath,
+					fullAnalyticsPageTitle,
+					analyticsPageTitle,
+					mcKey
+				)*/
+			} ),
+			document.getElementById( 'primary' )
+	  );
 	}
+
 };
