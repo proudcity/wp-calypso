@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React from 'react';
+import ReactPlayer from 'react-player'
 
 
 /**
@@ -9,12 +10,19 @@ import React from 'react';
  */
 import Main from 'components/main';
 var sites = require( 'lib/sites-list' )(),
-  ChecklistItem = require( './checklist-item' ),
-  ChecklistVideo = require( './checklist-video' );
+  ChecklistItem = require( './checklist-item' );
 
 
 export default React.createClass( {
   displayName: 'Checklist',
+
+  getInitialState() {
+    return {
+      video: 'https://www.youtube.com/watch?v=KyjmUMX2meo',
+      playing: false,
+      site: sites.getSelectedSite()
+    };
+  },
 
   fetchChecklist: function() {
     return [
@@ -92,38 +100,65 @@ export default React.createClass( {
 
   fetchCompleted: function() {
     // Get current status from sites state
-    /*ar site = sites.getSelectedSite();
     if ( sites.initialized ) {
-      site.fetchSettings();
+      this.state.site.fetchSettings();
     } else {
       sites.once( 'change', function() {
-        site = sites.getSelectedSite();
-        site.fetchSettings();
+        this.setState({
+          site: sites.getSelectedSite()
+        });
+        this.state.site.fetchSettings();
       } );
-    }*/
+    }
 
     //var completed = sites.options.proud_checklist;
     return ['editor'];
   },
 
+  changeVideo: function( video ) {
+    this.setState({
+      video: 'https://www.youtube.com/watch?v=' + video,
+      playing: true
+    })
+  },
 
   render() {
     var checklist = this.fetchChecklist();
     var completed = this.fetchCompleted();
 
+    const {
+      video,
+      playing
+    } = this.state
+
     return (
-      <div>
-        <ul className="proud-checklist">
-          { checklist.map( function( item ) {
-            return (
-              <ChecklistItem
-                key={ item.key }
-                completed={ completed }
-                item={ item } />
-            );
-          }, this ) }
-        </ul>
-        <ChecklistVideo />
+      <div className={ 'module-list' }>
+        <h1>Welcome to ProudCity</h1>
+        <p>Use the checklist below to set up your site.  You will be up and running in a matter of hours--not months!</p>
+
+        <div className={ 'module-column' }>
+          <ul className="proud-checklist">
+            { checklist.map( function( item ) {
+              return (
+                <ChecklistItem
+                  key={ item.key }
+                  completed={ completed }
+                  item={ item }
+                  changeVideo={ this.changeVideo } />
+              );
+            }, this ) }
+          </ul>
+        </div>
+
+        <div className={ 'module-column' }>
+          <ReactPlayer
+            url={ video }
+            playing={ playing }
+            width={ 380 }
+            height={ 214 }
+          />
+        </div>
+
       </div>
     );
   }

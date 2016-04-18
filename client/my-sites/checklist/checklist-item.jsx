@@ -26,13 +26,14 @@ var CheckListItem = React.createClass( {
 
   renderCheckbox: function() {
     return (
-      <input
-        type={ "checkbox" } 
-        name={ "checklist" }
-        value={ this.props.item.key } 
-        className="pull-left"
-        checked={ ( this.state && this.state.done ) || this.props.done }
-        onChange={ this.changeCheckbox } />
+      <span className="pull-left">
+        <input
+          type={ "checkbox" } 
+          name={ "checklist" }
+          value={ this.props.item.key } 
+          checked={ ( this.state && this.state.done ) || this.props.done }
+          onChange={ this.changeCheckbox } />
+      </span>
     );
   },
 
@@ -50,12 +51,12 @@ var CheckListItem = React.createClass( {
   },
 
   renderDoButton: function() {
-    if (!this.props.item.video) {
+    if (!this.props.item.link) {
       return ( <span /> );
     }
 
     return (
-      <button onClick={ this.clickDoButton } className="button">
+      <button onClick={ this.clickDoButton } className={ "button is-primary" }>
         <i className="fa fa-fw fa-external-link"></i>
         { this.translate( 'Do it' ) }
       </button>
@@ -65,6 +66,8 @@ var CheckListItem = React.createClass( {
 
   clickDoButton: function() {
     analytics.ga.recordEvent( 'Checklist', 'Clicked Do It button ' + this.props.item.title );
+    //window.location = 
+    console.log(this.props.item.link);
     alert('asdf');
   },
 
@@ -75,7 +78,7 @@ var CheckListItem = React.createClass( {
     }
 
     return (
-      <button onClick={ this.clickWatchButton } className="button">
+      <button onClick={ this.clickWatchButton } className={ "button" }>
         <i className="fa fa-fw fa-youtube-play"></i>
         { this.translate( 'Watch' ) }
       </button>
@@ -83,7 +86,7 @@ var CheckListItem = React.createClass( {
   },
 
   clickWatchButton: function() {
-    console.log(this.props);
+    this.props.changeVideo(this.props.item.video);
   },
 
 
@@ -91,17 +94,18 @@ var CheckListItem = React.createClass( {
 
   render() {
     var item = this.props.item;
+    console.log(item);
     return (
       <li
-        className={ 'card completed' }
+        className={ this.state.done ? 'card completed' : 'card' }
         key={ item.key }
       >
         { this.renderCheckbox() }
         <h3 className={ 'module-header-title' }>{ this.translate( item.title ) }</h3>
-        <p>
+        <div className={ 'content' }>
           { this.renderDoButton() }
           { this.renderWatchButton() }
-        </p>
+        </div>
       </li>
     );
 
