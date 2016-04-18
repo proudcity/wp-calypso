@@ -198,7 +198,13 @@ module.exports = React.createClass( {
 
   render: function() {
     const { requires2fa, inProgress, errorMessage, errorLevel, showInstructions } = this.state;
-    return (<Main className="auth"><div id="auth0"></div></Main>);
+    return (
+      <Main className="auth">
+        <h1 className="module-header-title proudcity-login-header">Welcome to <br/>Your ProudCity.</h1>
+        <div id="auth0"></div>
+      </Main>
+    );
+    // end
     return (
       <Main className="auth">
         <WordPressLogo />
