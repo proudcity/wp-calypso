@@ -321,6 +321,12 @@ function reduxStoreReady( reduxStore ) {
 				return;
 			}
 
+			// Added by ProudCity, Apr 2016
+			if ( '/' === context.path && config.isEnabled( 'manage/redirect-loggedout-login' ) ) {
+				page.redirect( '/login' );
+				return;
+			}
+
 			if ( isValidSection ) {
 				next();
 			}
