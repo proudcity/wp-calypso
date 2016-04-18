@@ -170,19 +170,19 @@ const ReaderSidebar = React.createClass( {
 
 						{ preview && <div>
 							<li >
-								<a href="/">
+								<a href="/read/documents">
 									<Gridicon icon="folder" size={ 24 } />
 									<span className="menu-link-text">{ this.translate( 'Documents' ) }</span>
 								</a>
 							</li>
 							<li>
-								<a href="/">
+								<a href="/read/map">
 									<Gridicon icon="notice" size={ 24 } />
 									<span className="menu-link-text">{ this.translate( 'Issues' ) }</span>
 								</a>
 							</li>
 							<li >
-								<a href="/">
+								<a href="/read/map">
 									<Gridicon icon="history" size={ 24 } />
 									<span className="menu-link-text">{ this.translate( 'Crime' ) }</span>
 								</a>
