@@ -161,7 +161,7 @@ var Menus = React.createClass( {
 		var defaultMenuId = this.props.siteMenus.getDefaultMenuId(),
 			selectedMenu = this.props.siteMenus.getMenu( this.getSelectedLocation() ),
 			isDefaultMenu = selectedMenu && selectedMenu.id === defaultMenuId;
-
+console.log(selectedMenu);
 		if ( isDefaultMenu || ! selectedMenu ) {
 			return this.isPrimaryLocationSelected() ? this.getDefaultMenu() : null;
 		}
