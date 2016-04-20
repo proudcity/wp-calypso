@@ -58,12 +58,17 @@ MD_FILES := $(shell \
 CLIENT_CONFIG_FILE := client/config/index.js
 
 # variables
-NODE_ENV ?= development
-CALYPSO_ENV ?= $(NODE_ENV)
+NODE_ENV ?= production
+CALYPSO_ENV ?= development
 
 export NODE_ENV := $(NODE_ENV)
 export CALYPSO_ENV := $(CALYPSO_ENV)
 export NODE_PATH := server$(SEPARATOR)client$(SEPARATOR).
+
+
+# Https settings
+export HTTPS := 1
+export HTTPS_PORT := 8444
 
 # We use `semver` to check the version of Node.js before installing npm
 # packages or running scripts.  Since this is before npm runs, we need to grab

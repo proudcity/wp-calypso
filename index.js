@@ -3,7 +3,9 @@
  */
 var boot = require( 'boot' ),
 	http = require( 'http' ),
-	chalk = require( 'chalk' );
+	https = require( 'https' ),
+	chalk = require( 'chalk' ),
+	fs = require('fs');
 
 /**
  * Internal dependencies
@@ -16,6 +18,7 @@ var start = Date.now(),
 	host = process.env.HOST || config( 'hostname' ),
 	app = boot(),
 	server,
+	httpsServer,
 	hotReloader;
 
 console.log( chalk.yellow( '%s booted in %dms - http://%s:%s' ), pkg.name, ( Date.now() ) - start, host, port );
@@ -35,8 +38,28 @@ if ( process.env.CALYPSO_IS_FORK ) {
 	server.listen( port );
 }
 
+/**
+ * Create HTTPS server.
+ */
+
+if(process.env.HTTPS) {
+  var httpsPort = process.env.HTTPS_PORT || '443';
+  app.set('port', httpsPort);
+  var credentials = {
+    key: fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.crt')
+  };
+  httpsServer = https.createServer(credentials, app);
+  httpsServer.listen(httpsPort);
+}
+
 // Enable hot reloader in development
 if ( config( 'env' ) === 'development' ) {
 	hotReloader = require( 'bundler/hot-reloader' );
-	hotReloader.listen( server, app.get( 'compiler' ) );
+	if(process.env.HTTPS) {
+		hotReloader.listen( httpsServer, app.get( 'compiler' ) );
+	}
+	else {
+		hotReloader.listen( server, app.get( 'compiler' ) );
+	}
 }
