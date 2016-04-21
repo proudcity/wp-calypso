@@ -1,4 +1,14 @@
-.proud-checklist {
+.proud-checklist-page__title {
+  font-size: 1.8em;
+  font-weight: 200;
+}
+
+ul.proud-checklist {
+  margin-left: 0;
+
+  .card {
+    padding: 12px !important;
+  }
 
   .checklist-number {
     display: inline-block;
@@ -21,7 +31,7 @@
   }
 
   h3 {
-    font-size: 1.6em;
+    font-size: 1.4em;
     font-weight: 200;
   }
 
@@ -41,6 +51,30 @@
   width: 100%;
   height: 300px;
   background: black;
+}
+
+.help-cards {
+  width: 380px;
+  margin-top: 2em;
+
+  .help-title {
+    font-weight: bold;
+    margin-bottom: .5em;
+  }
+
+  .card {
+    text-align: center;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    h3 {
+      font-size: 1.4em;
+      font-weight: 200;
+    }
+  }
+
+  
+
 }
 
 .button .fa-fw {

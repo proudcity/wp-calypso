@@ -10,8 +10,8 @@ import ReactPlayer from 'react-player'
  */
 import Main from 'components/main';
 var sites = require( 'lib/sites-list' )(),
-  ChecklistItem = require( './checklist-item' );
-
+  ChecklistItem = require( './checklist-item' ),
+  ChecklistSupportBlock = require( './checklist-support-block' );
 
 export default React.createClass( {
   displayName: 'Checklist',
@@ -132,8 +132,8 @@ export default React.createClass( {
     } = this.state
 
     return (
-      <div className={ 'module-list' }>
-        <h1>Welcome to ProudCity</h1>
+      <div className={ 'proud-checklist-page' }>
+        <h1 className="proud-checklist-page__title">Welcome to ProudCity</h1>
         <p>Use the checklist below to set up your site.  You will be up and running in a matter of hours--not months!</p>
 
         <div className={ 'module-column' }>
@@ -157,9 +157,12 @@ export default React.createClass( {
             width={ 380 }
             height={ 214 }
           />
+
+          <ChecklistSupportBlock />
         </div>
 
       </div>
+
     );
   }
 
