@@ -53,9 +53,8 @@ export default React.createClass( {
 		};
 
 		const bestViews = allTimeList['best-views'] ? allTimeList['best-views'].count : null;
-console.log(govReady);
 		return (
-			<Card className={ classNames( 'stats-module', 'stats-all-time', classes ) }>
+			<Card className={ classNames( 'stats-module', 'stats-govready', classes ) }>
 				<div className="module-header">
 				<h1 className="module-header-title">{ this.translate( 'Security Audit powered by GovReady' ) }</h1>
 					<ul className="module-header-actions">
