@@ -23,6 +23,7 @@
   margin-top: 50px;
   font-size: 2.5em;
   font-weight: 200;
+  height: auto;
 }
 
 .a0-zocial.a0-icon,
@@ -61,12 +62,28 @@
 // Reader
 // @todo: this hsould only be temporary: hide like button
 .post-options,
-.like-button {
+.like-button,
+.reader-update-notice {
   display: none;
 }
 .infinite-scroll-end { // @todo: throw the PC logo in herr
   &:after {
     display: none !important;
+  }
+}
+// Map placeholder 
+.reader-map {
+  position: relative;
+  .maps-coming-soon {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    font-size: 1.7em;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px 0;
   }
 }
 
@@ -149,8 +166,43 @@
   }
 }
 
+// Stats
+// The report spam next to referrers
+.stats-module .module-content-list-item-actions-toggle {
+  display: none;
+}
+
+//@todo: temp:
+.stats-module.has-no-data {
+  display: none;
+}
+
 
 // Plugins page
 .plugin-list-header__mode-buttons {
   display: none;
 }
+
+
+// Coming soon placeholders
+/*.stats-govready {
+  .module-content {
+    &:before {
+      content: 'Coming soon';
+      text-transform: uppercase;
+      font-size: 1.4em;
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      margin-top: 50px;
+      z-index: 1000;
+      padding-top: 30PX;
+    }
+
+    ul {
+      opacity: .3;
+    }
+  }
+  
+}*/
+
