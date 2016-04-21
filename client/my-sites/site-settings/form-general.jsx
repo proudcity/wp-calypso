@@ -183,7 +183,7 @@ module.exports = React.createClass( {
 						onKeyPress={ this.recordEventOnce.bind( this, 'typedTitle', 'Typed in Google Analytics tracking code Field' ) } />
 				</FormFieldset>
 				<FormSettingExplanation>
-					{ this.translate( '@todo.' ) }
+					{ this.translate( '' ) }
 				</FormSettingExplanation>
 				<FormFieldset>
 					<FormLabel htmlFor="blogdescription">{ this.translate( 'Google Analytics view' ) }</FormLabel>
@@ -196,7 +196,7 @@ module.exports = React.createClass( {
 						onClick={ this.recordEvent.bind( this, 'Clicked Site Site Tagline Field' ) }
 						onKeyPress={ this.recordEventOnce.bind( this, 'typedTagline', 'Typed in Site Site Tagline Field' ) } />
 					<FormSettingExplanation>
-						{ this.translate( '@todo.' ) }
+						{ this.translate( '' ) }
 					</FormSettingExplanation>
 				</FormFieldset>
 			</div>
