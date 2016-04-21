@@ -20,7 +20,7 @@ const ListManagementNavigation = React.createClass( {
 		const current = this.props.selected;
 		const sectionNames = {
 			sites: this.translate( 'Sites' ),
-			tags: this.translate( 'Tags' ),
+			//tags: this.translate( 'Tags' ),
 			'description-edit': this.translate( 'List Description' )
 		};
 		const baseListUrl = `/read/list/${this.props.list.owner}/${this.props.list.slug}`;
@@ -28,9 +28,11 @@ const ListManagementNavigation = React.createClass( {
 		return (
 			<SectionNav selectedText={ sectionNames[ current ] }>
 				<NavTabs>
+					<NavItem path={ `${ baseListUrl }/sites` } selected={ current === 'sites' || current === 'description-edit' }>{ this.translate( 'Sites' ) }</NavItem>
 					<NavItem path={ `${ baseListUrl }/edit` } selected={ current === 'description-edit' }>{ this.translate( 'Description' ) }</NavItem>
-					<NavItem path={ `${ baseListUrl }/sites` } selected={ current === 'sites' }>{ this.translate( 'Sites' ) }</NavItem>
-					<NavItem path={ `${ baseListUrl }/tags` } selected={ current === 'tags' }>{ this.translate( 'Tags' ) }</NavItem>
+					{1==2 &&
+						<NavItem path={ `${ baseListUrl }/tags` } selected={ current === 'tags' }>{ this.translate( 'Tags' ) }</NavItem>
+					}
 				</NavTabs>
 			</SectionNav>
 			);

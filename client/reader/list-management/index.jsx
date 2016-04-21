@@ -58,7 +58,7 @@ const ListManagement = React.createClass( {
 	renderTabContent() {
 		switch ( this.props.tab ) {
 			case 'description-edit':
-				return <ListManagementDescriptionEdit list={ this.state.listDetails } />;
+				return <ListManagementSites list={ this.state.listDetails } />;
 			case 'tags':
 				return <ListManagementTags list={ this.state.listDetails } />;
 			case 'sites':
