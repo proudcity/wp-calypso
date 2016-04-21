@@ -35,7 +35,8 @@ module.exports = React.createClass( {
 				day: this.translate( 'Days' ),
 				week: this.translate( 'Weeks' ),
 				month: this.translate( 'Months' ),
-				year: this.translate( 'Years' )
+				year: this.translate( 'Years' ),
+				googleAnalytics: this.translate( 'Google Analytics' )
 			};
 
 		return (
@@ -43,9 +44,12 @@ module.exports = React.createClass( {
 				<NavTabs label={ this.translate( 'Stats' ) }>
 					<NavItem path={ '/stats/insights' + siteFragment } selected={ activeSection === 'insights' }>{ sectionTitles.insights }</NavItem>
 					<NavItem path={ '/stats/day' + siteFragment } selected={ activeSection === 'day' }>{ sectionTitles.day }</NavItem>
-					<NavItem path={ '/stats/week' + siteFragment } selected={ activeSection === 'week' }>{ sectionTitles.week }</NavItem>
-					<NavItem path={ '/stats/month' + siteFragment } selected={ activeSection === 'month' }>{ sectionTitles.month }</NavItem>
-					<NavItem path={ '/stats/year' + siteFragment } selected={ activeSection === 'year' }>{ sectionTitles.year }</NavItem>
+					{/*
+						<NavItem path={ '/stats/week' + siteFragment } selected={ activeSection === 'week' }>{ sectionTitles.week }</NavItem>
+						<NavItem path={ '/stats/month' + siteFragment } selected={ activeSection === 'month' }>{ sectionTitles.month }</NavItem>
+						<NavItem path={ '/stats/year' + siteFragment } selected={ activeSection === 'year' }>{ sectionTitles.year }</NavItem>
+					*/}
+					<NavItem path={ 'https://analytics.google.com/analytics/web' } isExternalLink={ true } >{ sectionTitles.googleAnalytics }</NavItem>
 				</NavTabs>
 			</SectionNav>
 		);
