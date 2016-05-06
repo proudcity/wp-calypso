@@ -59,7 +59,8 @@ CLIENT_CONFIG_FILE := client/config/index.js
 
 # variables
 NODE_ENV ?= production
-CALYPSO_ENV ?= development
+#CALYPSO_ENV ?= development
+CALYPSO_ENV ?= production
 
 export NODE_ENV := $(NODE_ENV)
 export CALYPSO_ENV := $(CALYPSO_ENV)

@@ -21,10 +21,38 @@ var start = Date.now(),
 	httpsServer,
 	hotReloader;
 
-console.log( chalk.yellow( '%s booted in %dms - http://%s:%s' ), pkg.name, ( Date.now() ) - start, host, port );
-console.info( chalk.cyan( '\nGetting bundles ready, hold on...' ) );
+/**
+ * Create HTTPS server.
+ */
 
-server = http.createServer( app );
+if(process.env.HTTPS) {
+
+  var httpsPort = process.env.HTTPS_PORT || '443';
+  
+  console.log( chalk.yellow( '%s booted in %dms - https://%s:%s' ), pkg.name, ( Date.now() ) - start, host, httpsPort );
+  console.info( chalk.cyan( '\nGetting bundles ready, hold on...' ) );
+
+  app.set('port', httpsPort);
+
+  var credentials = {
+    key: fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.crt')
+  };
+  httpsServer = https.createServer(credentials, app);
+  httpsServer.listen(httpsPort);
+
+  server = http.createServer( function (req, res) {
+    console.log("https://" + host + ':' + httpsPort + req.url);
+    res.writeHead(301, { "Location": "https://" + host + ':' + httpsPort + req.url });
+    res.end();
+  } );
+}
+else {
+  console.log( chalk.yellow( '%s booted in %dms - http://%s:%s' ), pkg.name, ( Date.now() ) - start, host, port );
+  console.info( chalk.cyan( '\nGetting bundles ready, hold on...' ) );
+
+  server = http.createServer( app );
+}
 
 // The desktop app runs Calypso in a fork.
 if ( process.env.CALYPSO_IS_FORK ) {
@@ -38,20 +66,7 @@ if ( process.env.CALYPSO_IS_FORK ) {
 	server.listen( port );
 }
 
-/**
- * Create HTTPS server.
- */
 
-if(process.env.HTTPS) {
-  var httpsPort = process.env.HTTPS_PORT || '443';
-  app.set('port', httpsPort);
-  var credentials = {
-    key: fs.readFileSync('keys/server.key'),
-    cert: fs.readFileSync('keys/server.crt')
-  };
-  httpsServer = https.createServer(credentials, app);
-  httpsServer.listen(httpsPort);
-}
 
 // Enable hot reloader in development
 if ( config( 'env' ) === 'development' ) {
