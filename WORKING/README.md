@@ -54,10 +54,14 @@ Icons are overwritten with their FontAwesome equivalents in `./client/components
 * Config
   * config/development.json : Main config file : Enable/disable sections, customize settings
   * client/sections.js : Main sections router : Define Checklist page
+  * client/boot/index.js : Client boot : Adding anon redirect from `/` to `/login`
 * Reader
   * client/reader/sidebar/index.jsx : Reader sidebar : Change sidebar items
   * client/reader/sidebar/reader-sidebar-lists/index.jsx : List sidebar section : Change Lists to Channels
-  * client/lib/safe-image-url/index.js : Clean urls : Allow all image urls for social feed items
+  * client/lib/safe-image-url/index.js : Clean urls : Allow all image urls for social feed 
+  * client/reader/index.jsx : Reader index : Add routes for documents, maps
+  * client/reader/documents/ : Documents placeholder : Added
+  * client/reader/maps/ : Maps placeholder : Added
 * Stats
   * client/my-sites/stats/site.jsx : Day/Wk/Mo page : Change blocks on Days page
   * client/my-sites/stats/controller.js : Add Google Analytics link, change star to heart, comments to submissions
@@ -73,19 +77,30 @@ Icons are overwritten with their FontAwesome equivalents in `./client/components
   * client/lib/plugins/utils.js : Allow array for plugin configuration section
 * Menus
   * client/my-sites/menus/main.jsx : Menu wrapper : Hide menu location selector
-  * client/my-sites/menus/menu-item-types.js : Actions for new menu item : Limit list
+  * client/my-sites/menus/menu-item-types.js : Actions for new menu item : Limit list, add Import options
   * client/my-sites/menus/menu-editable-item.jsx : JSX for actions : Add New Action
 * Users
+  * client/lib/oauth-token/index.js: change `getToken()` to return `localStorage.getItem('userToken');`
   * client/components/signup-form/index.jsx : Signup form : Add Auth0 lock
+  * client/auth/login.jsx : Login form : Add Auth0 lock
   * client/signup/steps/theme-selection/index.jsx : List of available themes : Customize themes for ProudCity distros
+* Settings
+  * client/my-sites/site-settings/* : Site settings : Made lots of changes to subfolders, files
 * Sidebar
   * client/my-sites/sidebar/sidebar.jsx : Sidebar menu : Hide menu items, add checklist item 
   * client/my-sites/sidebar/publish-menu.jsx : Publish sidebar menu : Make Publish menu collapsed by default
 * Branding
+  * server/pages/index.jade : HTML template : Change <title>, add fontawesome
+  * assets/stylesheets/_components.scss : CSS imports : Add custom css files
+  * client/layout/masterbar/minimal.jsx : Minimal topnav : Change title to My ProudCity 
   * client/lib/screen-title/utils.js : Screen title : Change <title> to My ProudCity
   * client/components/site-selector/index.jsx : Site selector : Change "Create new Wordpress" to "Create new site"
   * client/layout/masterbar/logged-in.jsx : Topnav : Change Reader to MyCity Feed
   * client/components/gridicon/index.jsx : Gridicons svg defn : updating icons
+
+
+NOTE: Menus required hack to wp-api-menus:
+/home/jeff/Docker/wp-proud-docker/src/wp-content/plugins/wp-api-menus/includes/wp-api-menus-v2.php
 
 ---
 ### OLD NOTES
