@@ -125,7 +125,7 @@ module.exports = React.createClass( {
           callbackOnLocationHash: true,
         });
       } else {
-        lock.show({
+        lock.showSignin({
           container: 'auth0'
         });
       }
